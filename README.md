@@ -1,0 +1,19 @@
+# League of Legends drafting tools
+
+This repo contains a web application to analize the best and worst matchups in the game **_League of Legends_**, based on your champion pull for your main lanes against the most picked champions you're going to face.
+
+This help you to choose between your main champions against the opponent selection in a majority of the games you play.
+
+The data and the statistics of all games played in Riot Servers is fetched from [lolalytics](https://lolalytics.com/) website.
+
+## KuantiK Software
+
+This software is developed by Marcos García under the brand **KuantiK Software**
+
+## Version
+
+0.001
+
+## Register 2025/05/08
+
+The development is in the early stages and still is not a minimum viable project
