@@ -1,50 +1,12 @@
 'use strict';
 
 ///////////////////////////////////////
-// LOL Drafting tool
-
-///////////////////////////////////////
 // Global variables
-const rankTier = [
-  'all',
-  '1tric',
-  'challenger',
-  'grandmaster',
-  'grandmaster_plus',
-  'master',
-  'master_plus',
-  'diamond',
-  'd2_plus',
-  'diamond_plus',
-  'emerald',
-  'emerald_plus',
-  'platinum',
-  'platinum_plus',
-  'gold',
-  'gold_plus',
-  'silver',
-  'bronze',
-  'iron',
-  'unranked',
-];
-
-const lanes = ['main', 'top', 'jungle', 'middle', 'bottom', 'support'];
 
 const baseURL = 'https://lolalytics.com/lol/';
 
-// Get data from lolalytics website
-async function scrapeData(url) {
-  try {
-    const response = await fetch(url, { cache: 'reload' });
-    const html = await response.text();
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-
-    return doc;
-  } catch (error) {
-    console.log(error);
-  }
-}
+///////////////////////////////////////
+// Private module functions
 
 // Get the url for counters
 const getCountersURL = function (champion, lane, rank) {
@@ -61,8 +23,25 @@ const getTierlistURL = function (lane, rank) {
   return url;
 };
 
+// Get data from lolalytics website
+async function scrapeData(url) {
+  try {
+    const response = await fetch(url, { cache: 'reload' });
+    const html = await response.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+
+    return doc;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+///////////////////////////////////////
+// Public exported module functions
+
 // Get tier list
-const getTierlistData = function (lane = 'main', rank = 'all') {
+export const getTierlistData = function (lane = 'main', rank = 'all') {
   const champions = [];
   // Scrape the lolalytics web page
   scrapeData(getTierlistURL(lane, rank))
@@ -95,7 +74,7 @@ const getTierlistData = function (lane = 'main', rank = 'all') {
 };
 
 // Get counters data
-const getCountersData = function (champion, lane, rank) {
+export const getCountersData = function (champion, lane, rank) {
   const champions = [];
   // Scrape the lolalytics web page
   scrapeData(getCountersURL(champion, lane, rank))
@@ -138,17 +117,3 @@ const getCountersData = function (champion, lane, rank) {
 
   return champions;
 };
-
-const counters = getCountersData('lux', 'middle', 'all');
-console.log(counters);
-
-const tierList = getTierlistData('middle', 'all');
-console.log(tierList);
-
-// Fix when the promises are resolved
-let tierListSorted = [];
-
-setTimeout(() => {
-  tierListSorted = tierList.toSorted((a, b) => b.pickRate - a.pickRate);
-  console.log(tierListSorted);
-}, 1000);

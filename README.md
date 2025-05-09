@@ -10,10 +10,10 @@ The data and the statistics of all games played in Riot Servers is fetched from 
 
 This software is developed by Marcos García under the brand **KuantiK Software.**
 
-## Version
+### Version
 
 0.001
 
-## Register 2025/05/08
+### Register 2025/05/08
 
 The development is in the early stages and still is not a minimum viable project.

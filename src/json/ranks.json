@@ -1,0 +1,82 @@
+[
+  {
+    "tag": "all",
+    "name": "All Ranks"
+  },
+  {
+    "tag": "1tric",
+    "name": "One Trick Pony"
+  },
+  {
+    "tag": "challenger",
+    "name": "Challenger"
+  },
+  {
+    "tag": "grandmaster",
+    "name": "Grand Master"
+  },
+  {
+    "tag": "grandmaster_plus",
+    "name": "+Grand Master"
+  },
+  {
+    "tag": "master",
+    "name": "Master"
+  },
+  {
+    "tag": "master_plus",
+    "name": "+Master"
+  },
+  {
+    "tag": "diamond",
+    "name": "Diamond"
+  },
+  {
+    "tag": "d2_plus",
+    "name": "+Diamond 2"
+  },
+  {
+    "tag": "diamond_plus",
+    "name": "+Diamond"
+  },
+  {
+    "tag": "emerald",
+    "name": "Emerald"
+  },
+  {
+    "tag": "emerald_plus",
+    "name": "+Emerald"
+  },
+  {
+    "tag": "platinum",
+    "name": "Platinum"
+  },
+  {
+    "tag": "platinum_plus",
+    "name": "+Platinum"
+  },
+  {
+    "tag": "gold",
+    "name": "Gold"
+  },
+  {
+    "tag": "gold_plus",
+    "name": "+Gold"
+  },
+  {
+    "tag": "silver",
+    "name": "Silver"
+  },
+  {
+    "tag": "bronze",
+    "name": "Bronze"
+  },
+  {
+    "tag": "iron",
+    "name": "Iron"
+  },
+  {
+    "tag": "unranked",
+    "name": "Unranked"
+  }
+]
