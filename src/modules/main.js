@@ -2,25 +2,33 @@
 
 ///////////////////////////////////////
 // LOL Drafting tool
+
+//Importing from modules
 import { getTierlistData, getCountersData } from './lolalytics-api.js';
+import { updateChampionData } from './riot-api.js';
 
 ///////////////////////////////////////
 // Global variables
 
 const lanes = ['main', 'top', 'jungle', 'middle', 'bottom', 'support'];
-
 const baseURL = 'https://lolalytics.com/lol/';
 
-const counters = getCountersData('lux', 'middle', 'all');
-console.log(counters);
+///////////////////////////////////////
+// Script
 
-const tierList = getTierlistData('middle', 'all');
-console.log(tierList);
+const init = async function () {
+  const counters = await getCountersData('lux', 'middle', 'all');
+  console.log(counters);
 
-// Fix when the promises are resolved
-let tierListSorted = [];
+  const tierList = await getTierlistData('middle', 'all');
+  console.log(tierList);
 
-setTimeout(() => {
-  tierListSorted = tierList.toSorted((a, b) => b.pickRate - a.pickRate);
+  const tierListSorted = tierList.toSorted((a, b) => b.pickRate - a.pickRate);
   console.log(tierListSorted);
-}, 1000);
+
+  const champions = await updateChampionData();
+
+  console.log(champions.Aatrox);
+};
+
+init();

@@ -1,82 +1,104 @@
-[
-  {
-    "tag": "all",
+{
+  "list": [
+    "all",
+    "1tric",
+    "challenger",
+    "grandmaster",
+    "grandmaster_plus",
+    "master",
+    "master_plus",
+    "diamond",
+    "d2_plus",
+    "diamond_plus",
+    "emerald",
+    "emerald_plus",
+    "platinum",
+    "platinum_plus",
+    "gold",
+    "gold_plus",
+    "silver",
+    "bronze",
+    "iron",
+    "unranked"
+  ],
+  "all": {
+    "id": "all",
     "name": "All Ranks"
   },
-  {
-    "tag": "1tric",
+  "1tric": {
+    "id": "1tric",
     "name": "One Trick Pony"
   },
-  {
-    "tag": "challenger",
+  "challenger": {
+    "id": "challenger",
     "name": "Challenger"
   },
-  {
-    "tag": "grandmaster",
+  "grandmaster": {
+    "id": "grandmaster",
     "name": "Grand Master"
   },
-  {
-    "tag": "grandmaster_plus",
+  "grandmaster_plus": {
+    "id": "grandmaster_plus",
     "name": "+Grand Master"
   },
-  {
-    "tag": "master",
+  "master": {
+    "id": "master",
     "name": "Master"
   },
-  {
-    "tag": "master_plus",
+  "master_plus": {
+    "id": "master_plus",
     "name": "+Master"
   },
-  {
-    "tag": "diamond",
+  "diamond": {
+    "id": "diamond",
     "name": "Diamond"
   },
-  {
-    "tag": "d2_plus",
+  "d2_plus": {
+    "id": "d2_plus",
     "name": "+Diamond 2"
   },
-  {
-    "tag": "diamond_plus",
+  "diamond_plus": {
+    "id": "diamond_plus",
     "name": "+Diamond"
   },
-  {
-    "tag": "emerald",
+  "emerald": {
+    "id": "emerald",
     "name": "Emerald"
   },
-  {
-    "tag": "emerald_plus",
+  "emerald_plus": {
+    "id": "emerald_plus",
     "name": "+Emerald"
   },
-  {
-    "tag": "platinum",
+  "platinum": {
+    "id": "platinum",
     "name": "Platinum"
   },
-  {
-    "tag": "platinum_plus",
+  "platinum_plus": {
+    "id": "platinum_plus",
     "name": "+Platinum"
   },
-  {
-    "tag": "gold",
+  "gold": {
+    "id": "gold",
     "name": "Gold"
   },
-  {
-    "tag": "gold_plus",
+  "gold_plus": {
+    "id": "gold_plus",
     "name": "+Gold"
   },
-  {
-    "tag": "silver",
+  "silver": {
+    "id": "silver",
     "name": "Silver"
   },
-  {
-    "tag": "bronze",
+  "bronze": {
+    "id": "bronze",
     "name": "Bronze"
   },
-  {
-    "tag": "iron",
+  "iron": {
+    "id": "iron",
     "name": "Iron"
   },
-  {
-    "tag": "unranked",
+  "unranked": {
+    "id": "unranked",
     "name": "Unranked"
   }
-]
+}
