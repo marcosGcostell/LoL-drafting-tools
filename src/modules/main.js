@@ -2,7 +2,7 @@
 
 ///////////////////////////////////////
 // LOL Drafting tool
-import { getTierlistData, getCountersData } from 'lolalytics-api.js';
+import { getTierlistData, getCountersData } from './lolalytics-api.js';
 
 ///////////////////////////////////////
 // Global variables
