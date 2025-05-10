@@ -1,7 +1,7 @@
 {
   "list": [
     "all",
-    "1tric",
+    "onetric",
     "challenger",
     "grandmaster",
     "grandmaster_plus",
@@ -25,7 +25,7 @@
     "id": "all",
     "name": "All Ranks"
   },
-  "1tric": {
+  "onetric": {
     "id": "1tric",
     "name": "One Trick Pony"
   },

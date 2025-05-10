@@ -9,7 +9,7 @@ const baseURL = 'https://lolalytics.com/lol/';
 // Private module functions
 
 /**
- * @method
+ * @function getCountersURL
  * Returns the url for counters webpage
  * @param {String} champion counters of this champion.
  * @param {String} lane for this role.
@@ -21,7 +21,7 @@ const getCountersURL = function (champion, lane, rank) {
 };
 
 /**
- * @method
+ * @function getTierlistURL
  * Returns the url for the tierlist webpage
  * @param {String} lane for this role.
  * @param {String} rank in this rank.
@@ -37,10 +37,11 @@ const getTierlistURL = function (lane, rank) {
 };
 
 /**
- * @method
+ * @async
+ * @function scrapeData
  * Get html data from lolalytics website
  * @param {String} url to download.
- * @return {Document} The html page as DOM Documnet.
+ * @return {Promise<Document>} The html page as DOM Documnet.
  */
 async function scrapeData(url) {
   try {
@@ -59,11 +60,48 @@ async function scrapeData(url) {
 // Public exported module functions
 
 /**
- * @method
+ * @async
+ * @function getChampionsUrlName
+ * Get the champions' path for lolalytics website urls
+ * @return {Promise<Array>} of champion arrays.
+ */
+export const getChampionsUrlName = async function () {
+  const champions = [];
+
+  try {
+    // Scrape the lolalytics web page
+    const htmlData = await scrapeData(`${baseURL}aatrox/counters/`);
+
+    // Select the table where the champion information is
+    const championTable =
+      htmlData.getElementsByTagName('main')[0].children[5].children[1]
+        .firstElementChild.firstElementChild.children;
+
+    for (const item of championTable) {
+      if (item.children.length) {
+        const champion = [
+          item.firstElementChild.firstElementChild.firstElementChild.getAttribute(
+            'alt'
+          ),
+          item.firstElementChild.getAttribute('href').split('/')[2],
+        ];
+
+        champions.push(champion);
+      }
+    }
+    return champions;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+/**
+ * @async
+ * @function getTierlistData
  * Get a tier list from lolalytics website
  * @param {String} lane for this role.
  * @param {String} rank in this rank.
- * @return {Array} of champion objects.
+ * @return {Promise<Array>} of champion objects.
  */
 export const getTierlistData = async function (lane = 'main', rank = 'all') {
   const champions = [];
@@ -96,12 +134,13 @@ export const getTierlistData = async function (lane = 'main', rank = 'all') {
 };
 
 /**
- * @method
+ * @async
+ * @function getCountersData
  * Get counters data from lolalytics website
  * @param {String} champion for this champion.
  * @param {String} lane for this role.
  * @param {String} rank in this rank.
- * @return {Array} of champion objects.
+ * @return {Promise<Array>} of champion objects.
  */
 export const getCountersData = async function (champion, lane, rank) {
   const champions = [];
