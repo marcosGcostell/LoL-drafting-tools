@@ -73,24 +73,19 @@ export const getTierlistData = async function (lane = 'main', rank = 'all') {
     const htmlData = await scrapeData(getTierlistURL(lane, rank));
 
     // Select the table where the champion information is
-    const championTable = htmlData
-      .getElementsByTagName('main')
-      .item(0)
-      .children.item(5)
-      .children.item(1).children;
+    const championTable =
+      htmlData.getElementsByTagName('main')[0].children[5].children[1].children;
 
     for (const item of championTable) {
       if (item.children.length) {
         const champion = {};
-        const championCell = item.children.item(0).children.item(0);
-        champion.name = championCell.children.item(0).textContent;
-        const championDataSection = championCell.children
-          .item(1)
-          .children.item(1)
-          .children.item(0);
-        champion.winRatio = championDataSection.children.item(1).textContent;
-        champion.pickRate = championDataSection.children.item(2).textContent;
-        champion.banRate = championDataSection.children.item(3).textContent;
+        const championCell = item.firstElementChild.firstElementChild;
+        champion.name = championCell.firstElementChild.textContent;
+        const championDataSection =
+          championCell.children[1].children[1].firstElementChild;
+        champion.winRatio = championDataSection.children[1].textContent;
+        champion.pickRate = championDataSection.children[2].textContent;
+        champion.banRate = championDataSection.children[3].textContent;
         champions.push(champion);
       }
     }
@@ -116,35 +111,30 @@ export const getCountersData = async function (champion, lane, rank) {
     const htmlData = await scrapeData(getCountersURL(champion, lane, rank));
 
     // Select the table where the champion information is
-    const championTable = htmlData
-      .getElementsByTagName('main')
-      .item(0)
-      .children.item(5)
-      .children.item(0)
-      .children.item(1).children;
+    const championTable =
+      htmlData.getElementsByTagName('main')[0].children[5].firstElementChild
+        .children[1].children;
 
     // html collection is pairs of <spans> and <q:templates>
     // Select only the <spans>
     for (let i = 0; i < championTable.length; i += 2) {
-      const championCell = championTable[i].children
-        .item(0)
-        .children.item(0)
-        .children.item(0);
+      const championCell =
+        championTable[i].firstElementChild.firstElementChild.firstElementChild;
       const champion = {};
 
       // Get champion name
-      champion.name = championCell.children.item(0).textContent;
+      champion.name = championCell.firstElementChild.textContent;
       // Get winratio
       champion.winRatio = Number.parseFloat(
-        championCell.children.item(2).children.item(1).textContent
+        championCell.children[2].children[1].textContent
       );
       // Get Delta 1
       champion.delta1 = Number.parseFloat(
-        championCell.children.item(3).children.item(0).textContent.slice(3)
+        championCell.children[3].firstElementChild.textContent.slice(3)
       );
       // Get Delta 2
       champion.delta2 = Number.parseFloat(
-        championCell.children.item(3).children.item(1).textContent.slice(3)
+        championCell.children[3].children[1].textContent.slice(3)
       );
       champions.push(champion);
     }

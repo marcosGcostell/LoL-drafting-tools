@@ -1,4 +1,5 @@
 'use strict';
+// import * as fs from 'node:fs';
 
 ///////////////////////////////////////
 // Global variables
@@ -9,9 +10,10 @@ const dataDragon = 'https://ddragon.leagueoflegends.com/';
 // Private module functions
 
 /**
- * @method
+ * @async
+ * @function
  * Gets the League of Legends' last version from Riot API
- * @return {String} The last version.
+ * @return {Promise<String>} The last version.
  */
 const getLolLastVersion = async function () {
   const url = `${dataDragon}api/versions.json`;
@@ -26,10 +28,11 @@ const getLolLastVersion = async function () {
 };
 
 /**
- * @method
+ * @async
+ * @function
  * Gets the League of Legends' champion data from Riot API
  * @param {String} version Version patch of the data.
- * @return {Object} Object where every champion is a property.
+ * @return {Promise<Object>} Object where every champion is a property.
  */
 const getLolChampionData = async function (version) {
   const url = `${dataDragon}cdn/${version}/data/${locale}/champion.json`;
@@ -45,15 +48,30 @@ const getLolChampionData = async function (version) {
 };
 
 /**
- * @method
+ * @async
+ * @function
+ * Gets the LoL last version stored on local server
+ * @return {Promise<String>} The last version.
+ */
+const getLocalVersion = async function () {
+  fs.readFile('../json/version.json', 'utf8', (err, data) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    const object = JSON.parse(data);
+    return object.version;
+  });
+};
+
+/**
+ * @function
  * Save the champions data and the version to JSON files
  * @param {Object} champions Data of all champions
  * @param {Object} version Version patch of the data
- * @return {Object} Object where every champion is a property.
  */
 const saveChampionsData = function (champions, version) {
   // First save the champions' data
-  const fs = require('fs');
 
   fs.writeFile('../json/champions.json', JSON.stringify(champions), error => {
     if (error) console.log(error);
@@ -65,40 +83,59 @@ const saveChampionsData = function (champions, version) {
   });
 };
 
+///////////////////////////////////////
+// Exported functions
+
 /**
- * @method
+ * @async
+ * @function
+ * Gets the LoL last version stored on local server
+ * @return {Promise<String>} The last version.
+ */
+const getLocalChampions = async function () {
+  fs.readFile('../json/champions.json', 'utf8', (err, data) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    return JSON.parse(data);
+  });
+};
+
+/**
+ * @async
+ * @function updateChampionData
  * Read updated version of champions' data from Riot API
  * and create an object with a reduced info version of all the champions
  * Calls to save data
  * @param {String} version Version patch of the data. No arg, get the last version
- * @return {Object} Object where every champion is a property.
+ * @return {Promise<Object>} Object where every champion is a property.
  */
-
-///////////////////////////////////////
-// Exported functions
-
 export const updateChampionData = async function (version = null) {
-  //
+  // No verion passed, gets the last version
   if (!version) version = await getLolLastVersion();
 
-  // Implement checking if updating is necesary
-  // ....
-  if (true) {
-    const storedVersion = { version: version };
-    const championsLite = {};
-    const lolChampions = await getLolChampionData(version);
+  // Checks if updating is necesary
+  // const storedVersion = await getLocalVersion();
+  // if (version === storedVersion) {
+  //   return await getLocalChampions();
+  // }
 
-    for (const champion in lolChampions) {
-      championsLite[champion] = {};
+  const localVersion = { version: version };
+  const championsLite = {};
+  const lolChampions = await getLolChampionData(version);
 
-      championsLite[champion].version = lolChampions[champion].version;
-      championsLite[champion].id = lolChampions[champion].id;
-      championsLite[champion].key = lolChampions[champion].key;
-      championsLite[champion].name = lolChampions[champion].name;
-      championsLite[champion].img = lolChampions[champion].image.full;
-    }
+  // Iterate every properties (champions) of the object
+  for (const champion in lolChampions) {
+    championsLite[champion] = {};
 
-    // saveChampionsData(championsLite, storedVersion);
-    return championsLite;
+    championsLite[champion].version = lolChampions[champion].version;
+    championsLite[champion].id = lolChampions[champion].id;
+    championsLite[champion].key = lolChampions[champion].key;
+    championsLite[champion].name = lolChampions[champion].name;
+    championsLite[champion].img = lolChampions[champion].image.full;
   }
+
+  // saveChampionsData(championsLite, localVersion);
+  return championsLite;
 };
