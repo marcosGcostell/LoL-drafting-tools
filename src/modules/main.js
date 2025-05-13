@@ -50,10 +50,10 @@ const init = async function () {
 };
 
 const test = async function () {
-  const counters = await getCountersData('lux', 'middle', 'all');
+  const counters = await getCountersData('lux', 'all', 'middle');
   console.log(counters);
 
-  const tierList = await getTierlistData('middle', 'all');
+  const tierList = await getTierlistData('all', 'middle');
   console.log(tierList);
 
   const tierListSorted = tierList.toSorted((a, b) => b.pickRate - a.pickRate);

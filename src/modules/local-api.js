@@ -8,7 +8,7 @@
 
 /**
  * @async
- * @function
+ * @function getLocalVersion
  * Gets the LoL last version stored on local server
  * @return {Promise<String>} The last version.
  */
@@ -34,7 +34,7 @@ export const getLocalVersion = async function () {
 
 /**
  * @async
- * @function
+ * @function getLocalChampions
  * Gets the champion data from the local JSON file
  * @return {Promise<Object>} The last version.
  */
@@ -58,7 +58,7 @@ export const getLocalChampions = async function () {
 };
 
 /**
- * @function
+ * @function getChampionsList
  * Gets the champion data from the local JSON file
  * @param {Object} champions Data of all champions
  * @return {Array>} List of all the champion names
@@ -73,7 +73,7 @@ export const getChampionsList = function (champions) {
 };
 
 /**
- * @function
+ * @function saveChampionsData
  * Save the champions data and the version to JSON files
  * @param {Object} champions Data of all champions
  * @param {Object} version Version patch of the data

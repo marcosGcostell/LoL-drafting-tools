@@ -12,22 +12,25 @@ const baseURL = 'https://lolalytics.com/lol/';
  * @function getCountersURL
  * Returns the url for counters webpage
  * @param {String} champion counters of this champion.
- * @param {String} lane for this role.
  * @param {String} rank in this rank.
+ * @param {String} lane for this role.
+ * @param {String} vsLane against this role.
  * @return {String} The url.
  */
-const getCountersURL = function (champion, lane, rank) {
-  return `${baseURL}${champion}/counters/?lane=${lane}&tier=${rank}`;
+const getCountersURL = function (champion, rank, lane, vsLane = lane) {
+  let str = `${baseURL}${champion}/counters/?lane=${lane}&tier=${rank}`;
+  if (vsLane !== 'main' && vsLane !== lane) str += `&vslane=${vsLane}`;
+  return str;
 };
 
 /**
  * @function getTierlistURL
  * Returns the url for the tierlist webpage
- * @param {String} lane for this role.
  * @param {String} rank in this rank.
+ * @param {String} lane for this role.
  * @return {String} The url.
  */
-const getTierlistURL = function (lane, rank) {
+const getTierlistURL = function (rank = 'all', lane = 'main') {
   let url = `${baseURL}tierlist/?`;
 
   if (lane !== 'main') url += `lane=${lane}&`;
@@ -41,7 +44,7 @@ const getTierlistURL = function (lane, rank) {
  * @function scrapeData
  * Get html data from lolalytics website
  * @param {String} url to download.
- * @return {Promise<Document>} The html page as DOM Documnet.
+ * @return {Promise<Document>} The html page as DOM Document.
  */
 async function scrapeData(url) {
   try {
@@ -99,16 +102,16 @@ export const getChampionsUrlName = async function () {
  * @async
  * @function getTierlistData
  * Get a tier list from lolalytics website
- * @param {String} lane for this role.
  * @param {String} rank in this rank.
+ * @param {String} lane for this role.
  * @return {Promise<Array>} of champion objects.
  */
-export const getTierlistData = async function (lane = 'main', rank = 'all') {
+export const getTierlistData = async function (rank = 'all', lane = 'main') {
   const champions = [];
 
   try {
     // Scrape the lolalytics web page
-    const htmlData = await scrapeData(getTierlistURL(lane, rank));
+    const htmlData = await scrapeData(getTierlistURL(rank, lane));
 
     // Select the table where the champion information is
     const championTable =
@@ -142,12 +145,19 @@ export const getTierlistData = async function (lane = 'main', rank = 'all') {
  * @param {String} rank in this rank.
  * @return {Promise<Array>} of champion objects.
  */
-export const getCountersData = async function (champion, lane, rank) {
+export const getCountersData = async function (
+  champion,
+  rank = 'all',
+  lane = 'main',
+  vsLane = lane
+) {
   const champions = [];
 
   try {
     // Scrape the lolalytics web page
-    const htmlData = await scrapeData(getCountersURL(champion, lane, rank));
+    const htmlData = await scrapeData(
+      getCountersURL(champion, rank, lane, vsLane)
+    );
 
     // Select the table where the champion information is
     const championTable =
