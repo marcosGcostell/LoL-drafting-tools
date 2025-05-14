@@ -41,12 +41,12 @@ const getTierlistURL = function (rank = 'all', lane = 'main') {
 
 /**
  * @async
- * @function scrapeData
+ * @function scrapeWebPage
  * Get html data from lolalytics website
  * @param {String} url to download.
  * @return {Promise<Document>} The html page as DOM Document.
  */
-async function scrapeData(url) {
+async function scrapeWebPage(url) {
   try {
     const response = await fetch(url);
     const html = await response.text();
@@ -54,8 +54,8 @@ async function scrapeData(url) {
     const doc = parser.parseFromString(html, 'text/html');
 
     return doc;
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.error(err);
   }
 }
 
@@ -64,18 +64,18 @@ async function scrapeData(url) {
 
 /**
  * @async
- * @function getChampionsUrlName
+ * @function getChampionPaths
  * Get the champions' path for lolalytics website urls
  * @return {Promise<Array>} of champion arrays.
  */
-export const getChampionsUrlName = async function () {
+export const getChampionPaths = async function (officialRiotChampionList) {
   const champions = [];
 
   try {
     // Scrape the lolalytics web page
-    const htmlData = await scrapeData(`${baseURL}aatrox/counters/`);
+    const htmlData = await scrapeWebPage(`${baseURL}aatrox/counters/`);
 
-    // Select the table where the champion information is
+    // Select the table where the champion information is and fill the array
     const championTable =
       htmlData.getElementsByTagName('main')[0].children[5].children[1]
         .firstElementChild.firstElementChild.children;
@@ -92,26 +92,32 @@ export const getChampionsUrlName = async function () {
         champions.push(champion);
       }
     }
+    // Check integrity of the champion names list
+    champions.forEach(entry => {
+      if (!officialRiotChampionList.includes(entry[0]))
+        throw new Error(`Champion ${entry[0]} is not in the Riot list`);
+    });
+
     return champions;
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.error(err);
   }
 };
 
 /**
  * @async
- * @function getTierlistData
+ * @function getTierlist
  * Get a tier list from lolalytics website
  * @param {String} rank in this rank.
  * @param {String} lane for this role.
  * @return {Promise<Array>} of champion objects.
  */
-export const getTierlistData = async function (rank = 'all', lane = 'main') {
+export const getTierlist = async function (rank = 'all', lane = 'main') {
   const champions = [];
 
   try {
     // Scrape the lolalytics web page
-    const htmlData = await scrapeData(getTierlistURL(rank, lane));
+    const htmlData = await scrapeWebPage(getTierlistURL(rank, lane));
 
     // Select the table where the champion information is
     const championTable =
@@ -131,21 +137,21 @@ export const getTierlistData = async function (rank = 'all', lane = 'main') {
       }
     }
     return champions;
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.error(err);
   }
 };
 
 /**
  * @async
- * @function getCountersData
+ * @function getCounters
  * Get counters data from lolalytics website
  * @param {String} champion for this champion.
  * @param {String} lane for this role.
  * @param {String} rank in this rank.
  * @return {Promise<Array>} of champion objects.
  */
-export const getCountersData = async function (
+export const getCounters = async function (
   champion,
   rank = 'all',
   lane = 'main',
@@ -155,7 +161,7 @@ export const getCountersData = async function (
 
   try {
     // Scrape the lolalytics web page
-    const htmlData = await scrapeData(
+    const htmlData = await scrapeWebPage(
       getCountersURL(champion, rank, lane, vsLane)
     );
 
@@ -188,7 +194,7 @@ export const getCountersData = async function (
       champions.push(champion);
     }
     return champions;
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.error(err);
   }
 };

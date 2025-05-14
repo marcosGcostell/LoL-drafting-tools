@@ -61,7 +61,7 @@ export const getLocalChampions = async function () {
  * @function getChampionsList
  * Gets the champion data from the local JSON file
  * @param {Object} champions Data of all champions
- * @return {Array>} List of all the champion names
+ * @return {Array} List of all the champion names
  */
 export const getChampionsList = function (champions) {
   const championList = [];

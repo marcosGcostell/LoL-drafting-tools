@@ -4,12 +4,8 @@
 // LOL Drafting tool
 
 //Importing from modules
-import {
-  getChampionsUrlName,
-  getTierlistData,
-  getCountersData,
-} from './lolalytics-api.js';
-import { getLolLastVersion, updateChampionData } from './riot-api.js';
+import * as lolalytics from './lolalytics-api.js';
+import { getRiotLastVersion, updateDataFromRiot } from './riot-api.js';
 import {
   getLocalVersion,
   getLocalChampions,
@@ -26,15 +22,16 @@ let champions = {};
 ///////////////////////////////////////
 // Script
 
-const init = async function () {
+async function init() {
   // Checks if updating the champion info is necesary
   // and gets the champion info
   const storedVersion = await getLocalVersion();
-  const version = await getLolLastVersion();
+  const version = await getRiotLastVersion();
+
   if (version === storedVersion) {
     champions = await getLocalChampions();
   } else {
-    champions = await updateChampionData();
+    champions = await updateDataFromRiot();
     // saveChampionsData(champions, version);
   }
   console.log(champions);
@@ -45,15 +42,17 @@ const init = async function () {
   console.log(championList);
 
   // Get the url for every champion in Lolalytics website
-  const lolayticsUrls = new Map(await getChampionsUrlName());
+  const lolayticsUrls = new Map(
+    await lolalytics.getChampionPaths(championList)
+  );
   console.log(lolayticsUrls);
-};
+}
 
 const test = async function () {
-  const counters = await getCountersData('lux', 'all', 'middle');
+  const counters = await lolalytics.getCounters('lux', 'all', 'middle');
   console.log(counters);
 
-  const tierList = await getTierlistData('all', 'middle');
+  const tierList = await lolalytics.getTierlist('all', 'middle');
   console.log(tierList);
 
   const tierListSorted = tierList.toSorted((a, b) => b.pickRate - a.pickRate);
@@ -61,4 +60,4 @@ const test = async function () {
 };
 
 init();
-test();
+// test();

@@ -11,12 +11,12 @@ const dataDragon = 'https://ddragon.leagueoflegends.com/';
 
 /**
  * @async
- * @function getLolChampionData
+ * @function getRiotChampionData
  * Gets the League of Legends' champion data from Riot API
  * @param {String} version Version patch of the data.
  * @return {Promise<Object>} Object where every champion is a property.
  */
-const getLolChampionData = async function (version) {
+const getRiotChampionData = async function (version) {
   const url = `${dataDragon}cdn/${version}/data/${locale}/champion.json`;
 
   try {
@@ -24,8 +24,8 @@ const getLolChampionData = async function (version) {
     const lolChampions = await response.json();
 
     return lolChampions.data;
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.error(err);
   }
 };
 
@@ -34,49 +34,48 @@ const getLolChampionData = async function (version) {
 
 /**
  * @async
- * @function getLolLastVersion
+ * @function getRiotLastVersion
  * Gets the League of Legends' last version from Riot API
  * @return {Promise<String>} The last version.
  */
-export const getLolLastVersion = async function () {
+export const getRiotLastVersion = async function () {
   const url = `${dataDragon}api/versions.json`;
 
   try {
     const response = await fetch(url);
-    const data = await response.json();
-    return data[0];
-  } catch (error) {
-    console.log(error);
+    const [data] = await response.json();
+    return data;
+  } catch (err) {
+    console.error(err);
   }
 };
 
 /**
  * @async
- * @function updateChampionData
+ * @function updateDataFromRiot
  * Read updated version of champions' data from Riot API
  * and create an object with a reduced info version of all the champions
  * Calls to save data
  * @param {String} version Version patch of the data. No arg, get the last version
  * @return {Promise<Object>} Object where every champion is a property.
  */
-export const updateChampionData = async function (version = null) {
+export const updateDataFromRiot = async function (version = null) {
   // No verion passed, gets the last version
-  if (!version) version = await getLolLastVersion();
+  if (!version) version = await getRiotLastVersion();
 
-  const localVersion = { version: version };
-  const championsLite = {};
-  const lolChampions = await getLolChampionData(version);
+  const championsData = {};
+  const lolChampions = await getRiotChampionData(version);
 
   // Iterate every properties (champions) of the object
   for (const champion in lolChampions) {
-    championsLite[champion] = {};
+    championsData[champion] = {};
 
-    championsLite[champion].version = lolChampions[champion].version;
-    championsLite[champion].id = lolChampions[champion].id;
-    championsLite[champion].key = lolChampions[champion].key;
-    championsLite[champion].name = lolChampions[champion].name;
-    championsLite[champion].img = lolChampions[champion].image.full;
+    championsData[champion].version = lolChampions[champion].version;
+    championsData[champion].id = lolChampions[champion].id;
+    championsData[champion].key = lolChampions[champion].key;
+    championsData[champion].name = lolChampions[champion].name;
+    championsData[champion].img = lolChampions[champion].image.full;
   }
 
-  return championsLite;
+  return championsData;
 };
