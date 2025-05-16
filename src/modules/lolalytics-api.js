@@ -31,12 +31,9 @@ const getCountersURL = function (champion, rank, lane, vsLane = lane) {
  * @return {String} The url.
  */
 const getTierlistURL = function (rank = 'all', lane = 'main') {
-  let url = `${baseURL}tierlist/?`;
-
-  if (lane !== 'main') url += `lane=${lane}&`;
-
-  url += `tier=${rank}&view=grid`;
-  return url;
+  return `${baseURL}tierlist/?${
+    lane !== 'main' ? `lane=${lane}&` : ''
+  }tier=${rank}&view=grid`;
 };
 
 /**
@@ -64,40 +61,43 @@ async function scrapeWebPage(url) {
 
 /**
  * @async
- * @function getChampionPaths
+ * @function getChampionFolders
  * Get the champions' path for lolalytics website urls
  * @return {Promise<Array>} of champion arrays.
  */
-export const getChampionPaths = async function (officialRiotChampionList) {
+export const getChampionFolders = async function (officialRiotChampionList) {
   const champions = [];
 
   try {
     // Scrape the lolalytics web page
     const htmlData = await scrapeWebPage(`${baseURL}aatrox/counters/`);
 
-    // Select the table where the champion information is and fill the array
-    const championTable =
+    // Select the table where the champion information is (HTMLCollection)
+    // convert it to an Array and filter only champions (elements with children)
+    const championsGrid = Array.from(
       htmlData.getElementsByTagName('main')[0].children[5].children[1]
-        .firstElementChild.firstElementChild.children;
+        .firstElementChild.firstElementChild.children
+    ).filter(element => element.children.length);
 
-    for (const item of championTable) {
-      if (item.children.length) {
-        const champion = [
-          item.firstElementChild.firstElementChild.firstElementChild.getAttribute(
-            'alt'
-          ),
-          item.firstElementChild.getAttribute('href').split('/')[2],
-        ];
-
-        champions.push(champion);
-      }
-    }
-    // Check integrity of the champion names list
-    champions.forEach(entry => {
-      if (!officialRiotChampionList.includes(entry[0]))
-        throw new Error(`Champion ${entry[0]} is not in the Riot list`);
+    // Store an array of name and path pairs
+    // from the HTMLElemts array
+    const champions = championsGrid.map(cell => {
+      return [
+        cell.firstElementChild.firstElementChild.firstElementChild.getAttribute(
+          'alt'
+        ),
+        cell.firstElementChild.getAttribute('href').split('/')[2],
+      ];
     });
 
+    // All names have to exist in the same way in Riot List
+    const listIntegrity = champions.reduce(
+      (integrity, elem) =>
+        officialRiotChampionList.includes(elem[0]) && integrity,
+      true
+    );
+    // Add the integrity register and return
+    champions.push(['integrity', listIntegrity]);
     return champions;
   } catch (err) {
     console.error(err);
@@ -113,30 +113,29 @@ export const getChampionPaths = async function (officialRiotChampionList) {
  * @return {Promise<Array>} of champion objects.
  */
 export const getTierlist = async function (rank = 'all', lane = 'main') {
-  const champions = [];
-
   try {
     // Scrape the lolalytics web page
     const htmlData = await scrapeWebPage(getTierlistURL(rank, lane));
 
-    // Select the table where the champion information is
-    const championTable =
-      htmlData.getElementsByTagName('main')[0].children[5].children[1].children;
+    // Select the table where the champion information is (HTMLCollection)
+    // convert it to an Array and filter only champions (elements with children)
+    const championsGrid = Array.from(
+      htmlData.getElementsByTagName('main')[0].children[5].children[1].children
+    ).filter(element => element.children.length);
 
-    for (const item of championTable) {
-      if (item.children.length) {
-        const champion = {};
-        const championCell = item.firstElementChild.firstElementChild;
-        champion.name = championCell.firstElementChild.textContent;
-        const championDataSection =
-          championCell.children[1].children[1].firstElementChild;
-        champion.winRatio = championDataSection.children[1].textContent;
-        champion.pickRate = championDataSection.children[2].textContent;
-        champion.banRate = championDataSection.children[3].textContent;
-        champions.push(champion);
-      }
-    }
-    return champions;
+    // return an array of objects of some selected data
+    // from the HTMLElemts array
+    return championsGrid.map(cell => {
+      const championElement = cell.firstElementChild.firstElementChild;
+      const dataSection =
+        championElement.children[1].children[1].firstElementChild;
+      return {
+        name: championElement.firstElementChild.textContent,
+        winRatio: dataSection.children[1].textContent,
+        pickRate: dataSection.children[2].textContent,
+        banRate: dataSection.children[2].textContent,
+      };
+    });
   } catch (err) {
     console.error(err);
   }
@@ -157,43 +156,37 @@ export const getCounters = async function (
   lane = 'main',
   vsLane = lane
 ) {
-  const champions = [];
-
   try {
     // Scrape the lolalytics web page
     const htmlData = await scrapeWebPage(
       getCountersURL(champion, rank, lane, vsLane)
     );
 
-    // Select the table where the champion information is
-    const championTable =
+    // Select the table where the champion information is (HTMLCollection)
+    // convert it to an Array and filter only the <span> elements
+    const championsGrid = Array.from(
       htmlData.getElementsByTagName('main')[0].children[5].firstElementChild
-        .children[1].children;
+        .children[1].children
+    ).filter(element => element.tagName === 'SPAN');
 
-    // html collection is pairs of <spans> and <q:templates>
-    // Select only the <spans>
-    for (let i = 0; i < championTable.length; i += 2) {
-      const championCell =
-        championTable[i].firstElementChild.firstElementChild.firstElementChild;
-      const champion = {};
-
-      // Get champion name
-      champion.name = championCell.firstElementChild.textContent;
-      // Get winratio
-      champion.winRatio = Number.parseFloat(
-        championCell.children[2].children[1].textContent
-      );
-      // Get Delta 1
-      champion.delta1 = Number.parseFloat(
-        championCell.children[3].firstElementChild.textContent.slice(3)
-      );
-      // Get Delta 2
-      champion.delta2 = Number.parseFloat(
-        championCell.children[3].children[1].textContent.slice(3)
-      );
-      champions.push(champion);
-    }
-    return champions;
+    // return an array of objects of some selected data
+    // from the HTMLElemts array
+    return championsGrid.map(cell => {
+      const dataElement =
+        cell.firstElementChild.firstElementChild.firstElementChild;
+      return {
+        name: dataElement.firstElementChild.textContent,
+        winRatio: Number.parseFloat(
+          dataElement.children[2].children[1].textContent
+        ),
+        delta1: Number.parseFloat(
+          dataElement.children[3].firstElementChild.textContent.slice(3)
+        ),
+        delta2: Number.parseFloat(
+          dataElement.children[3].children[1].textContent.slice(3)
+        ),
+      };
+    });
   } catch (err) {
     console.error(err);
   }

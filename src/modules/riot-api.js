@@ -66,16 +66,17 @@ export const updateDataFromRiot = async function (version = null) {
   const championsData = {};
   const lolChampions = await getRiotChampionData(version);
 
-  // Iterate every properties (champions) of the object
-  for (const champion in lolChampions) {
-    championsData[champion] = {};
-
-    championsData[champion].version = lolChampions[champion].version;
-    championsData[champion].id = lolChampions[champion].id;
-    championsData[champion].key = lolChampions[champion].key;
-    championsData[champion].name = lolChampions[champion].name;
-    championsData[champion].img = lolChampions[champion].image.full;
-  }
+  // In championsData create an object for each champion with some data
+  Object.keys(lolChampions).forEach(
+    championName =>
+      (championsData[championName] = {
+        version: lolChampions[championName].version,
+        id: lolChampions[championName].id,
+        key: lolChampions[championName].key,
+        name: lolChampions[championName].name,
+        img: lolChampions[championName].image.full,
+      })
+  );
 
   return championsData;
 };
