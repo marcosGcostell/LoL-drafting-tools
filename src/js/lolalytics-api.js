@@ -1,3 +1,7 @@
+import { MIN_DELAY } from './config.js';
+import { MAX_DELAY } from './config.js';
+import { getRandomNumber, wait } from './helpers.js';
+
 ///////////////////////////////////////
 // LoLalytics Class
 /**
@@ -6,7 +10,7 @@
  * API to manage Lolalytics content
  * @property {String} baseURL (#) base url of the website.
  * @property {Boolean} isInitialized (#) true after init().
- * @property {Map} championFolders Map key='Champion name' value='folder'.
+ * @property {Object} championFolders key='Champion name' value='folder'.
  * @property {Boolean} listIntegrity true if all Champion names in the map are ok.
  *
  * PUBLIC METHODS
@@ -19,15 +23,11 @@
  * @class Lolalytics -
  * API to manage Lolalytics content
  */
-export default class Lolalytics {
+class Lolalytics {
   #baseURL = 'https://lolalytics.com/lol/';
-  #isInitialized;
+  #isInitialized = false;
   championFolders;
   listIntegrity;
-
-  constructor() {
-    this.#isInitialized = false;
-  }
 
   // PRIVATE METHODS
 
@@ -41,9 +41,9 @@ export default class Lolalytics {
    * @return {String} The url.
    */
   #getCountersURL(champion, rank, lane, vsLane = lane) {
-    let str = `${this.#baseURL}${this.championFolders.get(
-      champion
-    )}/counters/?lane=${lane}&tier=${rank}`;
+    let str = `${this.#baseURL}${
+      this.championFolders[champion]
+    }/counters/?lane=${lane}&tier=${rank}`;
     if (vsLane !== 'main' && vsLane !== lane) str += `&vslane=${vsLane}`;
     return str;
   }
@@ -70,6 +70,8 @@ export default class Lolalytics {
    */
   async #scrapeWebPage(url) {
     try {
+      // Always wait for lolalytics requests
+      await wait(getRandomNumber(MIN_DELAY, MAX_DELAY));
       const response = await fetch(url);
       const html = await response.text();
       const parser = new DOMParser();
@@ -86,7 +88,7 @@ export default class Lolalytics {
    * @async
    * @method #getChampionFolders
    * Get the champion folders for lolalytics website urls
-   * @return {Promise<Array>} of champion arrays.
+   * @param {Array<String>} officialRiotChampionList list of champion names.
    */
   async #getChampionFolders(officialRiotChampionList) {
     try {
@@ -104,7 +106,7 @@ export default class Lolalytics {
 
       // Store an array of name and path pairs
       // from the HTMLElemts array
-      const champions = championsGrid.map(cell => {
+      const entries = championsGrid.map(cell => {
         return [
           cell.firstElementChild.firstElementChild.firstElementChild.getAttribute(
             'alt'
@@ -114,14 +116,14 @@ export default class Lolalytics {
       });
 
       // All names have to exist in the same way in Riot List
-      this.listIntegrity = champions.reduce(
+      this.listIntegrity = entries.reduce(
         (integrity, elem) =>
           officialRiotChampionList.includes(elem[0]) && integrity,
         true
       );
 
-      // Store the folders map in the field
-      this.championFolders = new Map(champions);
+      // Store the folders data in the property
+      this.championFolders = Object.fromEntries(entries);
     } catch (err) {
       console.error(err);
       throw err;
@@ -241,3 +243,5 @@ export default class Lolalytics {
     }
   }
 }
+
+export default new Lolalytics();
