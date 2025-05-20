@@ -11,5 +11,63 @@
 
   <body>
     <h1>League of Legends – Drafting Tool</h1>
+    <main>
+      <div class="input-data counters">
+        <input
+          id="champion"
+          type="text"
+          class="input"
+          placeholder="Champion..."
+        />
+        <input
+          id="rank"
+          type="text"
+          class="input"
+          placeholder="Input rank..."
+          value=""
+        />
+        <input
+          id="role"
+          type="text"
+          class="input"
+          placeholder="Input role..."
+          value=""
+        />
+        <button class="input counters-btn">Get counters</button>
+        <button class="input tierlist">Get tier list</button>
+      </div>
+      <div class="input-data">
+        <ul class="container">
+          <li class="counter-list">
+            <p class="data void header"></p>
+            <p class="data name header">Champion</p>
+            <p class="data header">Winratio</p>
+            <p class="data header">delta1</p>
+            <p class="data header">delta2</p>
+          </li>
+          <li class="counter-list">
+            <img src="src/img/champion/Aatrox.png" class="data thumbnail" />
+            <p class="data name">Aatrox</p>
+            <p class="data">50%</p>
+            <p class="data">2.1</p>
+            <p class="data">-0.5</p>
+          </li>
+          <li class="counter-list">
+            <p class="data void header"></p>
+            <p class="data name header">Champion</p>
+            <p class="data header">Winratio</p>
+            <p class="data header">pick</p>
+            <p class="data header">ban</p>
+          </li>
+          <li class="counter-list">
+            <img src="src/img/champion/Aatrox.png" class="data thumbnail" />
+            <p class="data name">Aatrox</p>
+            <p class="data">50%</p>
+            <p class="data">5.4%</p>
+            <p class="data">2.4%</p>
+          </li>
+        </ul>
+      </div>
+    </main>
   </body>
 </html>

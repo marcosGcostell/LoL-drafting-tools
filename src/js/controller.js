@@ -62,5 +62,5 @@ const test = async function () {
   console.log(tierListSorted);
 };
 
-await init();
-test();
+// await init();
+// test();
