@@ -1,5 +1,5 @@
-import { MIN_DELAY } from './config.js';
-import { MAX_DELAY } from './config.js';
+import { MIN_DELAY, MAX_DELAY } from './config.js';
+import { PROXY_ON, PROXY_URL } from './config.js';
 import { getRandomNumber, wait } from './helpers.js';
 
 ///////////////////////////////////////
@@ -72,7 +72,7 @@ class Lolalytics {
     try {
       // Always wait for lolalytics requests
       await wait(getRandomNumber(MIN_DELAY, MAX_DELAY));
-      const response = await fetch(url);
+      const response = await fetch(`${PROXY_ON ? PROXY_URL : ''}${url}`);
       const html = await response.text();
       const parser = new DOMParser();
       const doc = parser.parseFromString(html, 'text/html');
