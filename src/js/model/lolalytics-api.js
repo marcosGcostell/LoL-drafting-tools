@@ -1,23 +1,8 @@
-import { MIN_DELAY, MAX_DELAY } from './config.js';
-import { PROXY_ON, PROXY_URL } from './config.js';
-import { getRandomNumber, wait } from './helpers.js';
+import { MIN_DELAY, MAX_DELAY } from '../common/config.js';
+import { PROXY_ON, PROXY_URL } from '../common/config.js';
+import { getRandomNumber, wait } from '../common/helpers.js';
 
 ///////////////////////////////////////
-// LoLalytics Class
-/**
- *
- * @class Lolalytics -
- * API to manage Lolalytics content
- * @property {String} baseURL (#) base url of the website.
- * @property {Boolean} isInitialized (#) true after init().
- * @property {Object} championFolders key='Champion name' value='folder'.
- * @property {Boolean} listIntegrity true if all Champion names in the map are ok.
- *
- * PUBLIC METHODS
- * @method init Initialize the aPI
- * @method getTierlist Returns an array of objects with champions for one role
- * @method getCounters Returns an array of objects with counters of one champion
- */
 
 /**
  * @class Lolalytics -
@@ -34,11 +19,7 @@ class Lolalytics {
   /**
    * @method #getCountersURL
    * Returns the url for counters webpage
-   * @param {String} champion counters of this champion.
-   * @param {String} rank in this rank.
-   * @param {String} lane for this role.
-   * @param {String} vsLane against this role.
-   * @return {String} The url.
+   * @return {String} The url for (this champion, rank, lane, [vs this lane]) .
    */
   #getCountersURL(champion, rank, lane, vsLane = lane) {
     let str = `${this.#baseURL}${
@@ -51,9 +32,7 @@ class Lolalytics {
   /**
    * @method #getTierlistURL
    * Returns the url for the tierlist webpage
-   * @param {String} rank in this rank.
-   * @param {String} lane for this role.
-   * @return {String} The url.
+   * @return {String} The url for (this rank, and lane).
    */
   #getTierlistURL = function (rank = 'all', lane = 'main') {
     return `${this.#baseURL}tierlist/?${
@@ -154,8 +133,8 @@ class Lolalytics {
    * @async
    * @method getTierlist
    * Get a tier list from lolalytics website
-   * @param {String} rank in this rank.
-   * @param {String} lane for this role.
+   * @param {String} [rank] in this rank (default = 'all').
+   * @param {String} [lane] for this role (default = 'main').
    * @return {Promise<Array>} of champion objects.
    */
   async getTierlist(rank = 'all', lane = 'main') {
@@ -198,9 +177,9 @@ class Lolalytics {
    * @method getCounters
    * Get counters data from lolalytics website
    * @param {String} champion for this champion.
-   * @param {String} lane for this role.
-   * @param {String} rank in this rank.
-   * @param {String} vsLane versus this other role.
+   * @param {String} [rank] in this rank (default = 'all').
+   * @param {String} [lane] for this role (default = 'main').
+   * @param {String} [vsLane] versus this other role (default = 'lane').
    * @return {Promise<Array>} of champion objects.
    */
   async getCounters(champion, rank = 'all', lane = 'main', vsLane = lane) {

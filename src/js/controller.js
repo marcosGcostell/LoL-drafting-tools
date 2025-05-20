@@ -2,14 +2,14 @@
 // LOL Drafting tool
 
 //Importing from modules
-import Lolalytics from './lolalytics-api.js';
-import Riot from './riot-api.js';
+import Lolalytics from './model/lolalytics-api.js';
+import Riot from './model/riot-api.js';
 import {
   getLocalVersion,
   getLocalChampions,
   getChampionsList,
   saveChampionsData,
-} from './local-api.js';
+} from './model/server-storage.js';
 
 ///////////////////////////////////////
 // App state
