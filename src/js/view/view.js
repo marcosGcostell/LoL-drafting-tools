@@ -13,6 +13,7 @@ export default class View {
    * @todo Finish the implementation
    */
   render(data, render = true) {
+    console.log('Rendering the list');
     if (!data || (Array.isArray(data) && data.length === 0))
       return this.renderError();
 
@@ -23,6 +24,14 @@ export default class View {
 
     this._clear();
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
+  }
+
+  getInputs() {
+    return {
+      champion: document.getElementById('champion').value,
+      rank: document.getElementById('rank').value,
+      role: document.getElementById('role').value,
+    };
   }
 
   update(data) {}

@@ -164,6 +164,7 @@ class Lolalytics {
           winRatio: dataSection.children[1].textContent,
           pickRate: dataSection.children[2].textContent,
           banRate: dataSection.children[2].textContent,
+          img: '',
         };
       });
     } catch (err) {

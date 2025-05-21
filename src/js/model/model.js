@@ -11,7 +11,7 @@ import {
 // App state
 
 const lanes = ['main', 'top', 'jungle', 'middle', 'bottom', 'support'];
-let champions = {};
+
 export const state = {
   champions: {},
   tierList: [],
@@ -21,7 +21,7 @@ export const state = {
 ///////////////////////////////////////
 // Script
 
-export async function init() {
+export async function initAppData() {
   // Checks if updating the champion info is necesary
   // and gets the champion info
   const storedVersion = await getLocalVersion();
@@ -51,6 +51,41 @@ export async function init() {
     );
     console.log(Lolalytics?.championFolders);
   }
+}
+
+export async function getCounterList(champion, rank, role) {
+  state.counterList = await Lolalytics.getCounters(champion, rank, role);
+  addChampionIds(state.counterList);
+  addChampionImages(state.counterList);
+}
+
+export async function getTierList(rank, role) {
+  state.tierList = await Lolalytics.getTierlist(rank, role);
+  addChampionIds(state.tierList);
+  addChampionImages(state.tierList);
+}
+
+/////////////
+// TODO: All these formatting tasks should be in a class champion ??
+function getChampionByName(championName) {
+  const id = Object.keys(state.champions).find(
+    id => state.champions[id].name === championName
+  );
+  return state.champions[id];
+}
+
+function addChampionIds(championList) {
+  return championList.forEach(champion => {
+    state.champions[champion.name]
+      ? (champion.id = state.champions[champion.name].id)
+      : (champion.id = getChampionByName(champion.name).id);
+  });
+}
+function addChampionImages(championList) {
+  return championList.forEach(champion => {
+    if (state.champions[champion.id])
+      champion.img = state.champions[champion.id].img;
+  });
 }
 
 export const test = async function () {
