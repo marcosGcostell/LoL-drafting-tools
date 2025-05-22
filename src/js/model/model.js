@@ -53,20 +53,33 @@ export async function initAppData() {
   }
 }
 
-export async function getCounterList(champion, rank, role) {
+export async function getCounterList(champion, rank, role, sortedBy = '') {
   state.counterList = await Lolalytics.getCounters(champion, rank, role);
-  addChampionIds(state.counterList);
-  addChampionImages(state.counterList);
+  completeListData(state.counterList);
+
+  if (sortedBy) sortList(state.counterList, sortedBy);
 }
 
-export async function getTierList(rank, role) {
+export async function getTierList(rank, role, sortedBy = '') {
   state.tierList = await Lolalytics.getTierlist(rank, role);
-  addChampionIds(state.tierList);
-  addChampionImages(state.tierList);
+  completeListData(state.counterList);
+
+  if (sortedBy) sortList(state.tierList, sortedBy);
 }
+
+export const test = async function () {
+  const counters = await Lolalytics.getCounters('Lux', 'all', 'middle');
+  console.log(counters);
+
+  const tierList = await Lolalytics.getTierlist('all', 'middle');
+
+  const tierListSorted = tierList.toSorted((a, b) => b.pickRate - a.pickRate);
+  console.log(tierListSorted);
+};
 
 /////////////
 // TODO: All these formatting tasks should be in a class champion ??
+
 function getChampionByName(championName) {
   const id = Object.keys(state.champions).find(
     id => state.champions[id].name === championName
@@ -88,12 +101,12 @@ function addChampionImages(championList) {
   });
 }
 
-export const test = async function () {
-  const counters = await Lolalytics.getCounters('Lux', 'all', 'middle');
-  console.log(counters);
+function completeListData(list) {
+  addChampionIds(state.tierList);
+  addChampionImages(state.tierList);
+}
 
-  const tierList = await Lolalytics.getTierlist('all', 'middle');
-
-  const tierListSorted = tierList.toSorted((a, b) => b.pickRate - a.pickRate);
-  console.log(tierListSorted);
-};
+function sortList(list, property) {
+  list.sort((a, b) => b[property] - a[property]);
+  console.log(state[list]);
+}

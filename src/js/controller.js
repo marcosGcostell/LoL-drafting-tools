@@ -34,8 +34,8 @@ const tierlistHandler = async function () {
     // Get the input data
     const data = tierlistView.getInputs();
 
-    // Load the tierlist
-    await model.getTierList(data.rank, data.role);
+    // Load the tierlist (optional sorting parameter)
+    await model.getTierList(data.rank, data.role, 'pickRate');
 
     // Render the list
     tierlistView.render(model.state.tierList);

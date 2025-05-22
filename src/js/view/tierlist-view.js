@@ -18,12 +18,12 @@ class ListView extends View {
   _generateMarkup() {
     console.log(this._data);
     const header = `
-      <li class="counter-list">
-        <p class="data void header"></p>
-        <p class="data name header">Champion</p>
-        <p class="data header">Winratio</p>
-        <p class="data header">pick</p>
-        <p class="data header">ban</p>
+      <li class="row">
+        <p class="header void"></p>
+        <p class="header name">Champion</p>
+        <p class="header">Winratio</p>
+        <p class="header">pick</p>
+        <p class="header">ban</p>
       </li>
     `;
 
@@ -35,7 +35,7 @@ class ListView extends View {
 
   _generateItemMarkup(champion) {
     return `
-      <li class="counter-list">
+      <li class="row">
         <img src="${CHAMPION_PATH}${champion.img}" class="data thumbnail" />
         <p class="data name">${champion.name}</p>
         <p class="data">${champion.winRatio}%</p>

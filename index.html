@@ -12,54 +12,58 @@
   <body>
     <h1>League of Legends – Drafting Tool</h1>
     <main>
-      <div class="input-data counters">
-        <input
-          id="champion"
-          type="text"
-          class="input"
-          placeholder="Champion..."
-        />
-        <input
-          id="rank"
-          type="text"
-          class="input"
-          placeholder="Input rank..."
-          value=""
-        />
-        <input
-          id="role"
-          type="text"
-          class="input"
-          placeholder="Input role..."
-          value=""
-        />
-        <button class="input btn-counters">Get counters</button>
-        <button class="input btn-tierlist">Get tier list</button>
+      <div class="nav">
+        <span>
+          <input
+            id="champion"
+            type="text"
+            class="input"
+            placeholder="Champion..."
+          />
+          <input
+            id="rank"
+            type="text"
+            class="input"
+            placeholder="Input rank..."
+            value=""
+          />
+          <input
+            id="role"
+            type="text"
+            class="input"
+            placeholder="Input role..."
+            value=""
+          />
+        </span>
+        <span class="buttons">
+          <button class="btn btn-counters">Counters</button>
+          <button class="btn btn-tierlist">Tierlist</button>
+        </span>
       </div>
-      <div class="input-data">
+      <div class="list-container">
         <ul class="container">
-          <!-- <li class="counter-list">
-            <p class="data void header"></p>
-            <p class="data name header">Champion</p>
-            <p class="data header">Winratio</p>
-            <p class="data header">delta1</p>
-            <p class="data header">delta2</p>
+          <!-- <li class="row">
+            <p class="header void"></p>
+            <p class="header name header">Champion</p>
+            <p class="header">Winratio</p>
+            <p class="header">delta1</p>
+            <p class="header">delta2</p>
           </li>
-          <li class="counter-list">
+          <li class="row">
             <img src="src/img/champions/Aatrox.png" class="data thumbnail" />
             <p class="data name">Aatrox</p>
             <p class="data">50%</p>
             <p class="data">2.1</p>
             <p class="data">-0.5</p>
           </li>
-          <li class="counter-list">
-            <p class="data void header"></p>
-            <p class="data name header">Champion</p>
-            <p class="data header">Winratio</p>
-            <p class="data header">pick</p>
-            <p class="data header">ban</p>
+          <li class="row">
+            <p class="header void"></p>
+            <p class="header name header">Champion</p>
+            <p class="header">Winratio</p>
+            <p class="header">pick</p>
+            <p class="header">ban</p>
           </li>
-          <li class="counter-list">
+          <li class="row">
             <img src="src/img/champions/Aatrox.png" class="data thumbnail" />
             <p class="data name">Aatrox</p>
             <p class="data">50%</p>
