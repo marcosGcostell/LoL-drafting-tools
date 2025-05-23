@@ -1,0 +1,11 @@
+{
+  "name": "update-sever-data",
+  "version": "1.0.0",
+  "main": "update-db.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kuantik Software",
+  "license": "ISC"
+}

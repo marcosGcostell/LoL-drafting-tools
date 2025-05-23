@@ -1,0 +1,26 @@
+{
+  "main": {
+    "id": "main",
+    "name": "Main"
+  },
+  "top": {
+    "id": "top",
+    "name": "Top Lane"
+  },
+  "jungle": {
+    "id": "jungle",
+    "name": "Jungle"
+  },
+  "mid": {
+    "id": "middle",
+    "name": "Mid Lane"
+  },
+  "adc": {
+    "id": "bottom",
+    "name": "AD Carry"
+  },
+  "support": {
+    "id": "support",
+    "name": "Support"
+  }
+}
