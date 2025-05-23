@@ -49,5 +49,5 @@ async function init() {
   tierlistView.addHandlerTierlist(tierlistHandler);
   await model.initAppData();
 }
-await init();
+// await init();
 // model.test();
