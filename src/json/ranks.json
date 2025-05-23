@@ -1,26 +1,4 @@
 {
-  "list": [
-    "all",
-    "onetric",
-    "challenger",
-    "grandmaster",
-    "grandmaster_plus",
-    "master",
-    "master_plus",
-    "diamond",
-    "d2_plus",
-    "diamond_plus",
-    "emerald",
-    "emerald_plus",
-    "platinum",
-    "platinum_plus",
-    "gold",
-    "gold_plus",
-    "silver",
-    "bronze",
-    "iron",
-    "unranked"
-  ],
   "all": {
     "id": "all",
     "name": "All Ranks"

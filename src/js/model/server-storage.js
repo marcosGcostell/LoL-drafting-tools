@@ -63,10 +63,13 @@ export const getLocalChampions = async function () {
  */
 export const getChampionsList = function (champions) {
   const championList = [];
+  Object.keys(champions).forEach(champion =>
+    championList.push(champions[champion].name)
+  );
 
-  for (const champion in champions) {
-    championList.push(champions[champion].name);
-  }
+  // for (const champion in champions) {
+  //   championList.push(champions[champion].name);
+  // }
   return championList;
 };
 

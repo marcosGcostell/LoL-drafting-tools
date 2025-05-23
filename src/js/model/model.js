@@ -10,8 +10,6 @@ import {
 ///////////////////////////////////////
 // App state
 
-const lanes = ['main', 'top', 'jungle', 'middle', 'bottom', 'support'];
-
 export const state = {
   champions: {},
   tierList: [],
