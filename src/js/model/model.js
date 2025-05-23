@@ -1,17 +1,11 @@
 import Lolalytics from './lolalytics-api.js';
 import Riot from './riot-api.js';
-import {
-  getLocalVersion,
-  getLocalChampions,
-  getChampionsList,
-  saveChampionsData,
-} from './server-storage.js';
+import appData from './app-data.js';
 
 ///////////////////////////////////////
 // App state
 
 export const state = {
-  champions: {},
   tierList: [],
   counterList: [],
 };
@@ -19,35 +13,32 @@ export const state = {
 ///////////////////////////////////////
 // Script
 
-export async function initAppData() {
-  // Checks if updating the champion info is necesary
-  // and gets the champion info
-  const storedVersion = await getLocalVersion();
-  const version = await Riot.getLastGameVersion();
+export async function initApp() {
+  try {
+    // Checks if updating the champion info is necesary
+    // and gets the champion info
+    const version = await Riot.getLastGameVersion();
 
-  if (version === storedVersion) {
-    state.champions = await getLocalChampions();
-  } else {
-    state.champions = await Riot.updateDataFromServer();
-    // saveChampionsData(champions, version);
-  }
-  console.log(state.champions);
-  console.log(state.champions['Aatrox']);
+    if (version !== appData.version) {
+      const newChampions = await Riot.updateDataFromServer();
+      appData.updateAppData(version, newChampions);
+      // await appData.saveAppData();
+    }
+    console.log(appData.riotChampionData);
+    console.log(appData.riotChampionData[appData.riotChampionIds[15]]);
+    console.log(appData.riotChampionNames);
 
-  // Get the champion names list
-  const championList = getChampionsList(state.champions);
-  console.log(championList);
-
-  // Get the url for every champion in Lolalytics website
-  // Always wait before a request to lolalytics
-
-  if (await Lolalytics.init(championList)) {
-    console.log(
-      Lolalytics?.listIntegrity
-        ? 'Path list is OK'
-        : 'There is an error on the champion list'
-    );
-    console.log(Lolalytics?.championFolders);
+    // Get the url for every champion in Lolalytics website
+    if (await Lolalytics.init(appData.riotChampionNames)) {
+      console.log(
+        Lolalytics?.listIntegrity
+          ? 'Path list is OK'
+          : 'There is an error on the champion list'
+      );
+      console.log(Lolalytics?.championFolders);
+    }
+  } catch (error) {
+    throw error;
   }
 }
 
@@ -60,48 +51,31 @@ export async function getCounterList(champion, rank, role, sortedBy = '') {
 
 export async function getTierList(rank, role, sortedBy = '') {
   state.tierList = await Lolalytics.getTierlist(rank, role);
-  completeListData(state.counterList);
+  completeListData(state.tierList);
 
   if (sortedBy) sortList(state.tierList, sortedBy);
 }
 
-export const test = async function () {
-  const counters = await Lolalytics.getCounters('Lux', 'all', 'middle');
-  console.log(counters);
-
-  const tierList = await Lolalytics.getTierlist('all', 'middle');
-
-  const tierListSorted = tierList.toSorted((a, b) => b.pickRate - a.pickRate);
-  console.log(tierListSorted);
-};
-
 /////////////
-// TODO: All these formatting tasks should be in a class champion ??
-
-function getChampionByName(championName) {
-  const id = Object.keys(state.champions).find(
-    id => state.champions[id].name === championName
-  );
-  return state.champions[id];
-}
+// TODO: All these formatting tasks should be in a state class ??
 
 function addChampionIds(championList) {
   return championList.forEach(champion => {
-    state.champions[champion.name]
-      ? (champion.id = state.champions[champion.name].id)
-      : (champion.id = getChampionByName(champion.name).id);
+    appData.riotChampionData[champion.name]
+      ? (champion.id = appData.riotChampionData[champion.name].id)
+      : (champion.id = appData.getChampionByName(champion.name).id);
   });
 }
 function addChampionImages(championList) {
   return championList.forEach(champion => {
-    if (state.champions[champion.id])
-      champion.img = state.champions[champion.id].img;
+    if (appData.riotChampionData[champion.id])
+      champion.img = appData.riotChampionData[champion.id].img;
   });
 }
 
 function completeListData(list) {
-  addChampionIds(state.tierList);
-  addChampionImages(state.tierList);
+  addChampionIds(list);
+  addChampionImages(list);
 }
 
 function sortList(list, property) {

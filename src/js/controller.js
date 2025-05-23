@@ -23,7 +23,7 @@ const countersHandler = async function () {
 
     // Render the list
     countersView.render(model.state.counterList);
-  } catch (err) {
+  } catch (error) {
     countersView.renderError();
   }
 };
@@ -39,7 +39,7 @@ const tierlistHandler = async function () {
 
     // Render the list
     tierlistView.render(model.state.tierList);
-  } catch (err) {
+  } catch (error) {
     tierlistView.renderError();
   }
 };
@@ -47,7 +47,7 @@ const tierlistHandler = async function () {
 async function init() {
   countersView.addHandlerCounters(countersHandler);
   tierlistView.addHandlerTierlist(tierlistHandler);
-  await model.initAppData();
+  await model.initApp();
 }
-// await init();
-// model.test();
+
+await init();

@@ -15,10 +15,7 @@ class AppData {
   constructor(version, champions, roles, ranks) {
     this.ranks = ranks;
     this.roles = roles;
-    this.version = version;
-    this.riotChampionData = champions;
-    this.riotChampionIds = Object.keys(champions);
-    this.riotChampionNames = this.#getChampionNames();
+    this.updateAppData(version, champions);
   }
 
   // STATIC METHODS
@@ -77,6 +74,19 @@ class AppData {
 
   // PUBLIC METHODS
 
+  getChampionByName(championName) {
+    const idResult = this.riotChampionIds.find(
+      id => this.riotChampionData[id].name === championName
+    );
+    return this.riotChampionData[idResult];
+  }
+
+  updateAppData(version, champions) {
+    this.version = version;
+    this.riotChampionData = champions;
+    this.riotChampionIds = Object.keys(champions);
+    this.riotChampionNames = this.#getChampionNames();
+  }
   /**
    * @method saveAppData
    * Store the Riot data into a JSON file (node.js)
