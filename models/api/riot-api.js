@@ -84,7 +84,7 @@ class Riot {
         championName =>
           (championsData[championName] = {
             version: lolChampions[championName].version,
-            id: lolChampions[championName].id,
+            riotId: lolChampions[championName].id,
             key: lolChampions[championName].key,
             name: lolChampions[championName].name,
             img: lolChampions[championName].image.full,

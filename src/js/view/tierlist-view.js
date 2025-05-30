@@ -1,4 +1,4 @@
-import { CHAMPION_PATH } from '../common/config.js';
+import { IMG_SRC } from '../common/config.js';
 import View from './view.js';
 
 class ListView extends View {
@@ -36,7 +36,7 @@ class ListView extends View {
   _generateItemMarkup(champion) {
     return `
       <li class="row">
-        <img src="${CHAMPION_PATH}${champion.img}" class="data thumbnail" />
+        <img src="${IMG_SRC}${champion.img}" class="data thumbnail" />
         <p class="data name">${champion.name}</p>
         <p class="data">${champion.winRatio}%</p>
         <p class="data">${champion.pickRate}</p>

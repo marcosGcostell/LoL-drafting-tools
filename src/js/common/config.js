@@ -6,7 +6,8 @@ export const PROXY_URL = 'https://cors-anywhere.herokuapp.com/';
 
 // Pahts of resources (relative from index.html)
 export const ICONS = './src/img/icons/icons.svg';
-export const CHAMPION_PATH = './src/img/champions/';
+export const IMG_SRC =
+  'https://ddragon.leagueoflegends.com/cdn/15.11.1/img/champion/';
 export const LANE_PATH = './src/img/lanes/';
 export const RANK_PATH = './src/img/ranks/';
 export const RIOT_DATA_JSON = './src/json/riot-data.json';

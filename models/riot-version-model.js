@@ -8,8 +8,8 @@ const versionSchema = new mongoose.Schema({
     trim: true,
   },
   createdAt: {
-    type: Number,
-    default: Date.now(),
+    type: String,
+    default: new Date().toISOString(),
   },
 });
 

@@ -1,3 +1,5 @@
+import { JSDOM } from 'jsdom';
+
 import { MIN_DELAY, MAX_DELAY } from '../common/config.js';
 import { PROXY_ON, PROXY_URL } from '../common/config.js';
 import { getRandomNumber, wait } from '../common/helpers.js';
@@ -10,21 +12,17 @@ import { getRandomNumber, wait } from '../common/helpers.js';
  */
 class Lolalytics {
   #baseURL = 'https://lolalytics.com/lol/';
-  #isInitialized = false;
-  championFolders;
   listIntegrity;
 
   // PRIVATE METHODS
 
   /**
    * @method #getCountersURL
-   * Returns the url for counters webpage
+   * Returns the url for counters webpage. champion should be Lolalytics folder name.
    * @return {String} The url for (this champion, rank, lane, [vs this lane]) .
    */
   #getCountersURL(champion, rank, lane, vsLane = lane) {
-    let str = `${this.#baseURL}${
-      this.championFolders[champion]
-    }/counters/?lane=${lane}&tier=${rank}`;
+    let str = `${this.#baseURL}${champion}/counters/?lane=${lane}&tier=${rank}`;
     if (vsLane !== 'main' && vsLane !== lane) str += `&vslane=${vsLane}`;
     return str;
   }
@@ -53,34 +51,41 @@ class Lolalytics {
       await wait(getRandomNumber(MIN_DELAY, MAX_DELAY));
       const response = await fetch(`${PROXY_ON ? PROXY_URL : ''}${url}`);
       const html = await response.text();
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(html, 'text/html');
+      const dom = new JSDOM(html);
 
-      return doc;
+      return dom.window.document;
+
+      // This is with DOMParser of browser DOM API. Doesn't work in node.js
+      // const parser = new DOMParser();
+      // const doc = parser.parseFromString(html, 'text/html');
     } catch (err) {
       console.error(err);
       throw err;
     }
   }
 
+  // PUBLIC METHODS
+
   /**
    * @async
    * @method #getChampionFolders
    * Get the champion folders for lolalytics website urls
-   * @param {Array<String>} officialRiotChampionList list of champion names.
+   * @param {Array<String>} riotIds list of Riot champion ids.
+   * @param {Array<String>} riotNames list of Riot champion names.
+   * @return {Array<Object>} riotIds(keys) LolalyticsFolders(values).
    */
-  async #getChampionFolders(officialRiotChampionList) {
+  async getChampionFolders(riotIds, riotNames) {
     try {
       // Scrape the lolalytics web page
-      const htmlData = await this.#scrapeWebPage(
+      const virtualDomDocument = await this.#scrapeWebPage(
         `${this.#baseURL}aatrox/counters/`
       );
 
       // Select the table where the champion information is (HTMLCollection)
       // convert it to an Array and filter only champions (elements with children)
       const championsGrid = Array.from(
-        htmlData.getElementsByTagName('main')[0].children[5].children[1]
-          .firstElementChild.firstElementChild.children
+        virtualDomDocument.getElementsByTagName('main')[0].children[5]
+          .children[1].firstElementChild.firstElementChild.children
       ).filter(element => element.children.length);
 
       // Store an array of name and path pairs
@@ -96,36 +101,18 @@ class Lolalytics {
 
       // All names have to exist in the same way in Riot List
       this.listIntegrity = entries.reduce(
-        (integrity, elem) =>
-          officialRiotChampionList.includes(elem[0]) && integrity,
+        (integrity, elem) => riotNames.includes(elem[0]) && integrity,
         true
       );
 
-      // Store the folders data in the property
-      this.championFolders = Object.fromEntries(entries);
+      // Replace the Riot names for Riot Ids
+      // And return the array converted to a list of objects
+      return Object.fromEntries(
+        entries.map(entry => [riotIds[riotNames.indexOf(entry[0])], entry[1]])
+      );
     } catch (err) {
       console.error(err);
       throw err;
-    }
-  }
-
-  // PUBLIC METHODS
-
-  /**
-   * @async
-   * @method init
-   * Initialize base data from Lolalytics servers
-   * @param {Array<String>} officialRiotChampionList list of all champions.
-   * @return {Boolean} Success or not
-   */
-  async init(officialRiotChampionList) {
-    try {
-      await this.#getChampionFolders(officialRiotChampionList);
-      this.#isInitialized = true;
-      return true;
-    } catch (err) {
-      console.error(err);
-      return null;
     }
   }
 
@@ -138,19 +125,17 @@ class Lolalytics {
    * @return {Promise<Array>} of champion objects.
    */
   async getTierlist(rank = 'all', lane = 'main') {
-    if (!this.#isInitialized)
-      throw new Error('Lolalytics API is not initialized');
     try {
       // Scrape the lolalytics web page
-      const htmlData = await this.#scrapeWebPage(
+      const virtualDomDocument = await this.#scrapeWebPage(
         this.#getTierlistURL(rank, lane)
       );
 
       // Select the table where the champion information is (HTMLCollection)
       // convert it to an Array and filter only champions (elements with children)
       const championsGrid = Array.from(
-        htmlData.getElementsByTagName('main')[0].children[5].children[1]
-          .children
+        virtualDomDocument.getElementsByTagName('main')[0].children[5]
+          .children[1].children
       ).filter(element => element.children.length);
 
       // return an array of objects of some selected data
@@ -184,19 +169,17 @@ class Lolalytics {
    * @return {Promise<Array>} of champion objects.
    */
   async getCounters(champion, rank = 'all', lane = 'main', vsLane = lane) {
-    if (!this.#isInitialized)
-      throw new Error('Lolalytics API is not initialized');
     try {
       // Scrape the lolalytics web page
-      const htmlData = await this.#scrapeWebPage(
+      const virtualDomDocument = await this.#scrapeWebPage(
         this.#getCountersURL(champion, rank, lane, vsLane)
       );
 
       // Select the table where the champion information is (HTMLCollection)
       // convert it to an Array and filter only the <span> elements
       const championsGrid = Array.from(
-        htmlData.getElementsByTagName('main')[0].children[5].firstElementChild
-          .children[1].children
+        virtualDomDocument.getElementsByTagName('main')[0].children[5]
+          .firstElementChild.children[1].children
       ).filter(element => element.tagName === 'SPAN');
 
       // return an array of objects of some selected data
