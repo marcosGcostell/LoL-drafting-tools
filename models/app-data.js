@@ -1,14 +1,5 @@
-import { TIME_BEFORE_CHECK } from './common/config.js';
 import Version from './riot-version-model.js';
 import Champion from './riot-champion-model.js';
-
-export const hasLocalVersionExpired = version => {
-  // Check version last updated timestamp
-  const timeElapsed =
-    (Date.now() - Date.parse(version.createdAt)) / (3600 * 1000);
-  console.log(`Time elasped since last backup: ${timeElapsed}`);
-  return timeElapsed > TIME_BEFORE_CHECK;
-};
 
 export const getLocalVersion = async () => {
   const [version] = await Version.find();

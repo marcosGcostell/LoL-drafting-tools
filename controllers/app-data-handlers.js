@@ -1,6 +1,7 @@
 import Riot from '../models/api/riot-api.js';
 import Lolalytics from '../models/api/lolalytics-api.js';
 import * as Data from '../models/app-data.js';
+import { hasLocalVersionExpired } from '../models/common/helpers.js';
 
 // Only for reseting stored version and force to update
 import Version from '../models/riot-version-model.js';
@@ -9,18 +10,18 @@ export const getChampions = async (req, res) => {
   try {
     console.log('Getting champions...');
     // FIXME Create a version to init the database. Delete after created
-    // await Version.deleteMany();
-    // await Version.create({
-    //   id: '15.10.1',
-    //   createdAt: '1970-01-01T00:00:00Z',
-    // });
+    await Version.deleteMany();
+    await Version.create({
+      id: '15.10.1',
+      createdAt: '1970-01-01T00:00:00Z',
+    });
 
     let nameList = [];
     let idList = [];
     let localVersion = await Data.getLocalVersion();
 
     // Checks if the local version was updated recently
-    if (Data.hasLocalVersionExpired(localVersion)) {
+    if (hasLocalVersionExpired(localVersion.createdAt)) {
       console.log('Version backup expired!');
       const riotVersion = await Riot.getLastGameVersion();
 
@@ -40,7 +41,6 @@ export const getChampions = async (req, res) => {
         }
 
         idList.forEach(id => (champions[id].id = folders[id]));
-        console.log(champions);
 
         // Save data to the database
         localVersion = await Data.saveVersion(riotVersion);

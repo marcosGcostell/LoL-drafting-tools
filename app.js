@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import morgan from 'morgan';
 
 import appDataRouter from './routes/app-data-routes.js';
+import tierlistRouter from './routes/tierlist-routes.js';
 import counterRouter from './routes/counter-routes.js';
 
 dotenv.config({ path: './config.env' });
@@ -29,6 +30,7 @@ app.use((req, res, next) => {
 
 // 2) ROUTES
 app.use('/api/v1/app-data', appDataRouter);
+app.use('/api/v1/tierlist', tierlistRouter);
 // app.use('/api/v1/counters', counterRouter);
 
 export default app;

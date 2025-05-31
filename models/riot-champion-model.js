@@ -1,4 +1,4 @@
-import mongoose, { version } from 'mongoose';
+import mongoose from 'mongoose';
 
 const championSchema = new mongoose.Schema({
   id: {
