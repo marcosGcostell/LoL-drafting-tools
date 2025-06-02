@@ -45,7 +45,6 @@ const saveTierlist = async (rank, lane, tierlist) => {
       tierlist,
     };
 
-    // BUG Don't save if there is a doc
     await Tierlist.create(data);
     console.log('Tierlist saved! ✅');
     return data;
@@ -56,12 +55,6 @@ const saveTierlist = async (rank, lane, tierlist) => {
 
 export const getTierlist = async (req, res) => {
   try {
-    // TODO
-    // 1) get the data from lolalytics
-    // 2) save the query as cached in database
-    // 3) check before if there is a cached version in database
-    // 4) sorting functionality
-
     let tierlist;
     const queryObj = { ...qs.parse(req.query) };
     const data = await getTierlistFromDb(queryObj);

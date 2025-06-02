@@ -168,7 +168,7 @@ class Lolalytics {
    * @param {String} [vsLane] versus this other role (default = 'lane').
    * @return {Promise<Array>} of champion objects.
    */
-  async getCounters(champion, rank = 'all', lane = 'main', vsLane = lane) {
+  async getCounters(champion, lane, rank = 'all', vsLane = lane) {
     try {
       // Scrape the lolalytics web page
       const virtualDomDocument = await this.#scrapeWebPage(

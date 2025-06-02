@@ -31,6 +31,6 @@ app.use((req, res, next) => {
 // 2) ROUTES
 app.use('/api/v1/app-data', appDataRouter);
 app.use('/api/v1/tierlist', tierlistRouter);
-// app.use('/api/v1/counters', counterRouter);
+app.use('/api/v1/counters', counterRouter);
 
 export default app;
