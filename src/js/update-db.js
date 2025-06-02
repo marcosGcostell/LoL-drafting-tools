@@ -1,11 +1,11 @@
 // app.mjs
 import { writeFile, readFile } from 'fs/promises';
 import { resolve } from 'path';
-import Riot from './src/js/model/riot-api.js';
-import { RIOT_DATA_JSON } from './src/js/common/config.js';
-import { JSON_CHAMPIONS } from './src/js/common/config.js';
-import { riotLolRanks } from './src/js/common/config.js';
-import { riotLolRoles } from './src/js/common/config.js';
+import Riot from './model/riot-api.js';
+import { RIOT_DATA_JSON } from './common/config.js';
+import { JSON_CHAMPIONS } from './common/config.js';
+import { riotLolRanks } from './common/config.js';
+import { riotLolRoles } from './common/config.js';
 
 const riotDataPath = resolve(RIOT_DATA_JSON);
 const championsPath = resolve(JSON_CHAMPIONS);

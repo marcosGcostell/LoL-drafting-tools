@@ -1,12 +1,11 @@
-import Lolalytics from './lolalytics-api.js';
-import Riot from './riot-api.js';
 import appData from './app-data.js';
+import { LOCAL_API, TIERLIST, COUNTERS } from '../common/config.js';
 
 ///////////////////////////////////////
 // App state
 
 export const state = {
-  tierList: [],
+  tierlist: [],
   counterList: [],
 };
 
@@ -15,45 +14,44 @@ export const state = {
 
 export async function initApp() {
   try {
-    // Checks if updating the champion info is necesary
-    // and gets the champion info
-    const version = await Riot.getLastGameVersion();
-
-    if (version !== appData.version) {
-      const newChampions = await Riot.updateDataFromServer();
-      appData.updateAppData(version, newChampions);
-      // await appData.saveAppData();
-    }
-    console.log(appData.riotChampionData);
-    console.log(appData.riotChampionData[appData.riotChampionIds[15]]);
-    console.log(appData.riotChampionNames);
-
-    // Get the url for every champion in Lolalytics website
-    if (await Lolalytics.init(appData.riotChampionNames)) {
-      console.log(
-        Lolalytics?.listIntegrity
-          ? 'Path list is OK'
-          : 'There is an error on the champion list'
-      );
-      console.log(Lolalytics?.championFolders);
-    }
+    // TODO This function may do the AppData.build() task
+    // Now an instance is imported as a Singleton
+    // but maybe it should be a global variable that can be reset here
+    console.log('Initializing App...');
   } catch (error) {
     throw error;
   }
 }
 
 export async function getCounterList(champion, rank, role, sortedBy = '') {
-  state.counterList = await Lolalytics.getCounters(champion, rank, role);
+  // API works for lolalytics folders for champion names
+  const folder = appData.champions[champion].id;
+  const query = `?champion=${folder}&lane=${role}&rank=${rank}`;
+  const response = await fetch(`${LOCAL_API}${COUNTERS}${query}`);
+  const { data } = await response.json();
+  state.counterList = data.counterList;
   completeListData(state.counterList);
 
   if (sortedBy) sortList(state.counterList, sortedBy);
 }
 
 export async function getTierList(rank, role, sortedBy = '') {
-  state.tierList = await Lolalytics.getTierlist(rank, role);
-  completeListData(state.tierList);
+  try {
+    const query = `?lane=${role}&rank=${rank}${
+      sortedBy ? `&sort=${sortedBy}` : ''
+    }`;
+    console.log(`${LOCAL_API}${TIERLIST}${query}`);
+    const response = await fetch(`${LOCAL_API}${TIERLIST}${query}`);
 
-  if (sortedBy) sortList(state.tierList, sortedBy);
+    const { data } = await response.json();
+    console.log(data.tierlist);
+    state.tierlist = data.tierlist;
+    completeListData(state.tierlist);
+
+    if (sortedBy) sortList(state.tierlist, sortedBy);
+  } catch (error) {
+    throw error;
+  }
 }
 
 /////////////
@@ -61,15 +59,15 @@ export async function getTierList(rank, role, sortedBy = '') {
 
 function addChampionIds(championList) {
   return championList.forEach(champion => {
-    appData.riotChampionData[champion.name]
-      ? (champion.id = appData.riotChampionData[champion.name].id)
-      : (champion.id = appData.getChampionByName(champion.name).id);
+    appData.champions[champion.name]
+      ? (champion.id = appData.champions[champion.name].riotId)
+      : (champion.id = appData.getChampionByName(champion.name).riotId);
   });
 }
 function addChampionImages(championList) {
   return championList.forEach(champion => {
-    if (appData.riotChampionData[champion.id])
-      champion.img = appData.riotChampionData[champion.id].img;
+    if (appData.champions[champion.id])
+      champion.img = appData.champions[champion.id].img;
   });
 }
 
