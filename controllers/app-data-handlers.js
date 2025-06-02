@@ -5,36 +5,6 @@ import Version from '../models/riot-version-model.js';
 import Champion from '../models/riot-champion-model.js';
 import { hasLocalVersionExpired } from '../models/common/helpers.js';
 
-const saveVersion = async version => {
-  try {
-    const data = {
-      id: version,
-      createdAt: new Date().toISOString(),
-    };
-    console.log(
-      `Version to be saved in database: ${data.id} ${data.createdAt}`
-    );
-    await Version.deleteMany();
-    await Version.create(data);
-    console.log('Version saved! ✅');
-    return data;
-  } catch (err) {
-    throw err;
-  }
-};
-
-const saveChampions = async champions => {
-  try {
-    console.log('Saving champions to database...');
-    const championIds = Object.keys(champions);
-    const data = championIds.map(id => champions[id]);
-    await Champion.deleteMany();
-    await Champion.create(data);
-  } catch (err) {
-    throw err;
-  }
-};
-
 export const checkGameVersions = async (req, res, next) => {
   try {
     const [version] = await Version.find();
@@ -66,7 +36,7 @@ export const updateDatabase = async (req, res, next) => {
     // Add the lolalytics folder for each champion
     const folders = await Lolalytics.getChampionFolders(idList, nameList);
     if (!Lolalytics.listIntegrity) {
-      // TODO this error should be handled.
+      // TODO this error should be handled, maybe with a folder list backup
       // Id's tight coupled with lolalytics website
       console.log('Lolalytics folder list has errors! 🧨');
     }
@@ -74,8 +44,18 @@ export const updateDatabase = async (req, res, next) => {
     idList.forEach(id => (champions[id].id = folders[id]));
 
     // Save data to the database
-    await saveVersion(req.version);
-    await saveChampions(champions);
+    console.log('Saving data to database...');
+    await Version.deleteMany();
+    await Version.create({
+      id: req.version,
+      createdAt: new Date().toISOString(),
+    });
+    console.log(`Version saved. id: ${req.version} ✅`);
+
+    const data = idList.map(id => champions[id]);
+    await Champion.deleteMany();
+    await Champion.create(data);
+
     next();
   } catch (err) {
     throw err;
@@ -84,14 +64,6 @@ export const updateDatabase = async (req, res, next) => {
 
 export const getChampions = async (req, res) => {
   try {
-    console.log('Getting champions...');
-    // XXX Create a version to init the database. Delete after created
-    // await Version.deleteMany();
-    // await Version.create({
-    //   id: '15.10.1',
-    //   createdAt: '1970-01-01T00:00:00Z',
-    // });
-
     // Get the data from database
     console.log('Getting champions from database...');
     const champions = {};
