@@ -6,7 +6,13 @@ const router = express.Router();
 
 // router.route('/versions').get(appDataHandlers.getVersion);
 
-router.route('/').get(appDataHandlers.getChampions);
+router
+  .route('/')
+  .get(
+    appDataHandlers.checkGameVersions,
+    appDataHandlers.updateDatabase,
+    appDataHandlers.getChampions
+  );
 
 // router.route('/:id').get(appDataHandlers.getChampionById);
 
