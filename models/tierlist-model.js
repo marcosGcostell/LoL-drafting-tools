@@ -15,10 +15,7 @@ const tierlistSchema = new mongoose.Schema({
   },
   tierlist: [
     {
-      name: {
-        type: String,
-        unique: false,
-      },
+      name: String,
       winRatio: Number,
       pickRate: Number,
       banRate: Number,
@@ -26,4 +23,4 @@ const tierlistSchema = new mongoose.Schema({
   ],
 });
 
-export default mongoose.model('Tierlists', tierlistSchema);
+export default mongoose.model('Tierlist', tierlistSchema);

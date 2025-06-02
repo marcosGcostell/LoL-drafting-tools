@@ -8,26 +8,24 @@ const getTierlistFromDb = async queryObj => {
   try {
     console.log('Getting tierlist from database...');
 
-    // Select the tierlists saved that matches the query
+    // Select the stored tierlists that matches the query
     const tierlists = await Tierlist.find(queryObj);
-    console.log('DB tierlists: ', tierlists);
-
-    // If there is no one, exit
     if (!tierlists.length) return null;
 
-    // Delete the expired tierlists
-    tierlists.forEach(async tierlist => {
-      console.log(hasLocalVersionExpired(tierlist.createdAt));
-      if (hasLocalVersionExpired(tierlist.createdAt)) {
-        console.log(tierlist._id);
-        // Tierlist.deleteOne({ createdAt: tierlist.createdAt });
-        await Tierlist.findByIdAndDelete(tierlist._id);
-      }
-    });
+    // Delete expired tierlists. Using map to return promises and await them
+    // With forEach the function keeps going even awaiting findById inside
+    const numberOfTierlists = tierlists.length;
+    const expiredTierlists = tierlists.filter(tierlist =>
+      hasLocalVersionExpired(tierlist.createdAt)
+    );
+    await Promise.all(
+      expiredTierlists.map(tierlist => Tierlist.findByIdAndDelete(tierlist._id))
+    );
+    if (!(numberOfTierlists - expiredTierlists.length)) return null;
 
     // Select one after deleting expired ones
     let query = Tierlist.findOne(queryObj);
-    query = query.select('-__v -_id');
+    query = query.select('-__v -_id -tierlist._id');
     const tierlist = await query;
 
     // Return the tierlist if there is any previous document
