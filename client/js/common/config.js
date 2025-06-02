@@ -1,19 +1,15 @@
-// Constants for API connection to Lolalyttics Site
-export const MIN_DELAY = 0.7;
-export const MAX_DELAY = 2.2;
-export const PROXY_ON = false;
-export const PROXY_URL = 'https://cors-anywhere.herokuapp.com/';
+// Constants for local API connection
+export const LOCAL_API = 'http://127.0.0.1:3000/api/v1/';
+export const APP_DATA = 'app-data';
+export const TIERLIST = 'tierlist';
+export const COUNTERS = 'counters';
 
 // Pahts of resources (relative from index.html)
-export const ICONS = './src/img/icons/icons.svg';
-export const CHAMPION_PATH = './src/img/champions/';
-export const LANE_PATH = './src/img/lanes/';
-export const RANK_PATH = './src/img/ranks/';
-export const RIOT_DATA_JSON = './src/json/riot-data.json';
-export const JSON_RANKS = './src/json/ranks.json';
-export const JSON_ROLES = './src/json/roles.json';
-export const JSON_VERSION = './src/json/lol-version.json';
-export const JSON_CHAMPIONS = './src/json/champions.json';
+export const ICONS = './img/icons/icons.svg';
+export const IMG_SRC =
+  'https://ddragon.leagueoflegends.com/cdn/15.11.1/img/champion/';
+export const LANE_PATH = './img/lanes/';
+export const RANK_PATH = './img/ranks/';
 
 // Config parameters
 export const PERCENT_LIMIT = 1.5;

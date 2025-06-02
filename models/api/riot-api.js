@@ -1,3 +1,5 @@
+import { RIOT_DATA_DRAGON } from '../common/config.js';
+
 ///////////////////////////////////////
 // Riot Class
 /**
@@ -14,7 +16,7 @@
  */
 
 class Riot {
-  #dataDragon = 'https://ddragon.leagueoflegends.com/';
+  #dataDragon = RIOT_DATA_DRAGON;
   #locale = 'en_US';
 
   // PRIVATE METHODS
@@ -82,7 +84,7 @@ class Riot {
         championName =>
           (championsData[championName] = {
             version: lolChampions[championName].version,
-            id: lolChampions[championName].id,
+            riotId: lolChampions[championName].id,
             key: lolChampions[championName].key,
             name: lolChampions[championName].name,
             img: lolChampions[championName].image.full,

@@ -1,11 +1,21 @@
 {
-  "name": "update-sever-data",
+  "name": "lol-drafter",
   "version": "1.0.0",
-  "main": "update-db.js",
+  "description": "Tool for analize and help choosing champions in League of Legends",
+  "main": "server.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon server.js",
+    "start:prod": "set NODE_ENV=production&&nodemon server.js"
   },
   "author": "Kuantik Software",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "jsdom": "^26.1.0",
+    "mongoose": "^8.15.1",
+    "morgan": "^1.10.0",
+    "qs": "^6.14.0"
+  }
 }
