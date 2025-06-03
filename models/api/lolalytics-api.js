@@ -21,7 +21,7 @@ class Lolalytics {
    * Returns the url for counters webpage. champion should be Lolalytics folder name.
    * @return {String} The url for (this champion, rank, lane, [vs this lane]) .
    */
-  #getCountersURL(champion, rank, lane, vsLane = lane) {
+  #getCountersURL(champion, lane, rank, vsLane = lane) {
     let str = `${this.#baseURL}${champion}/counters/?lane=${lane}&tier=${rank}`;
     if (vsLane !== 'main' && vsLane !== lane) str += `&vslane=${vsLane}`;
     return str;
@@ -32,7 +32,7 @@ class Lolalytics {
    * Returns the url for the tierlist webpage
    * @return {String} The url for (this rank, and lane).
    */
-  #getTierlistURL = function (rank = 'all', lane = 'main') {
+  #getTierlistURL = function (lane = 'main', rank = 'all') {
     return `${this.#baseURL}tierlist/?${
       lane !== 'main' ? `lane=${lane}&` : ''
     }tier=${rank}&view=grid`;
@@ -124,11 +124,11 @@ class Lolalytics {
    * @param {String} [lane] for this role (default = 'main').
    * @return {Promise<Array>} of champion objects.
    */
-  async getTierlist(rank = 'all', lane = 'main') {
+  async getTierlist(lane = 'main', rank = 'all') {
     try {
       // Scrape the lolalytics web page
       const virtualDomDocument = await this.#scrapeWebPage(
-        this.#getTierlistURL(rank, lane)
+        this.#getTierlistURL(lane, rank)
       );
 
       // Select the table where the champion information is (HTMLCollection)
@@ -172,7 +172,7 @@ class Lolalytics {
     try {
       // Scrape the lolalytics web page
       const virtualDomDocument = await this.#scrapeWebPage(
-        this.#getCountersURL(champion, rank, lane, vsLane)
+        this.#getCountersURL(champion, lane, rank, vsLane)
       );
 
       // Select the table where the champion information is (HTMLCollection)

@@ -13,7 +13,7 @@ const tierlistSchema = new mongoose.Schema({
     type: String,
     default: new Date().toISOString(),
   },
-  tierlist: [
+  list: [
     {
       name: String,
       winRatio: Number,

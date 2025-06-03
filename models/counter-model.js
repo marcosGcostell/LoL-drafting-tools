@@ -21,7 +21,7 @@ const counterListSchema = new mongoose.Schema({
     type: String,
     default: new Date().toISOString(),
   },
-  counterList: [
+  list: [
     {
       name: String,
       winRatio: Number,

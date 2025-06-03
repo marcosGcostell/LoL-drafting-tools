@@ -1,48 +1,14 @@
-import qs from 'qs';
-
 import Lolalytics from '../models/api/lolalytics-api.js';
 import Tierlist from '../models/tierlist-model.js';
-import { hasLocalVersionExpired } from '../models/common/helpers.js';
+import { getListFromDb } from './common-list-handlers.js';
 
-const getTierlistFromDb = async queryObj => {
-  try {
-    console.log('Getting tierlist from database...');
-
-    // Select the stored tierlists that matches the query
-    const tierlists = await Tierlist.find(queryObj);
-    if (!tierlists.length) return null;
-
-    // Delete expired tierlists. Using map to return promises and await them
-    // With forEach the function keeps going even awaiting findById inside
-    const numberOfTierlists = tierlists.length;
-    const expiredTierlists = tierlists.filter(tierlist =>
-      hasLocalVersionExpired(tierlist.createdAt)
-    );
-    await Promise.all(
-      expiredTierlists.map(tierlist => Tierlist.findByIdAndDelete(tierlist._id))
-    );
-    if (!(numberOfTierlists - expiredTierlists.length)) return null;
-
-    // Select one after deleting expired ones
-    let query = Tierlist.findOne(queryObj);
-    query = query.select('-__v -_id -tierlist._id');
-    const tierlist = await query;
-
-    // Return the tierlist if there is any previous document
-    return !Object.is(tierlist, {}) ? tierlist : null;
-  } catch (err) {
-    console.log(err.message);
-    throw err;
-  }
-};
-
-const saveTierlist = async (rank, lane, tierlist) => {
+const saveTierlist = async (lane, rank, list) => {
   try {
     const data = {
       rank,
       lane,
       createdAt: new Date().toISOString(),
-      tierlist,
+      list,
     };
 
     await Tierlist.create(data);
@@ -56,15 +22,18 @@ const saveTierlist = async (rank, lane, tierlist) => {
 export const getTierlist = async (req, res) => {
   try {
     let tierlist;
-    const queryObj = { ...qs.parse(req.query) };
-    const data = await getTierlistFromDb(queryObj);
+    const queryObj = {
+      lane: req.lane,
+      rank: req.rank,
+    };
+    console.log(queryObj);
+    const data = await getListFromDb(Tierlist, queryObj);
 
     if (!data) {
-      const { rank, lane } = queryObj;
-      tierlist = await Lolalytics.getTierlist(rank, lane);
-      saveTierlist(rank, lane, tierlist);
+      tierlist = await Lolalytics.getTierlist(req.lane, req.rank);
+      saveTierlist(req.lane, req.rank, tierlist);
     } else {
-      tierlist = data.tierlist;
+      tierlist = data.list;
     }
 
     // Send response

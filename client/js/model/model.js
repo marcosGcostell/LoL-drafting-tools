@@ -23,11 +23,19 @@ export async function initApp() {
   }
 }
 
-export async function getCounterList(champion, rank, role, sortedBy = '') {
+export async function getCounterList(
+  champion,
+  role,
+  rank,
+  vslane,
+  sortedBy = ''
+) {
   // API works for lolalytics folders for champion names
   const folder = appData.champions[champion].id;
-  const query = `?champion=${folder}&lane=${role}&rank=${rank}`;
-  const response = await fetch(`${LOCAL_API}${COUNTERS}${query}`);
+  const query = `?lane=${role}&rank=${rank}${
+    vslane ? `&vslane=${vslane}` : ''
+  }`;
+  const response = await fetch(`${LOCAL_API}${COUNTERS}/${folder}${query}`);
   const { data } = await response.json();
   state.counterList = data.counterList;
   completeListData(state.counterList);
@@ -35,7 +43,7 @@ export async function getCounterList(champion, rank, role, sortedBy = '') {
   if (sortedBy) sortList(state.counterList, sortedBy);
 }
 
-export async function getTierList(rank, role, sortedBy = '') {
+export async function getTierList(role, rank, sortedBy = '') {
   try {
     const query = `?lane=${role}&rank=${rank}${
       sortedBy ? `&sort=${sortedBy}` : ''
