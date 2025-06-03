@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -19,6 +20,11 @@ const app = express();
 // 1) MIDDLEWARES
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
+  app.use(cors());
+} else {
+  // app.use(cors({
+  //   origin: 'https://apiurl.com';
+  // }))
 }
 app.use(express.json());
 // app.use(express.static(`${__dirname}/public`));

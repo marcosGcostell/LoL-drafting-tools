@@ -3,11 +3,18 @@ import Lolalytics from '../models/api/lolalytics-api.js';
 
 import Version from '../models/riot-version-model.js';
 import Champion from '../models/riot-champion-model.js';
+import RiotStatic from '../models/riot-static-model.js';
 import { hasLocalVersionExpired } from '../models/common/helpers.js';
 
 export const checkGameVersions = async (req, res, next) => {
   try {
     const [version] = await Version.find();
+    if (!version) {
+      req.version = await Riot.getLastGameVersion();
+      req.update = true;
+      return next();
+    }
+
     req.version = version.id;
     req.update = false;
     console.log(`Version readed from database: ${version.id} ✅`);
@@ -77,14 +84,20 @@ export const getChampions = async (req, res) => {
 
     console.log(`${idList.length} Champions read from database ✅`);
 
+    const [staticData] = await RiotStatic.find();
+    console.log(staticData);
+
     // Send response
     res.status(200).json({
       status: 'success',
       results: idList.length,
       data: {
+        version: req.version,
         champions,
         idList,
         nameList,
+        roles: staticData.roles,
+        ranks: staticData.ranks,
       },
     });
   } catch (err) {
