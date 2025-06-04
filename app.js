@@ -2,13 +2,16 @@ import express from 'express';
 import cors from 'cors';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
-
 import dotenv from 'dotenv';
 import morgan from 'morgan';
 
 import appDataRouter from './routes/app-data-routes.js';
 import tierlistRouter from './routes/tierlist-routes.js';
 import counterRouter from './routes/counter-routes.js';
+
+// 0) Reset the static riot data from hard coded
+// import resetStaticData from './models/riot-static-reset-data.js';
+// resetStaticData();
 
 dotenv.config({ path: './config.env' });
 
@@ -17,7 +20,7 @@ const __dirname = dirname(__filename);
 
 const app = express();
 
-// 1) MIDDLEWARES
+// MIDDLEWARES
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
   app.use(cors());
@@ -34,7 +37,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// 2) ROUTES
+// ROUTES
 app.use('/api/v1/app-data', appDataRouter);
 app.use('/api/v1/tierlist', tierlistRouter);
 app.use('/api/v1/counters', counterRouter);

@@ -3,7 +3,7 @@ import Lolalytics from '../models/api/lolalytics-api.js';
 
 import Version from '../models/riot-version-model.js';
 import Champion from '../models/riot-champion-model.js';
-import RiotStatic from '../models/riot-static-model.js';
+import { riotRole, riotRank } from '../models/riot-static-model.js';
 import { hasLocalVersionExpired } from '../models/common/helpers.js';
 
 export const checkGameVersions = async (req, res, next) => {
@@ -84,8 +84,16 @@ export const getChampions = async (req, res) => {
 
     console.log(`${idList.length} Champions read from database ✅`);
 
-    const [staticData] = await RiotStatic.find();
-    console.log(staticData);
+    query = riotRole.find();
+    query = query.select('-_id -__v').sort('index');
+    const dbRoles = await query;
+    query = riotRank.find();
+    query = query.select('-_id -__v').sort('index');
+    const dbRanks = await query;
+    const roles = {};
+    dbRoles.forEach(role => (roles[role.id] = role));
+    const ranks = {};
+    dbRanks.forEach(rank => (ranks[rank.id] = rank));
 
     // Send response
     res.status(200).json({
@@ -96,8 +104,8 @@ export const getChampions = async (req, res) => {
         champions,
         idList,
         nameList,
-        roles: staticData.roles,
-        ranks: staticData.ranks,
+        roles,
+        ranks,
       },
     });
   } catch (err) {

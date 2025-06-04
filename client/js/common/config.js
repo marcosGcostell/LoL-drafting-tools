@@ -8,8 +8,8 @@ export const COUNTERS = 'counters';
 export const ICONS = './img/icons/icons.svg';
 export const IMG_SRC =
   'https://ddragon.leagueoflegends.com/cdn/15.11.1/img/champion/';
-export const LANE_PATH = './img/lanes/';
-export const RANK_PATH = './img/ranks/';
+export const LANE_ICONS = './img/lanes/';
+export const RANK_ICONS = './img/ranks/';
 
 // Config parameters
 export const PERCENT_LIMIT = 1.5;

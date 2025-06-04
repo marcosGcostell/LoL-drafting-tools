@@ -1,6 +1,6 @@
 import qs from 'qs';
 
-import RiotStatic from '../models/riot-static-model.js';
+import { riotRole, riotRank } from '../models/riot-static-model.js';
 import Champion from '../models/riot-champion-model.js';
 import { hasLocalVersionExpired } from '../models/common/helpers.js';
 
@@ -32,14 +32,20 @@ export const filterQuery = async (req, res, next) => {
     const queryObj = { ...qs.parse(req.query) };
     const { lane, rank, vslane } = queryObj;
 
-    const [{ roles, ranks }] = await RiotStatic.find();
-    const rolesIds = Object.keys(roles).map(role => roles[role].id);
-    const ranksIds = Object.keys(ranks).map(rank => ranks[rank].id);
+    const checkedLane = await riotRole.findOne({
+      $or: [{ id: lane }, { name: lane }],
+    });
+    const checkedVsLane = await riotRole.findOne({
+      $or: [{ id: vslane }, { name: vslane }],
+    });
+    const checkedRank = await riotRank.findOne({
+      $or: [{ id: rank }, { name: rank }],
+    });
 
     // TODO Default lane should be most used lane in that champion
-    rolesIds.includes(lane) ? (req.lane = lane) : (req.lane = 'top');
-    rolesIds.includes(vslane) ? (req.vslane = vslane) : (req.vslane = req.lane);
-    ranksIds.includes(rank) ? (req.rank = rank) : (req.rank = 'all');
+    req.lane = checkedLane ? checkedLane.id : 'top';
+    req.vslane = checkedVsLane ? checkedVsLane.id : req.lane;
+    req.rank = checkedRank ? checkedRank.id : 'all';
     next();
   } catch (err) {
     res.status(404).json({
