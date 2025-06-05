@@ -2,7 +2,7 @@ import qs from 'qs';
 
 import { riotRole, riotRank } from '../models/riot-static-model.js';
 import Champion from '../models/riot-champion-model.js';
-import { hasLocalVersionExpired } from '../models/common/helpers.js';
+import { expirationDate } from '../models/common/helpers.js';
 
 export const checkId = async (req, res, next, val) => {
   try {
@@ -57,28 +57,14 @@ export const filterQuery = async (req, res, next) => {
 
 export const getListFromDb = async (Model, queryObj) => {
   try {
-    console.log('Getting counter list from database...');
-    const lists = await Model.find(queryObj);
-    if (!lists.length) return null;
+    console.log('Getting list from database...');
+    const lists = await Model.deleteMany({
+      createdAt: { $lte: expirationDate() },
+    });
 
-    // Delete expired lists. Using map to return promises and await them
-    // With forEach the function keeps going even awaiting findById inside
-    const numberOfLists = lists.length;
-    const expiredLists = lists.filter(list =>
-      hasLocalVersionExpired(list.createdAt)
-    );
-    await Promise.all(
-      expiredLists.map(list => Counter.findByIdAndDelete(list._id))
-    );
-    if (!(numberOfLists - expiredLists.length)) return null;
-
-    // Select one after deleting expired ones
-    let query = Model.findOne(queryObj);
-    query = query.select('-__v -_id -list._id');
-    const list = await query;
-
-    // Return the list if there is any previous document
-    return !Object.is(list, {}) ? list : null;
+    const list = await Model.findOne(queryObj);
+    // If no list found return null
+    return list;
   } catch (err) {
     console.log(err.message);
     throw err;

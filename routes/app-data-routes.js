@@ -7,7 +7,7 @@ const router = express.Router();
 router
   .route('/')
   .get(
-    appDataHandlers.checkGameVersions,
+    appDataHandlers.checkGameVersion,
     appDataHandlers.updateDatabase,
     appDataHandlers.getChampions
   );

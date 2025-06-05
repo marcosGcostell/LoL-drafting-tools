@@ -4,26 +4,25 @@ import Lolalytics from '../models/api/lolalytics-api.js';
 import Version from '../models/riot-version-model.js';
 import Champion from '../models/riot-champion-model.js';
 import { riotRole, riotRank } from '../models/riot-static-model.js';
-import { hasLocalVersionExpired } from '../models/common/helpers.js';
+import { expirationDate } from '../models/common/helpers.js';
 
-export const checkGameVersions = async (req, res, next) => {
+export const checkGameVersion = async (req, res, next) => {
   try {
-    const [version] = await Version.find();
-    if (!version) {
-      req.version = await Riot.getLastGameVersion();
-      req.update = true;
+    const [validVersion] = await Version.find({
+      createdAt: { $gte: expirationDate() },
+    });
+    if (validVersion) {
+      req.version = validVersion.id;
+      req.update = false;
+      console.log(`Version readed from database: ${validVersion.id} ✅`);
       return next();
     }
 
-    req.version = version.id;
-    req.update = false;
-    console.log(`Version readed from database: ${version.id} ✅`);
-
-    if (hasLocalVersionExpired(version.createdAt)) {
-      console.log('Version backup expired!');
-      req.version = await Riot.getLastGameVersion();
-      req.update = req.version !== version.id;
-    }
+    console.log('Version backup expired!');
+    req.version = await Version.replaceFromString(
+      await Riot.getLastGameVersion()
+    );
+    req.update = req.version !== validVersion?.id;
     next();
   } catch (err) {
     throw err;
@@ -35,33 +34,24 @@ export const updateDatabase = async (req, res, next) => {
     if (!req.update) return next();
 
     console.log('There is a new version. Updating database...');
-    const champions = await Riot.updateDataFromServer(req.version);
+    const champions = await Riot.getNewData(req.version);
     const idList = Object.keys(champions);
-    const nameList = [];
-    idList.forEach(id => nameList.push(champions[id].name));
+    const nameList = idList.map(id => champions[id].name);
 
     // Add the lolalytics folder for each champion
-    const folders = await Lolalytics.getChampionFolders(idList, nameList);
+    let folders = await Lolalytics.getChampionFolders(idList, nameList);
     if (!Lolalytics.listIntegrity) {
-      // TODO this error should be handled, maybe with a folder list backup
-      // Id's tight coupled with lolalytics website
+      // TODO Maybe should warn the client that this plan b may not work
+
+      // Ignore folders fetched and get them from Riot data
+      folders = idList.map(id => id.toLowerCase());
       console.log('Lolalytics folder list has errors! 🧨');
     }
-
     idList.forEach(id => (champions[id].id = folders[id]));
 
     // Save data to the database
     console.log('Saving data to database...');
-    await Version.deleteMany();
-    await Version.create({
-      id: req.version,
-      createdAt: new Date().toISOString(),
-    });
-    console.log(`Version saved. id: ${req.version} ✅`);
-
-    const data = idList.map(id => champions[id]);
-    await Champion.deleteMany();
-    await Champion.create(data);
+    await Champion.replaceFromObject(champions);
 
     next();
   } catch (err) {

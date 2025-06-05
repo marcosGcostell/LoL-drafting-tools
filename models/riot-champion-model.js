@@ -40,4 +40,10 @@ championSchema.pre(/^find/, function (next) {
 
 championSchema.statics.findAsObject = findAsObject;
 
+championSchema.statics.replaceFromObject = async function (champions) {
+  const data = Object.keys(champions).map(id => champions[id]);
+  await this.deleteMany();
+  await this.create(data);
+};
+
 export default mongoose.model('Champions', championSchema);

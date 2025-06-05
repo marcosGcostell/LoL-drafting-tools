@@ -18,7 +18,7 @@ const counterListSchema = new mongoose.Schema({
     required: [true, 'A lane vs lane must be selected'],
   },
   createdAt: {
-    type: String,
+    type: Date,
     default: new Date().toISOString(),
   },
   list: [
@@ -29,6 +29,11 @@ const counterListSchema = new mongoose.Schema({
       delta2: Number,
     },
   ],
+});
+
+counterListSchema.pre(/^find/, function (next) {
+  this.select('-__v -_id -list._id');
+  next();
 });
 
 export default mongoose.model('CounterList', counterListSchema);
