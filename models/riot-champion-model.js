@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { findAsObject } from './common/helpers.js';
 
 const championSchema = new mongoose.Schema({
   id: {
@@ -31,5 +32,12 @@ const championSchema = new mongoose.Schema({
     required: [true, 'Champions must have an image path'],
   },
 });
+
+championSchema.pre(/^find/, function (next) {
+  this.select('-_id -__v');
+  next();
+});
+
+championSchema.statics.findAsObject = findAsObject;
 
 export default mongoose.model('Champions', championSchema);

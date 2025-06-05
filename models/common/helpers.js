@@ -14,3 +14,15 @@ export const hasLocalVersionExpired = createdAt => {
   console.log(`Time elasped since last backup: ${timeElapsed}`);
   return timeElapsed > TIME_BEFORE_CHECK;
 };
+
+export const expirationDate = () => {
+  return Date(Date.now() - TIME_BEFORE_CHECK * 60 * 60 * 1000);
+};
+
+export const findAsObject = async function () {
+  const docs = await this.find();
+  return docs.reduce((acc, doc) => {
+    acc[doc.id] = doc;
+    return acc;
+  }, {});
+};

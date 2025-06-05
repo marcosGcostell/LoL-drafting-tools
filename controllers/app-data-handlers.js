@@ -73,27 +73,15 @@ export const getChampions = async (req, res) => {
   try {
     // Get the data from database
     console.log('Getting champions from database...');
-    const champions = {};
-    let query = Champion.find();
-    query = query.select('-__v');
-    const championsArray = await query;
-    championsArray.forEach(el => (champions[el.riotId] = el));
+    const champions = await Champion.findAsObject();
 
     const idList = Object.keys(champions);
-    const nameList = championsArray.map(el => el.name);
+    const nameList = idList.map(el => champions[el].name);
 
     console.log(`${idList.length} Champions read from database ✅`);
 
-    query = riotRole.find();
-    query = query.select('-_id -__v').sort('index');
-    const dbRoles = await query;
-    query = riotRank.find();
-    query = query.select('-_id -__v').sort('index');
-    const dbRanks = await query;
-    const roles = {};
-    dbRoles.forEach(role => (roles[role.id] = role));
-    const ranks = {};
-    dbRanks.forEach(rank => (ranks[rank.id] = rank));
+    const roles = await riotRole.findAsObject();
+    const ranks = await riotRank.findAsObject();
 
     // Send response
     res.status(200).json({
