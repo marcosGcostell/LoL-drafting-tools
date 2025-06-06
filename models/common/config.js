@@ -6,6 +6,7 @@ export const PROXY_URL = 'https://cors-anywhere.herokuapp.com/';
 
 // Config parameters
 export const TIME_BEFORE_CHECK = 12;
+export const DEFAULT_SORT = 'pickRate';
 
 // Riot static data
 export const RIOT_DATA_DRAGON = 'https://ddragon.leagueoflegends.com/';
