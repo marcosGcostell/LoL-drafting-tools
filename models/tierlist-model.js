@@ -16,6 +16,7 @@ const tierlistSchema = new mongoose.Schema({
   list: [
     {
       name: String,
+      roleRate: Number,
       winRatio: Number,
       pickRate: Number,
       banRate: Number,

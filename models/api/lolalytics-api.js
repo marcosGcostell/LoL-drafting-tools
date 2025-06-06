@@ -146,6 +146,9 @@ class Lolalytics {
           championElement.children[1].children[1].firstElementChild;
         return {
           name: championElement.firstElementChild.textContent,
+          roleRate:
+            +championElement.children[1].firstElementChild.children[2]
+              .firstElementChild.textContent,
           winRatio: +dataSection.children[1].textContent,
           pickRate: +dataSection.children[2].textContent,
           banRate: +dataSection.children[3].textContent,

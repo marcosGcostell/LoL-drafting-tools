@@ -1,8 +1,8 @@
 import Lolalytics from '../models/api/lolalytics-api.js';
 import Counter from '../models/counter-model.js';
-import { getTierlistData } from './tierlist-handlers.js';
+import { getAllRoleRates, getAllTierlist } from './tierlist-handlers.js';
 import { getListFromDb } from './common-list-handlers.js';
-import { DEFAULT_SORT } from '../models/common/config.js';
+import { DEFAULT_SORT_FIELD } from '../models/common/config.js';
 
 const saveCounterList = async (champion, lane, rank, vslane, list) => {
   try {
@@ -52,22 +52,26 @@ export const getCounterList = async (req, res) => {
       req.rank,
       req.vslane
     );
-    const { tierlist } = await getTierlistData(req.vslane, req.rank);
+    const allTierlists = await getAllTierlist(req.rank);
 
     const completeList = counterList.map(el => {
-      const [champion] = tierlist.filter(item => el.name === item.name);
+      const [champion] = allTierlists[req.vslane].filter(
+        item => el.name === item.name
+      );
       return {
         name: el.name,
         winRatio: el.winRatio,
         opponentWR: champion?.winRatio || 0,
+        opponentLane: req.vslane,
         delta1: el.delta1,
         delta2: el.delta2,
+        roleRates: getAllRoleRates(el.name, allTierlists),
         pickRate: champion?.pickRate || 0,
         banRate: champion?.banRate || 0,
       };
     });
 
-    const sort = req.query.sort || DEFAULT_SORT;
+    const sort = req.query.sort || DEFAULT_SORT_FIELD;
     completeList.sort((a, b) => b[sort] - a[sort]);
 
     // Send response
