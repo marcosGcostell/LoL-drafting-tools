@@ -21,54 +21,67 @@
   <body>
     <div class="main-container">
       <header>
-        <span class="logo">
-          <h1>K - draft</h1>
-        </span>
-      </header>
-      <main>
-        <div class="nav">
+        <div class="header header__logo">
+          <img src="img/icons/logo.png" class="logo" alt="K-draft" />
+        </div>
+        <div class="header header__central">
+          <button class="btn lang__btn">EN</button>
+        </div>
+        <div class="header header__login">
+          <button class="btn login__btn">Log In</button>
           <span>
-            <input
-              id="champion"
-              type="text"
-              class="input"
-              placeholder="Champion..."
-            />
-            <input
-              id="rank"
-              type="text"
-              class="input"
-              placeholder="Rank..."
-              value=""
-            />
-            <input
-              id="role"
-              type="text"
-              class="input"
-              placeholder="Role..."
-              value=""
-            />
-            <input
-              id="vslane"
-              type="text"
-              class="input"
-              placeholder="vs role..."
-              value=""
-            />
-          </span>
-          <span class="buttons">
-            <button class="btn btn-counters">Counters</button>
-            <button class="btn btn-tierlist">Tierlist</button>
+            <svg class="user__icon">
+              <use href="img/icons/icons.svg#icon-user"></use>
+            </svg>
           </span>
         </div>
+      </header>
+      <main>
+        <section class="input-section">
+          <div class="nav">
+            <span>
+              <input
+                id="champion"
+                type="text"
+                class="input"
+                placeholder="Champion..."
+              />
+              <input
+                id="rank"
+                type="text"
+                class="input"
+                placeholder="Rank..."
+                value=""
+              />
+              <input
+                id="role"
+                type="text"
+                class="input"
+                placeholder="Role..."
+                value=""
+              />
+              <input
+                id="vslane"
+                type="text"
+                class="input"
+                placeholder="vs role..."
+                value=""
+              />
+            </span>
+            <span class="buttons">
+              <button class="btn btn__counters">Counters</button>
+              <button class="btn btn__tierlist">Tierlist</button>
+            </span>
+          </div>
+        </section>
         <div class="list-container">
           <ul class="container">
             <!-- <li class="row">
-              <p class="header void"></p>
-              <p class="header name header">Champion</p>
-              <p class="header">Winratio</p>
-              <p class="header">delta1</p>
-              <p class="header">delta2</p>
+              <p class="first-row void"></p>
+              <p class="first-row name">Champion</p>
+              <p class="first-row">Winratio</p>
+              <p class="first-row">delta1</p>
+              <p class="first-row">delta2</p>
             </li>
             <li class="row">
               <img src="img/champions/Aatrox.png" class="data thumbnail" />

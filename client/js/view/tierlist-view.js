@@ -8,7 +8,7 @@ class ListView extends View {
 
   addHandlerTierlist(handler) {
     document
-      .querySelector('.btn-tierlist')
+      .querySelector('.btn__tierlist')
       .addEventListener('click', function (e) {
         e.preventDefault();
         handler();
@@ -19,11 +19,11 @@ class ListView extends View {
     console.log(this._data);
     const header = `
       <li class="row">
-        <p class="header void"></p>
-        <p class="header name">Champion</p>
-        <p class="header">Winratio</p>
-        <p class="header">pick</p>
-        <p class="header">ban</p>
+        <p class="first-row void"></p>
+        <p class="first-row name">Champion</p>
+        <p class="first-row">Winratio</p>
+        <p class="first-row">pick</p>
+        <p class="first-row">ban</p>
       </li>
     `;
 
