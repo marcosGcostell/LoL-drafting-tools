@@ -8,9 +8,16 @@ export const wait = function (seconds) {
   });
 };
 
-export const hasLocalVersionExpired = createdAt => {
-  // Check version last updated timestamp
-  const timeElapsed = (Date.now() - Date.parse(createdAt)) / (3600 * 1000);
-  console.log(`Time elasped since last backup: ${timeElapsed}`);
-  return timeElapsed > TIME_BEFORE_CHECK;
+export const expirationDate = () => {
+  return new Date(
+    Date.now() - TIME_BEFORE_CHECK * 60 * 60 * 1000
+  ).toISOString();
+};
+
+export const findAsObject = async function () {
+  const docs = await this.find();
+  return docs.reduce((acc, doc) => {
+    acc[doc.id] = doc;
+    return acc;
+  }, {});
 };

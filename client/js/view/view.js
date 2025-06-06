@@ -31,6 +31,7 @@ export default class View {
       champion: document.getElementById('champion').value,
       rank: document.getElementById('rank').value,
       role: document.getElementById('role').value,
+      vslane: document.getElementById('vslane').value,
     };
   }
 

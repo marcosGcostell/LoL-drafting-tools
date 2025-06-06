@@ -1,5 +1,4 @@
 import { LOCAL_API, APP_DATA } from '../common/config.js';
-import { riotLolRanks, riotLolRoles } from '../common/config.js';
 
 ///////////////////////////////////////
 
@@ -28,14 +27,12 @@ class AppData {
    */
   static async build() {
     try {
-      // TODO vesion, roles and ranks should come from the API
       const response = await fetch(`${LOCAL_API}${APP_DATA}`);
       const { data } = await response.json();
-      const version = data.champions.Aatrox.version;
       return new AppData(
-        version,
-        riotLolRoles,
-        riotLolRanks,
+        data.version,
+        data.roles,
+        data.ranks,
         data.champions,
         data.idList,
         data.nameList

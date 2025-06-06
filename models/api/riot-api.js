@@ -12,7 +12,7 @@ import { RIOT_DATA_DRAGON } from '../common/config.js';
  * PUBLIC METHODS
  * @method #getChampionData Get champions complete data from Riot servers
  * @method getLastGameVersion Get last verion from Riot servers
- * @method updateDataFromServer Returns an array of objects with selected champion data
+ * @method getNewData Returns an array of objects with selected champion data
  */
 
 class Riot {
@@ -64,14 +64,14 @@ class Riot {
   }
 
   /**
-   * @async @method updateDataFromServer
+   * @async @method getNewData
    * Read updated version of champions' data from Riot API
    * and create an object with a reduced info version of all the champions
    * Calls to save data
    * @param {String} version Version patch of the data. No arg, get the last version
    * @return {Promise<Object>} Object where every champion is a property.
    */
-  async updateDataFromServer(version = null) {
+  async getNewData(version = null) {
     // No version passed, gets the last version
     try {
       if (!version) version = await this.getLastGameVersion();

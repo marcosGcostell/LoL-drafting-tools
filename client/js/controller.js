@@ -16,10 +16,10 @@ const countersHandler = async function () {
   try {
     console.log('Handling a counter list');
     // Get the input data
-    const data = countersView.getInputs();
+    const { champion, rank, role, vslane } = countersView.getInputs();
 
     // Load the counters
-    await model.getCounterList(data.champion, data.rank, data.role);
+    await model.getCounterList(champion, role, rank, vslane);
 
     // Render the list
     countersView.render(model.state.counterList);
@@ -32,10 +32,10 @@ const tierlistHandler = async function () {
   try {
     console.log('Handling a tier list');
     // Get the input data
-    const data = tierlistView.getInputs();
+    const { role, rank } = tierlistView.getInputs();
 
     // Load the tierlist (optional sorting parameter)
-    await model.getTierList(data.rank, data.role);
+    await model.getTierList(role, rank);
 
     // Render the list
     tierlistView.render(model.state.tierlist);

@@ -10,10 +10,10 @@ const tierlistSchema = new mongoose.Schema({
     required: [true, 'A rank must be selected'],
   },
   createdAt: {
-    type: String,
+    type: Date,
     default: new Date().toISOString(),
   },
-  tierlist: [
+  list: [
     {
       name: String,
       winRatio: Number,
@@ -21,6 +21,11 @@ const tierlistSchema = new mongoose.Schema({
       banRate: Number,
     },
   ],
+});
+
+tierlistSchema.pre(/^find/, function (next) {
+  this.select('-__v -_id -list._id');
+  next();
 });
 
 export default mongoose.model('Tierlist', tierlistSchema);

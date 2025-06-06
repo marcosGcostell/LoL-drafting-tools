@@ -4,21 +4,9 @@ export const MAX_DELAY = 2.2;
 export const PROXY_ON = false;
 export const PROXY_URL = 'https://cors-anywhere.herokuapp.com/';
 
-// Pahts of resources (relative from index.html)
-export const ICONS = './src/img/icons/icons.svg';
-export const CHAMPION_PATH = './src/img/champions/';
-export const LANE_PATH = './src/img/lanes/';
-export const RANK_PATH = './src/img/ranks/';
-export const RIOT_DATA_JSON = './src/json/riot-data.json';
-export const JSON_RANKS = './src/json/ranks.json';
-export const JSON_ROLES = './src/json/roles.json';
-export const JSON_VERSION = './src/json/lol-version.json';
-export const JSON_CHAMPIONS = './src/json/champions.json';
-
 // Config parameters
 export const TIME_BEFORE_CHECK = 12;
-export const PERCENT_LIMIT = 1.5;
-export const MAX_LIST_ITEMS = 35;
+export const DEFAULT_SORT = 'pickRate';
 
 // Riot static data
 export const RIOT_DATA_DRAGON = 'https://ddragon.leagueoflegends.com/';

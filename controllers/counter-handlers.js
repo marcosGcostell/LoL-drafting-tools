@@ -1,46 +1,10 @@
-import qs from 'qs';
-
 import Lolalytics from '../models/api/lolalytics-api.js';
 import Counter from '../models/counter-model.js';
-import { hasLocalVersionExpired } from '../models/common/helpers.js';
+import { getTierlistData } from './tierlist-handlers.js';
+import { getListFromDb } from './common-list-handlers.js';
+import { DEFAULT_SORT } from '../models/common/config.js';
 
-const getCounterListFromDb = async queryObj => {
-  try {
-    console.log('Getting counter list from database...');
-    if (!queryObj?.rank) queryObj.rank = 'all';
-    if (!queryObj?.vslane) queryObj.vslane = queryObj.lane;
-
-    // Select the stored counter list that matches the query
-    const counterLists = await Counter.find(queryObj);
-    if (!counterLists.length) return null;
-
-    // Delete expired counter lists. Using map to return promises and await them
-    // With forEach the function keeps going even awaiting findById inside
-    const numberOfCounterLists = counterLists.length;
-    const expiredCounterLists = counterLists.filter(counterList =>
-      hasLocalVersionExpired(counterList.createdAt)
-    );
-    await Promise.all(
-      expiredCounterLists.map(counterList =>
-        Counter.findByIdAndDelete(counterList._id)
-      )
-    );
-    if (!(numberOfCounterLists - expiredCounterLists.length)) return null;
-
-    // Select one after deleting expired ones
-    let query = Counter.findOne(queryObj);
-    query = query.select('-__v -_id -counterList._id');
-    const counterList = await query;
-
-    // Return the counter list if there is any previous document
-    return !Object.is(counterList, {}) ? counterList : null;
-  } catch (err) {
-    console.log(err.message);
-    throw err;
-  }
-};
-
-const saveCounterList = async (champion, lane, rank, vslane, counterList) => {
+const saveCounterList = async (champion, lane, rank, vslane, list) => {
   try {
     const data = {
       champion,
@@ -48,7 +12,7 @@ const saveCounterList = async (champion, lane, rank, vslane, counterList) => {
       rank,
       vslane,
       createdAt: new Date().toISOString(),
-      counterList,
+      list,
     };
 
     await Counter.create(data);
@@ -59,30 +23,60 @@ const saveCounterList = async (champion, lane, rank, vslane, counterList) => {
   }
 };
 
+const getCounterListData = async (champion, lane, rank, vslane) => {
+  try {
+    console.log({ champion, lane, rank, vslane });
+    const data = await getListFromDb(Counter, { champion, lane, rank, vslane });
+
+    if (data) {
+      return { counterList: data.list, updatedAt: data.createdAt };
+    }
+    const counterList = await Lolalytics.getCounters(
+      champion,
+      lane,
+      rank,
+      vslane
+    );
+    saveCounterList(champion, lane, rank, vslane, counterList);
+    return { counterList, updatedAt: new Date().toISOString() };
+  } catch (err) {
+    throw err;
+  }
+};
+
 export const getCounterList = async (req, res) => {
   try {
-    // TODO
-    // 1) check the query should happen here at the latest
-    // 2) sorting functionality
+    const { counterList, updatedAt } = await getCounterListData(
+      req.champion,
+      req.lane,
+      req.rank,
+      req.vslane
+    );
+    const { tierlist } = await getTierlistData(req.vslane, req.rank);
 
-    let counterList;
-    const queryObj = { ...qs.parse(req.query) };
-    const data = await getCounterListFromDb(queryObj);
+    const completeList = counterList.map(el => {
+      const [champion] = tierlist.filter(item => el.name === item.name);
+      return {
+        name: el.name,
+        winRatio: el.winRatio,
+        opponentWR: champion?.winRatio || 0,
+        delta1: el.delta1,
+        delta2: el.delta2,
+        pickRate: champion?.pickRate || 0,
+        banRate: champion?.banRate || 0,
+      };
+    });
 
-    if (!data) {
-      const { champion, lane, rank, vslane } = queryObj;
-      counterList = await Lolalytics.getCounters(champion, lane, rank, vslane);
-      saveCounterList(champion, lane, rank, vslane, counterList);
-    } else {
-      counterList = data.counterList;
-    }
+    const sort = req.query.sort || DEFAULT_SORT;
+    completeList.sort((a, b) => b[sort] - a[sort]);
 
     // Send response
     res.status(200).json({
       status: 'success',
-      results: counterList.length,
+      results: completeList.length,
+      updatedAt,
       data: {
-        counterList,
+        counterList: completeList,
       },
     });
   } catch (err) {

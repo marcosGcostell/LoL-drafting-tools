@@ -4,12 +4,10 @@ import * as appDataHandlers from '../controllers/app-data-handlers.js';
 
 const router = express.Router();
 
-// router.route('/versions').get(appDataHandlers.getVersion);
-
 router
   .route('/')
   .get(
-    appDataHandlers.checkGameVersions,
+    appDataHandlers.checkGameVersion,
     appDataHandlers.updateDatabase,
     appDataHandlers.getChampions
   );
