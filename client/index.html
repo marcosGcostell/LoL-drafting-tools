@@ -39,21 +39,213 @@
       <main>
         <section class="top-section">
           <div class="input-section">
-            <div class="main__input">
-              <img src="img/lanes/all.webp" class="lane" alt="Lanes" />
+            <div class="main__input selector">
+              <img
+                src="img/lanes/all.webp"
+                class="lane input__clickable"
+                alt="Lanes"
+              />
               <span>Lane</span>
+              <div class="popup lane__selector hidden">
+                <div>
+                  <img src="img/lanes/top.webp" data-value="top" alt="Top" />
+                  <span class="selector__text">Top</span>
+                </div>
+                <div>
+                  <img
+                    src="img/lanes/jungle.webp"
+                    data-value="jungle"
+                    alt="Jungle"
+                  />
+                  <span class="selector__text">Jungle</span>
+                </div>
+                <div>
+                  <img
+                    src="img/lanes/middle.webp"
+                    data-value="middle"
+                    alt="Mid Lane"
+                  />
+                  <span class="selector__text">Mid</span>
+                </div>
+                <div>
+                  <img
+                    src="img/lanes/bottom.webp"
+                    data-value="bottom"
+                    alt="AD Carry"
+                  />
+                  <span class="selector__text">ADC</span>
+                </div>
+                <div>
+                  <img
+                    src="img/lanes/support.webp"
+                    data-value="support"
+                    alt="Support"
+                  />
+                  <span class="selector__text">Support</span>
+                </div>
+              </div>
             </div>
-            <div class="main__input">
-              <img src="img/ranks/challenger.webp" class="rank" alt="Ranks" />
+            <div class="main__input selector">
+              <img
+                src="img/ranks/challenger.webp"
+                class="rank input__clickable"
+                alt="Ranks"
+              />
               <span>Rank</span>
+              <div class="popup rank__selector hidden">
+                <div>
+                  <img src="img/ranks/all.webp" data-value="all" alt="All" />
+                  <span class="selector__text">All</span>
+                </div>
+                <div>
+                  <img
+                    src="img/ranks/challenger.webp"
+                    data-value="challenger"
+                    alt="Challenger"
+                  />
+                  <span class="selector__text">Challenger</span>
+                </div>
+                <div>
+                  <img
+                    src="img/ranks/grandmaster.webp"
+                    data-value="grandmaster_plus"
+                    alt="+ Grand Master"
+                  />
+                  <span class="selector__text">+ Grand Master</span>
+                </div>
+                <div>
+                  <img
+                    src="img/ranks/grandmaster.webp"
+                    data-value="grandmaster"
+                    alt="Grand Master"
+                  />
+                  <span class="selector__text">Grand Master</span>
+                </div>
+                <div>
+                  <img
+                    src="img/ranks/master.webp"
+                    data-value="master_plus"
+                    alt="+ Master"
+                  />
+                  <span class="selector__text">+ Master</span>
+                </div>
+                <div>
+                  <img
+                    src="img/ranks/master.webp"
+                    data-value="master"
+                    alt="Master"
+                  />
+                  <span class="selector__text">Master</span>
+                </div>
+                <div>
+                  <img
+                    src="img/ranks/diamond.webp"
+                    data-value="d2_plus"
+                    alt="+ Diamond-2"
+                  />
+                  <span class="selector__text">+ D2</span>
+                </div>
+                <div>
+                  <img
+                    src="img/ranks/diamond.webp"
+                    data-value="diamond_plus"
+                    alt="+ Diamond"
+                  />
+                  <span class="selector__text">+ Diamond</span>
+                </div>
+                <div>
+                  <img
+                    src="img/ranks/diamond.webp"
+                    data-value="diamond"
+                    alt="Diamond"
+                  />
+                  <span class="selector__text">Diamond</span>
+                </div>
+                <div>
+                  <img
+                    src="img/ranks/emerald.webp"
+                    data-value="emerald_plus"
+                    alt="+ Emerald"
+                  />
+                  <span class="selector__text">+ Emerald</span>
+                </div>
+                <div>
+                  <img
+                    src="img/ranks/emerald.webp"
+                    data-value="emerald"
+                    alt="Emerald"
+                  />
+                  <span class="selector__text">Emerald</span>
+                </div>
+                <div>
+                  <img
+                    src="img/ranks/platinum.webp"
+                    data-value="platinum_plus"
+                    alt="+ Platinum"
+                  />
+                  <span class="selector__text">+ Platinum</span>
+                </div>
+                <div>
+                  <img
+                    src="img/ranks/platinum.webp"
+                    data-value="platinum"
+                    alt="Platinum"
+                  />
+                  <span class="selector__text">Platinum</span>
+                </div>
+                <div>
+                  <img
+                    src="img/ranks/gold.webp"
+                    data-value="gold_plus"
+                    alt="+ Gold"
+                  />
+                  <span class="selector__text">+ Gold</span>
+                </div>
+                <div>
+                  <img src="img/ranks/gold.webp" data-value="gold" alt="Gold" />
+                  <span class="selector__text">Gold</span>
+                </div>
+                <div>
+                  <img
+                    src="img/ranks/silver.webp"
+                    data-value="silver"
+                    alt="Silver"
+                  />
+                  <span class="selector__text">Silver</span>
+                </div>
+                <div>
+                  <img
+                    src="img/ranks/bronze.webp"
+                    data-value="bronze"
+                    alt="Bronze"
+                  />
+                  <span class="selector__text">Bronze</span>
+                </div>
+                <div>
+                  <img src="img/ranks/iron.webp" data-value="iron" alt="Iron" />
+                  <span class="selector__text">Iron</span>
+                </div>
+                <div>
+                  <img
+                    src="img/ranks/unranked.webp"
+                    data-value="unranked"
+                    alt="Unranked"
+                  />
+                  <span class="selector__text">Unranked</span>
+                </div>
+              </div>
             </div>
             <div class="small__inputs">
               <div class="small__input vs__input">
-                <img src="img/lanes/all.webp" class="vslane" alt="Lanes" />
+                <img
+                  src="img/lanes/all.webp"
+                  class="vslane input__clickable"
+                  alt="Lanes"
+                />
                 <span>vs Lane</span>
               </div>
               <div class="small__input patch__input">
-                <button class="patch">PATCH</button>
+                <button class="patch input__clickable">PATCH</button>
               </div>
             </div>
           </div>
