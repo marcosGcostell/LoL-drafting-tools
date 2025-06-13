@@ -16,7 +16,6 @@ class InputsView {
     this._data = Object.values(object);
     this._data.sort((a, b) => a.index - b.index);
     if (shift) this._data.shift();
-    console.log(this._data);
   }
 
   async render(template, target) {
@@ -39,49 +38,30 @@ class InputsView {
   }
 
   _generateItemMarkup(item, itemTemplate) {
-    console.log(item);
     let output = itemTemplate.replace(/{%ID%}/g, item.id);
     output = output.replace(/{%NAME%}/g, item.name);
     output = output.replace(/{%IMG%}/g, item.img);
     return output;
   }
 
-  addHandlerLaneBtn(handler) {
+  addHandlerBtn(handler, target) {
     document
-      .querySelector('.lane__btn')
+      .querySelector(`.${target}__btn`)
       .addEventListener('click', function (e) {
         e.preventDefault();
-        handler();
+        handler(target);
       });
   }
 
-  addHandlerVsLaneBtn(handler) {
-    document
-      .querySelector('.vslane__btn')
-      .addEventListener('click', function (e) {
-        e.preventDefault();
-        handler();
-      });
-  }
-  addHandlerRankBtn(handler) {
-    document
-      .querySelector('.rank__btn')
-      .addEventListener('click', function (e) {
-        e.preventDefault();
-        handler();
-      });
-  }
-  addHandlerPatchBtn(handler) {
-    document
-      .querySelector('.patch__btn')
-      .addEventListener('click', function (e) {
-        e.preventDefault();
-        handler();
-      });
+  toggleSelector(target) {
+    document.querySelector(`.${target}__selector`).classList.toggle('hidden');
   }
 
-  toggleSelector(id) {
-    document.querySelector(`.${id}__selector`).classList.toggle('hidden');
+  changeOption(target, option) {
+    const image = document.querySelector(`.${target}__selector img`);
+    const text = document.querySelector(`.${target}__selector span`);
+    image.setAttribute('src', option.img);
+    text.textContent = option.name;
   }
 }
 

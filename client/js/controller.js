@@ -3,7 +3,7 @@
 
 //Importing from modules
 import * as model from './model/model.js';
-import inputsView from './view/inputs-view.js';
+import * as inputsController from './controllers/inputs-controller.js';
 import countersView from './view/counters-view.js';
 import tierlistView from './view/tierlist-view.js';
 
@@ -12,25 +12,6 @@ import tierlistView from './view/tierlist-view.js';
 
 ///////////////////////////////////////
 // Script
-
-const selectLaneHandler = () => {
-  // Click Lane Btn = show selector
-  inputsView.toggleSelector('lane');
-};
-
-const selectVsLaneHandler = () => {
-  // Click VsLane Btn = show selector
-  inputsView.toggleSelector('vslane');
-};
-
-const selectRankHandler = () => {
-  // Click Rank Btn = show selector
-  inputsView.toggleSelector('rank');
-};
-
-const selectPatchHandler = () => {
-  // Click Patch Btn = show selector
-};
 
 const countersHandler = async function () {
   try {
@@ -65,18 +46,10 @@ const tierlistHandler = async function () {
 };
 
 async function init() {
-  inputsView.addHandlerLaneBtn(selectLaneHandler);
-  inputsView.addHandlerVsLaneBtn(selectVsLaneHandler);
-  inputsView.addHandlerRankBtn(selectRankHandler);
-  inputsView.addHandlerPatchBtn(selectPatchHandler);
   // countersView.addHandlerCounters(countersHandler);
   // tierlistView.addHandlerTierlist(tierlistHandler);
   await model.initApp();
-  await inputsView.buildSelectors(
-    model.appData.roles,
-    model.appData.ranks,
-    model.appData.version
-  );
+  await inputsController.initInputs();
 }
 
 await init();
