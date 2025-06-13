@@ -165,12 +165,17 @@ main {
   margin-right: 0.5rem;
 }
 
-.input__clickable {
+.input__clickable,
+.selector__clickable {
   cursor: pointer;
 }
 
-.input__clickable:hover {
+.input__clickable:hover,
+.selector__clickable:hover {
   background-color: var(--color-grey-dark-4);
+}
+
+.input__clickable:hover {
   border: 1px solid var(--color-grey-light-5);
   transform: scale(1.1);
 }
@@ -243,12 +248,14 @@ main {
 }
 
 .selector__text {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   padding: 0;
+  font-stretch: extra-condensed;
 }
 
 .lane__selector {
   top: 25%;
+  left: 100%;
   gap: 6px;
 }
 
@@ -259,17 +266,28 @@ main {
 }
 
 .rank__selector {
-  width: 14rem;
+  top: 80%;
+  left: 10%;
+  gap: 8px;
+  width: 16rem;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: left;
+  justify-content: space-evenly;
   align-items: center;
-  gap: 16px;
 }
 
 .rank__selector img {
   height: 2.5rem;
   cursor: pointer;
+}
+
+.selector__item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 3rem;
+  padding: 0;
 }
 
 .champion__pull {
