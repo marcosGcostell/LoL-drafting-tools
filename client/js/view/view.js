@@ -12,13 +12,15 @@ export default class View {
    * @author Marcos Garcia
    * @todo Finish the implementation
    */
-  render(data, render = true) {
+  async render(data, render = true) {
     console.log('Rendering the list');
+    // TODO Need to change the _parentElement relation
+    // Should be a root element for messages and a parentelement to render data
     if (!data || (Array.isArray(data) && data.length === 0))
       return this.renderError();
 
     this._data = data;
-    const markup = this._generateMarkup();
+    const markup = await this._generateMarkup();
 
     if (!render) return markup;
 

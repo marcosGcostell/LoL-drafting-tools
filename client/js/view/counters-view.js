@@ -15,7 +15,7 @@ class CountersView extends View {
       });
   }
 
-  _generateMarkup() {
+  async _generateMarkup() {
     console.log(this._data);
     const header = `
       <li class="row">

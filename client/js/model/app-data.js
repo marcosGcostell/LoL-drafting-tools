@@ -8,7 +8,7 @@ import { LOCAL_API, APP_DATA } from '../common/config.js';
  * This class has an async task involved with its constructor
  * Should be call 'AppData.build()' and not 'new AppData()'
  */
-class AppData {
+export default class AppData {
   constructor(version, roles, ranks, champions, idList, nameList) {
     this.version = version;
     this.roles = roles;
@@ -55,5 +55,3 @@ class AppData {
     return this.champions[idResult];
   }
 }
-
-export default await AppData.build();

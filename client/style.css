@@ -223,7 +223,7 @@ main {
   margin-right: 0.5rem;
 }
 
-.patch {
+.patch__btn {
   height: 2rem;
   background-color: var(--color-grey-dark-3);
   border: var(--color-grey-dark-4) solid 1px;

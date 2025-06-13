@@ -1,8 +1,10 @@
-import appData from './app-data.js';
+import AppData from './app-data.js';
 import { LOCAL_API, TIERLIST, COUNTERS } from '../common/config.js';
 
 ///////////////////////////////////////
 // App state
+
+export const appData = await AppData.build();
 
 export const state = {
   tierlist: [],
