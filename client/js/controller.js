@@ -15,14 +15,17 @@ import tierlistView from './view/tierlist-view.js';
 
 const selectLaneHandler = () => {
   // Click Lane Btn = show selector
+  inputsView.toggleSelector('lane');
 };
 
 const selectVsLaneHandler = () => {
   // Click VsLane Btn = show selector
+  inputsView.toggleSelector('vslane');
 };
 
 const selectRankHandler = () => {
   // Click Rank Btn = show selector
+  inputsView.toggleSelector('rank');
 };
 
 const selectPatchHandler = () => {

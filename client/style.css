@@ -253,16 +253,27 @@ main {
   font-stretch: extra-condensed;
 }
 
-.lane__selector {
+.lane__selector,
+.vslane__selector {
   top: 25%;
   left: 100%;
   gap: 6px;
 }
 
-.lane__selector img {
+.vslane__selector {
+  left: 40%;
+  text-align: center;
+}
+
+.lane__selector img,
+.vslane__selector img {
   height: 2rem;
   padding: 0;
   cursor: pointer;
+}
+
+.vslane__selector img {
+  margin: 0;
 }
 
 .rank__selector {

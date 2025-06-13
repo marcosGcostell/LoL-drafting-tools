@@ -6,7 +6,7 @@ class InputsView {
   async buildSelectors(roles, ranks, version) {
     this._setSortedDataArray(roles, true);
     await this.render(LANE_ITEM_TEMPLATE, '.lane__selector');
-    // this.render(LANE_ITEM_TEMPLATE, '.vslane__selector');
+    await this.render(LANE_ITEM_TEMPLATE, '.vslane__selector');
     this._setSortedDataArray(ranks);
     await this.render(RANK_ITEM_TEMPLATE, '.rank__selector');
   }
@@ -78,6 +78,10 @@ class InputsView {
         e.preventDefault();
         handler();
       });
+  }
+
+  toggleSelector(id) {
+    document.querySelector(`.${id}__selector`).classList.toggle('hidden');
   }
 }
 
