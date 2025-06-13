@@ -39,7 +39,7 @@
 
 html {
   box-sizing: border-box;
-  font-size: 80%;
+  font-size: 95%;
 }
 
 svg {
@@ -56,8 +56,8 @@ body {
 }
 
 .main-container {
-  max-width: 80rem;
-  min-height: 60rem;
+  max-width: 70rem;
+  min-height: 50rem;
   margin: 1vw auto;
   background-color: var(--color-grey-dark-1);
   border-radius: 12px;
@@ -84,13 +84,13 @@ header {
   width: 100%;
   display: flex;
   align-items: center;
-  padding: 0.5rem 1.5rem;
-  margin-bottom: 0.5rem;
+  padding: 0.5rem 1.2rem;
+  margin-bottom: 0.3rem;
 }
 
 .header {
   display: flex;
-  height: 2.5rem;
+  height: 2.2rem;
   align-items: center;
 }
 
@@ -98,7 +98,7 @@ header {
 .input-section {
   /* flex: 0 0 25%; */
   width: 20rem;
-  margin-right: 2rem;
+  margin-right: 1.8rem;
 }
 
 .header__central {
@@ -114,18 +114,18 @@ header {
 }
 
 .logo {
-  max-height: 2.5rem;
+  max-height: 2.2rem;
 }
 
 .login__btn,
 .lang__btn {
-  border-radius: 1.25rem;
-  height: 2.5rem;
-  font-size: 1.2rem;
+  border-radius: 1.1rem;
+  height: 2.2rem;
+  font-size: 1.1rem;
 }
 
 .lang__btn {
-  width: 3rem;
+  width: 2.8rem;
 }
 
 .login__btn {
@@ -134,7 +134,7 @@ header {
 
 .user__icon {
   display: flex;
-  max-height: 2.5rem;
+  max-height: 2.2rem;
   max-width: 3rem;
 }
 
@@ -218,7 +218,7 @@ main {
 
 .champion__pull {
   flex: 1 1 75%;
-  min-width: 60rem;
+  min-width: 50rem;
   height: 9rem;
   display: flex;
   justify-content: flex-start;
@@ -229,7 +229,7 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.2rem;
   margin: 0 0.5rem;
   width: 6rem;
   height: 8rem;
@@ -239,7 +239,7 @@ main {
 }
 
 .champion img {
-  width: 4.5rem;
+  width: 4.7rem;
 }
 
 .champion__wr {
@@ -260,22 +260,22 @@ main {
 }
 
 input {
-  border-radius: 1.25rem;
-  height: 2.5rem;
-  font-size: 1.2rem;
+  border-radius: 1.1rem;
+  height: 2.2rem;
+  font-size: 1.1rem;
   background-color: var(--color-grey-light-3);
 }
 
 .search__icon {
   fill: var(--color-grad-2);
-  max-height: 2rem;
+  max-height: 1.8rem;
   max-width: 3rem;
-  margin-left: -3.5rem;
+  margin-left: -3.2rem;
 }
 
 .data-section {
   width: 100%;
-  max-width: 80rem;
+  max-width: 70rem;
   /* min-height: 46rem; */
   display: flex;
   flex: 1;
@@ -309,7 +309,7 @@ input {
 .first-row {
   display: flex;
   align-items: center;
-  height: 2.5rem;
+  height: 2.4rem;
 }
 
 .first-row {
@@ -371,6 +371,7 @@ input {
 }
 .delta {
   font-size: 0.8rem;
+  color: goldenrod;
 }
 
 .score {
@@ -380,7 +381,7 @@ input {
 footer {
   justify-content: flex-end;
   text-align: center;
-  height: 3rem;
+  height: 2.8rem;
   color: var(--color-grey-light-4);
 }
 
