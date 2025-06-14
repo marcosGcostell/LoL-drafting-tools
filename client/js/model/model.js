@@ -1,4 +1,5 @@
 import AppData from './app-data.js';
+import { expirationDate } from '../common/helpers.js';
 import { LOCAL_API, TIERLIST, COUNTERS } from '../common/config.js';
 
 ///////////////////////////////////////
@@ -17,12 +18,28 @@ export const state = {
 export async function initApp() {
   try {
     // TODO to unload the API, maybe appData should be stored in localStorage
-    // Then we need to check
+    // So all this expired version checking has some meaning
     console.log('Initializing App...');
-    const cached = sessionStorage.getItem('draftKingAppData');
-    if (cached) {
+    let isCacheValid = false;
+    const data = sessionStorage.getItem('draftKingAppData');
+    if (data) {
+      const cached = JSON.parse(data);
+      const lastUpdated = new Date(cached.createdAt);
+      if (lastUpdated < expirationDate()) {
+        const newVersion = await AppData.checkVersion();
+        if (newVersion === cached.version) {
+          // Version expired but has not changed
+          isCacheValid = true;
+        }
+      } else {
+        // Version has not expired yet
+        isCacheValid = true;
+      }
+    }
+
+    if (isCacheValid) {
       console.log('Reading appData from browser...');
-      appData = AppData.getFromJSON(JSON.parse(cached));
+      appData = AppData.getFromJSON(JSON.parse(data));
     } else {
       console.log('Reading appData from API...');
       appData = await AppData.getFromAPI();

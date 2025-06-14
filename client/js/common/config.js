@@ -18,3 +18,4 @@ export const RANK_ITEM_TEMPLATE = './templates/rank-selector-item.html';
 // Config parameters
 export const PERCENT_LIMIT = 1.5;
 export const MAX_LIST_ITEMS = 35;
+export const TIME_BEFORE_CHECK = 12;

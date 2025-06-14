@@ -9,8 +9,9 @@ import { LOCAL_API, APP_DATA } from '../common/config.js';
  * Should be call 'AppData.build()' and not 'new AppData()'
  */
 export default class AppData {
-  constructor(version, roles, ranks, champions, idList, nameList) {
+  constructor(version, createdAt, roles, ranks, champions, idList, nameList) {
     this.version = version;
+    this.createdAt = createdAt;
     this.roles = roles;
     this.ranks = ranks;
     this.champions = champions;
@@ -19,6 +20,17 @@ export default class AppData {
   }
 
   // STATIC METHODS
+
+  static async checkVersion() {
+    try {
+      const response = await fetch(`${LOCAL_API}${APP_DATA}/version`);
+      const { data } = await response.json();
+      return data.version;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
 
   /**
    * @static @async @method getFromAPI
@@ -31,6 +43,7 @@ export default class AppData {
       const { data } = await response.json();
       return new AppData(
         data.version,
+        data.createdAt,
         data.roles,
         data.ranks,
         data.champions,
@@ -49,6 +62,7 @@ export default class AppData {
 
     return new AppData(
       obj?.version,
+      obj?.createdAt,
       obj?.roles,
       obj?.ranks,
       obj?.champions,
@@ -63,6 +77,7 @@ export default class AppData {
   SaveToJSON() {
     return {
       version: this.version,
+      createdAt: this.createdAt,
       roles: this.roles,
       ranks: this.ranks,
       champions: this.champions,
