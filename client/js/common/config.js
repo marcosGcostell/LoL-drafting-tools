@@ -1,8 +1,13 @@
 // Constants for local API connection
 export const LOCAL_API = 'http://127.0.0.1:3000/api/v1/';
 export const APP_DATA = 'app-data';
+export const VERSION = 'app-data/version';
 export const TIERLIST = 'tierlist';
 export const COUNTERS = 'counters';
+
+// Keys for local storage
+export const LS_APP_DATA = 'draftKingAppData';
+export const LS_STATE = 'draftKingState';
 
 // Paths of resources (relative from index.html)
 export const ICONS = './img/icons/icons.svg';

@@ -1,4 +1,4 @@
-import { LOCAL_API, APP_DATA } from '../common/config.js';
+import { LOCAL_API, APP_DATA, VERSION } from '../common/config.js';
 
 ///////////////////////////////////////
 
@@ -23,7 +23,7 @@ export default class AppData {
 
   static async checkVersion() {
     try {
-      const response = await fetch(`${LOCAL_API}${APP_DATA}/version`);
+      const response = await fetch(`${LOCAL_API}${VERSION}`);
       const { data } = await response.json();
       return data.version;
     } catch (err) {
