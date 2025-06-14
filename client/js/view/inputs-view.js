@@ -2,6 +2,7 @@ import { LANE_ITEM_TEMPLATE, RANK_ITEM_TEMPLATE } from '../common/config.js';
 
 class InputsView {
   _data;
+  selectorDisplayed = null;
 
   async buildSelectors(roles, ranks, version) {
     this._setSortedDataArray(roles, true);
@@ -53,15 +54,28 @@ class InputsView {
       });
   }
 
+  addHanlderSelector(handler, target) {
+    document
+      .querySelector(`.${target}__selector`)
+      .addEventListener('click', function (e) {
+        e.preventDefault();
+        const id = e.target.dataset.value;
+        handler(target, id);
+      });
+  }
+
   toggleSelector(target) {
     document.querySelector(`.${target}__selector`).classList.toggle('hidden');
+    this.selectorDisplayed = this.selectorDisplayed ? null : target;
   }
 
   changeOption(target, option) {
-    const image = document.querySelector(`.${target}__selector img`);
-    const text = document.querySelector(`.${target}__selector span`);
-    image.setAttribute('src', option.img);
-    text.textContent = option.name;
+    const image = document.querySelector(`.${target}__input img`);
+    const text = document.querySelector(`.${target}__input span`);
+    const folder = target === 'rank' ? 'ranks' : 'lanes';
+    image.setAttribute('src', `img/${folder}/${option.img}`);
+    const prefix = target === 'vslane' ? 'vs ' : '';
+    text.textContent = `${prefix}${option.name}`;
   }
 }
 

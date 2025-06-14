@@ -5,15 +5,32 @@ const displayOptionsHandler = target => {
   inputsView.toggleSelector(target);
 };
 
+const selectorHandler = (target, id) => {
+  if (id) {
+    // TODO Check in appState if actually has changed
+    const option =
+      target === 'rank' ? model.appData.ranks[id] : model.appData.roles[id];
+    console.log(target, id, option);
+    inputsView.toggleSelector(target);
+    inputsView.changeOption(target, option);
+    if (target === 'lane') {
+      inputsView.changeOption('vslane', option);
+    }
+  }
+};
+
 export async function initInputs() {
-  inputsView.addHandlerBtn(displayOptionsHandler, 'lane');
-  inputsView.addHandlerBtn(displayOptionsHandler, 'vslane');
-  inputsView.addHandlerBtn(displayOptionsHandler, 'rank');
-  inputsView.addHandlerBtn(displayOptionsHandler, 'patch');
+  ['lane', 'vslane', 'rank', 'patch'].forEach(el =>
+    inputsView.addHandlerBtn(displayOptionsHandler, el)
+  );
 
   await inputsView.buildSelectors(
     model.appData.roles,
     model.appData.ranks,
     model.appData.version
+  );
+
+  ['lane', 'vslane', 'rank'].forEach(el =>
+    inputsView.addHanlderSelector(selectorHandler, el)
   );
 }

@@ -23,11 +23,11 @@ export async function initApp() {
     let isCacheValid = false;
     const data = sessionStorage.getItem('draftKingAppData');
     if (data) {
-      const cached = JSON.parse(data);
-      const lastUpdated = new Date(cached.createdAt);
+      const cache = JSON.parse(data);
+      const lastUpdated = new Date(cache.createdAt);
       if (lastUpdated < expirationDate()) {
         const newVersion = await AppData.checkVersion();
-        if (newVersion === cached.version) {
+        if (newVersion === cache.version) {
           // Version expired but has not changed
           isCacheValid = true;
         }
