@@ -4,7 +4,7 @@ import { LOCAL_API, TIERLIST, COUNTERS } from '../common/config.js';
 ///////////////////////////////////////
 // App state
 
-export const appData = await AppData.build();
+let appData;
 
 export const state = {
   tierlist: [],
@@ -16,10 +16,21 @@ export const state = {
 
 export async function initApp() {
   try {
-    // TODO This function may do the AppData.build() task
-    // Now an instance is imported as a Singleton
-    // but maybe it should be a global variable that can be reset here
+    // TODO to unload the API, maybe appData should be stored in localStorage
+    // Then we need to check
     console.log('Initializing App...');
+    const cached = sessionStorage.getItem('draftKingAppData');
+    if (cached) {
+      console.log('Reading appData from browser...');
+      appData = AppData.getFromJSON(JSON.parse(cached));
+    } else {
+      console.log('Reading appData from API...');
+      appData = await AppData.getFromAPI();
+      sessionStorage.setItem(
+        'draftKingAppData',
+        JSON.stringify(appData.SaveToJSON())
+      );
+    }
   } catch (error) {
     throw error;
   }
@@ -63,6 +74,8 @@ export async function getTierList(role, rank, sortedBy = '') {
     throw error;
   }
 }
+
+export { appData };
 
 /////////////
 // TODO: All these formatting tasks should be in a state class ??

@@ -21,11 +21,11 @@ export default class AppData {
   // STATIC METHODS
 
   /**
-   * @static @async @method build
+   * @static @async @method getFromAPI
    * Performs the async tasks before calling the constructor
    * @return {Promise<AppData>} Return the instance of the class.
    */
-  static async build() {
+  static async getFromAPI() {
     try {
       const response = await fetch(`${LOCAL_API}${APP_DATA}`);
       const { data } = await response.json();
@@ -44,9 +44,32 @@ export default class AppData {
     }
   }
 
+  static getFromJSON(obj) {
+    if (!obj) return null;
+
+    return new AppData(
+      obj?.version,
+      obj?.roles,
+      obj?.ranks,
+      obj?.champions,
+      obj?.idList,
+      obj?.nameList
+    );
+  }
+
   // PRIVATE METHODS
 
   // PUBLIC METHODS
+  SaveToJSON() {
+    return {
+      version: this.version,
+      roles: this.roles,
+      ranks: this.ranks,
+      champions: this.champions,
+      idList: this.idList,
+      nameList: this.nameList,
+    };
+  }
 
   getChampionByName(championName) {
     const idResult = this.idList.find(

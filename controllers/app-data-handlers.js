@@ -44,6 +44,7 @@ export const updateDatabase = async (req, res, next) => {
       // TODO Maybe should warn the client that this plan b may not work
 
       // Ignore folders fetched and get them from Riot data
+      // FIXME this idList.map set the folders as lolalytics API?
       folders = idList.map(id => id.toLowerCase());
       console.log('Lolalytics folder list has errors! 🧨');
     }
