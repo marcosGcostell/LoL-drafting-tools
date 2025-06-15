@@ -124,7 +124,7 @@ class Lolalytics {
    * @param {String} [lane] for this role (default = 'main').
    * @return {Promise<Array>} of champion objects.
    */
-  async getTierlist(lane = 'main', rank = 'all') {
+  async getTierlist(lane = 'top', rank = 'all') {
     try {
       // Scrape the lolalytics web page
       const virtualDomDocument = await this.#scrapeWebPage(

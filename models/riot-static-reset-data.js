@@ -4,12 +4,6 @@ const resetStaticData = async () => {
   await riotRole.deleteMany();
   await riotRole.create([
     {
-      index: 0,
-      id: 'main',
-      name: 'Main',
-      img: 'all.webp',
-    },
-    {
       index: 1,
       id: 'top',
       name: 'Top',

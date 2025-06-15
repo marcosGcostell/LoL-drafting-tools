@@ -4,7 +4,7 @@ class InputsView {
   _data;
   selectorDisplayed = null;
 
-  async buildSelectors(roles, ranks, version) {
+  async insertSelectors(roles, ranks, version) {
     this._data = roles;
     await this.render(LANE_ITEM_TEMPLATE, '.lane__selector');
     await this.render(LANE_ITEM_TEMPLATE, '.vslane__selector');
@@ -53,11 +53,12 @@ class InputsView {
       .addEventListener('click', function (e) {
         e.preventDefault();
         const id = e.target.dataset.value;
-        handler(target, id);
+        handler(id);
       });
   }
 
-  toggleSelector(target) {
+  toggleSelector(target = this.selectorDisplayed) {
+    if (!target) return;
     document.querySelector(`.${target}__selector`).classList.toggle('hidden');
     this.selectorDisplayed = this.selectorDisplayed ? null : target;
   }
@@ -65,9 +66,10 @@ class InputsView {
   changeOption(target, option) {
     const image = document.querySelector(`.${target}__input img`);
     const text = document.querySelector(`.${target}__input span`);
+
+    const prefix = target === 'vslane' ? 'vs ' : '';
     const folder = target === 'rank' ? 'ranks' : 'lanes';
     image.setAttribute('src', `img/${folder}/${option.img}`);
-    const prefix = target === 'vslane' ? 'vs ' : '';
     text.textContent = `${prefix}${option.name}`;
   }
 }

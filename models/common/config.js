@@ -11,10 +11,6 @@ export const DEFAULT_SORT_FIELD = 'pickRate';
 // Riot static data
 export const RIOT_DATA_DRAGON = 'https://ddragon.leagueoflegends.com/';
 export const riotLolRoles = {
-  main: {
-    id: 'main',
-    name: 'Main',
-  },
   top: {
     id: 'top',
     name: 'Top Lane',
@@ -37,7 +33,7 @@ export const riotLolRoles = {
   },
 };
 export const riotLolRolesArray = Object.keys(riotLolRoles)
-  .filter(role => role != 'main')
+  // .filter(role => role != 'main')
   .map(el => riotLolRoles[el].id);
 
 export const riotLolRanks = {

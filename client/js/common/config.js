@@ -1,7 +1,7 @@
 // Constants for local API connection
 export const LOCAL_API = 'http://127.0.0.1:3000/api/v1/';
-export const APP_DATA = 'app-data';
-export const VERSION = 'app-data/version';
+export const APP_DATA_ROUTE = 'app-data';
+export const VERSION_ROUTE = 'app-data/version';
 export const TIERLIST_ROUTE = 'tierlist';
 export const COUNTERS_ROUTE = 'counters';
 

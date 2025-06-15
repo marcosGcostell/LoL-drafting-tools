@@ -1,59 +1,11 @@
-import AppData from './app-data.js';
-import { expirationDate } from '../common/helpers.js';
-import {
-  LOCAL_API,
-  TIERLIST_ROUTE,
-  COUNTERS_ROUTE,
-  LS_APP_DATA,
-} from '../common/config.js';
+import appData from './app-data.js';
+import { LOCAL_API, TIERLIST_ROUTE, COUNTERS_ROUTE } from '../common/config.js';
 
-///////////////////////////////////////
-// App state
-
-let appData;
-
+// FIXME replace this global variable for the State class
 export const state = {
   tierlist: [],
   counterList: [],
 };
-
-///////////////////////////////////////
-// Script
-
-export async function initApp() {
-  try {
-    // TODO to unload the API, maybe appData should be stored in localStorage
-    // So all this expired version checking has some meaning
-    console.log('Initializing App...');
-    let isCacheValid = false;
-    const data = sessionStorage.getItem(LS_APP_DATA);
-    if (data) {
-      const cache = JSON.parse(data);
-      const lastUpdated = new Date(cache.createdAt);
-      if (lastUpdated < expirationDate()) {
-        const newVersion = await AppData.checkVersion();
-        if (newVersion === cache.version) {
-          // Version expired but has not changed
-          isCacheValid = true;
-        }
-      } else {
-        // Version has not expired yet
-        isCacheValid = true;
-      }
-    }
-
-    if (isCacheValid) {
-      console.log('Reading appData from browser...');
-      appData = AppData.getFromJSON(JSON.parse(data));
-    } else {
-      console.log('Reading appData from API...');
-      appData = await AppData.getFromAPI();
-      sessionStorage.setItem(LS_APP_DATA, JSON.stringify(appData.SaveToJSON()));
-    }
-  } catch (error) {
-    throw error;
-  }
-}
 
 export async function getCounterList(
   champion,
@@ -95,8 +47,6 @@ export async function getTierList(role, rank, sortedBy = '') {
     throw error;
   }
 }
-
-export { appData };
 
 /////////////
 // TODO: All these formatting tasks should be in a state class ??

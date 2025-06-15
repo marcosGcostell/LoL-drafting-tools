@@ -1,9 +1,9 @@
-import { LS_STATE } from '../common/config';
+import { LS_STATE } from '../common/config.js';
 
 ///////////////////////////////////////
 // App State class
 
-class State extends EventTarget {
+class AppState extends EventTarget {
   constructor() {
     super();
 
@@ -43,7 +43,7 @@ class State extends EventTarget {
   #updateChampions(action, champion) {
     this.#save();
     this.dispatchEvent(
-      new CustomEvent('change', {
+      new CustomEvent('champion', {
         detail: { action, champion },
       })
     );
@@ -101,4 +101,4 @@ class State extends EventTarget {
 }
 
 // Singleton instance
-export default new State();
+export default new AppState();

@@ -1,4 +1,10 @@
-import { LOCAL_API, APP_DATA, VERSION } from '../common/config.js';
+import {
+  LOCAL_API,
+  APP_DATA_ROUTE,
+  VERSION_ROUTE,
+  LS_APP_DATA,
+} from '../common/config.js';
+import { expirationDate } from '../common/helpers.js';
 
 ///////////////////////////////////////
 
@@ -8,16 +14,24 @@ import { LOCAL_API, APP_DATA, VERSION } from '../common/config.js';
  * This class has an async task involved with its constructor
  * Should be instanciated with 'getFrom' static methods and not 'new AppData()'
  */
-export default class AppData {
+class AppData {
   constructor(data) {
-    Object.assign(this, data);
+    // Object.assign(this, data);
+    // Better to write her all properties to know its content
+    this.version = data.version;
+    this.createdAt = data.version;
+    this.champions = data.champions;
+    this.idList = data.idList;
+    this.nameListe = data.nameList;
+    this.roles = data.roles;
+    this.ranks = data.ranks;
   }
 
   // STATIC METHODS
 
   static async checkVersion() {
     try {
-      const response = await fetch(`${LOCAL_API}${VERSION}`);
+      const response = await fetch(`${LOCAL_API}${VERSION_ROUTE}`);
       const { data } = await response.json();
       return data.version;
     } catch (err) {
@@ -33,7 +47,7 @@ export default class AppData {
    */
   static async getFromAPI() {
     try {
-      const response = await fetch(`${LOCAL_API}${APP_DATA}`);
+      const response = await fetch(`${LOCAL_API}${APP_DATA_ROUTE}`);
       const { data } = await response.json();
       return new AppData(data);
     } catch (err) {
@@ -49,6 +63,47 @@ export default class AppData {
     return new AppData(localData);
   }
 
+  static async initAppData() {
+    try {
+      // TODO to unload the API, maybe appData should be stored in localStorage
+      // So all this expired version checking has some meaning
+      console.log('Initializing App...');
+      let isCacheValid = false;
+      const data = sessionStorage.getItem(LS_APP_DATA);
+      if (data) {
+        const cache = JSON.parse(data);
+        const lastUpdated = new Date(cache.createdAt);
+        if (lastUpdated < expirationDate()) {
+          const newVersion = await AppData.checkVersion();
+          if (newVersion === cache.version) {
+            // Version expired but has not changed
+            isCacheValid = true;
+          }
+        } else {
+          // Version has not expired yet
+          isCacheValid = true;
+        }
+      }
+
+      if (isCacheValid) {
+        console.log('Reading appData from browser...');
+        // return instance set from JSON
+        return AppData.getFromJSON(JSON.parse(data));
+      } else {
+        console.log('Reading appData from API...');
+        const appData = await AppData.getFromAPI();
+        sessionStorage.setItem(
+          LS_APP_DATA,
+          JSON.stringify(appData.SaveToJSON())
+        );
+        // return instance set form API
+        return appData;
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
   // PRIVATE METHODS
 
   // PUBLIC METHODS
@@ -56,11 +111,8 @@ export default class AppData {
     return { ...this };
   }
 
-  toSortedArray(property, shift = false) {
-    const output = Object.values(this[property]);
-    output.sort((a, b) => a.index - b.index);
-    if (shift) output.shift();
-    return output;
+  toSortedArray(property) {
+    return Object.values(this[property]).sort((a, b) => a.index - b.index);
   }
 
   getChampionByName(championName) {
@@ -70,3 +122,6 @@ export default class AppData {
     return this.champions[idResult];
   }
 }
+
+// export instance as Singleton
+export default await AppData.initAppData();
