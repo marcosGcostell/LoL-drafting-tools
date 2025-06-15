@@ -35,7 +35,7 @@ class AppState extends EventTarget {
     this.#save();
     this.dispatchEvent(
       new CustomEvent('change', {
-        detail: { property, value },
+        detail: { target, value },
       })
     );
   }
@@ -64,7 +64,7 @@ class AppState extends EventTarget {
     this.#update('rankSelected', rank);
   }
 
-  setVsLane(vslane) {
+  setVslane(vslane) {
     this.#update('vslaneSelected', vslane);
   }
 
