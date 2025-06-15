@@ -1,6 +1,11 @@
 import AppData from './app-data.js';
 import { expirationDate } from '../common/helpers.js';
-import { LOCAL_API, TIERLIST, COUNTERS } from '../common/config.js';
+import {
+  LOCAL_API,
+  TIERLIST_ROUTE,
+  COUNTERS_ROUTE,
+  LS_APP_DATA,
+} from '../common/config.js';
 
 ///////////////////////////////////////
 // App state
@@ -21,7 +26,7 @@ export async function initApp() {
     // So all this expired version checking has some meaning
     console.log('Initializing App...');
     let isCacheValid = false;
-    const data = sessionStorage.getItem('draftKingAppData');
+    const data = sessionStorage.getItem(LS_APP_DATA);
     if (data) {
       const cache = JSON.parse(data);
       const lastUpdated = new Date(cache.createdAt);
@@ -43,10 +48,7 @@ export async function initApp() {
     } else {
       console.log('Reading appData from API...');
       appData = await AppData.getFromAPI();
-      sessionStorage.setItem(
-        'draftKingAppData',
-        JSON.stringify(appData.SaveToJSON())
-      );
+      sessionStorage.setItem(LS_APP_DATA, JSON.stringify(appData.SaveToJSON()));
     }
   } catch (error) {
     throw error;
@@ -65,7 +67,9 @@ export async function getCounterList(
   const query = `?lane=${role}&rank=${rank}${
     vslane ? `&vslane=${vslane}` : ''
   }`;
-  const response = await fetch(`${LOCAL_API}${COUNTERS}/${folder}${query}`);
+  const response = await fetch(
+    `${LOCAL_API}${COUNTERS_ROUTE}/${folder}${query}`
+  );
   const { data } = await response.json();
   state.counterList = data.counterList;
   completeListData(state.counterList);
@@ -78,8 +82,8 @@ export async function getTierList(role, rank, sortedBy = '') {
     const query = `?lane=${role}&rank=${rank}${
       sortedBy ? `&sort=${sortedBy}` : ''
     }`;
-    console.log(`${LOCAL_API}${TIERLIST}${query}`);
-    const response = await fetch(`${LOCAL_API}${TIERLIST}${query}`);
+    console.log(`${LOCAL_API}${TIERLIST_ROUTE}${query}`);
+    const response = await fetch(`${LOCAL_API}${TIERLIST_ROUTE}${query}`);
 
     const { data } = await response.json();
     console.log(data.tierlist);

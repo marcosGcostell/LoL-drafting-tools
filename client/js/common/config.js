@@ -2,8 +2,8 @@
 export const LOCAL_API = 'http://127.0.0.1:3000/api/v1/';
 export const APP_DATA = 'app-data';
 export const VERSION = 'app-data/version';
-export const TIERLIST = 'tierlist';
-export const COUNTERS = 'counters';
+export const TIERLIST_ROUTE = 'tierlist';
+export const COUNTERS_ROUTE = 'counters';
 
 // Keys for local storage
 export const LS_APP_DATA = 'draftKingAppData';

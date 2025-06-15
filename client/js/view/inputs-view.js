@@ -5,18 +5,11 @@ class InputsView {
   selectorDisplayed = null;
 
   async buildSelectors(roles, ranks, version) {
-    this._setSortedDataArray(roles, true);
+    this._data = roles;
     await this.render(LANE_ITEM_TEMPLATE, '.lane__selector');
     await this.render(LANE_ITEM_TEMPLATE, '.vslane__selector');
-    this._setSortedDataArray(ranks);
+    this._data = ranks;
     await this.render(RANK_ITEM_TEMPLATE, '.rank__selector');
-  }
-
-  _setSortedDataArray(object, shift = false) {
-    this._data = [];
-    this._data = Object.values(object);
-    this._data.sort((a, b) => a.index - b.index);
-    if (shift) this._data.shift();
   }
 
   async render(template, target) {
@@ -54,7 +47,7 @@ class InputsView {
       });
   }
 
-  addHanlderSelector(handler, target) {
+  addHandlerSelector(handler, target) {
     document
       .querySelector(`.${target}__selector`)
       .addEventListener('click', function (e) {

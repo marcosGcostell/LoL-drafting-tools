@@ -1,17 +1,6 @@
-///////////////////////////////////////
-// LOL Drafting tool
-
-//Importing from modules
 import * as model from './model/model.js';
-import * as inputsController from './controllers/inputs-controller.js';
-import countersView from './view/counters-view.js';
-import tierlistView from './view/tierlist-view.js';
-
-///////////////////////////////////////
-// App state
-
-///////////////////////////////////////
-// Script
+import countersView from '../view/counters-view.js';
+import tierlistView from '../view/tierlist-view.js';
 
 const countersHandler = async function () {
   try {
@@ -44,12 +33,3 @@ const tierlistHandler = async function () {
     tierlistView.renderError();
   }
 };
-
-async function init() {
-  // countersView.addHandlerCounters(countersHandler);
-  // tierlistView.addHandlerTierlist(tierlistHandler);
-  await model.initApp();
-  await inputsController.initInputs();
-}
-
-await init();

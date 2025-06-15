@@ -25,12 +25,12 @@ export async function initInputs() {
   );
 
   await inputsView.buildSelectors(
-    model.appData.roles,
-    model.appData.ranks,
+    model.appData.toSortedArray('roles'),
+    model.appData.toSortedArray('ranks'),
     model.appData.version
   );
 
   ['lane', 'vslane', 'rank'].forEach(el =>
-    inputsView.addHanlderSelector(selectorHandler, el)
+    inputsView.addHandlerSelector(selectorHandler, el)
   );
 }
