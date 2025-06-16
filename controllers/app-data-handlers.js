@@ -13,6 +13,7 @@ export const checkGameVersion = async (req, res, next) => {
     });
     if (validVersion) {
       req.version = validVersion.id;
+      req.createdAt = validVersion.createdAt;
       req.update = false;
       console.log(`Version readed from database: ${validVersion.id} ✅`);
       return next();
@@ -22,6 +23,7 @@ export const checkGameVersion = async (req, res, next) => {
     req.version = await Version.replaceFromString(
       await Riot.getLastGameVersion()
     );
+    req.createdAt = new Date().toISOString();
     req.update = req.version !== validVersion?.id;
     next();
   } catch (err) {
@@ -44,6 +46,7 @@ export const updateDatabase = async (req, res, next) => {
       // TODO Maybe should warn the client that this plan b may not work
 
       // Ignore folders fetched and get them from Riot data
+      // FIXME this idList.map set the folders as lolalytics API?
       folders = idList.map(id => id.toLowerCase());
       console.log('Lolalytics folder list has errors! 🧨');
     }
@@ -79,6 +82,7 @@ export const getChampions = async (req, res) => {
       results: idList.length,
       data: {
         version: req.version,
+        createdAt: req.createdAt,
         champions,
         idList,
         nameList,
@@ -92,4 +96,15 @@ export const getChampions = async (req, res) => {
       message: err.message,
     });
   }
+};
+
+export const getVersion = (req, res) => {
+  // Send response
+  res.status(200).json({
+    status: 'success',
+    data: {
+      version: req.version,
+      createdAt: req.createdAt,
+    },
+  });
 };

@@ -1,20 +1,16 @@
 // Constants for API connection to Lolalyttics Site
-export const MIN_DELAY = 0.7;
-export const MAX_DELAY = 2.2;
+export const MIN_DELAY = 0.4;
+export const MAX_DELAY = 1.6;
 export const PROXY_ON = false;
 export const PROXY_URL = 'https://cors-anywhere.herokuapp.com/';
 
 // Config parameters
 export const TIME_BEFORE_CHECK = 12;
-export const DEFAULT_SORT = 'pickRate';
+export const DEFAULT_SORT_FIELD = 'pickRate';
 
 // Riot static data
 export const RIOT_DATA_DRAGON = 'https://ddragon.leagueoflegends.com/';
 export const riotLolRoles = {
-  main: {
-    id: 'main',
-    name: 'Main',
-  },
   top: {
     id: 'top',
     name: 'Top Lane',
@@ -36,6 +32,9 @@ export const riotLolRoles = {
     name: 'Support',
   },
 };
+export const riotLolRolesArray = Object.keys(riotLolRoles)
+  // .filter(role => role != 'main')
+  .map(el => riotLolRoles[el].id);
 
 export const riotLolRanks = {
   all: {

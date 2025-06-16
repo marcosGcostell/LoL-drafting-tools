@@ -4,67 +4,183 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Nunito+Sans:400,600,700"
+      rel="stylesheet"
+    />
+    <link
+      rel="shortcut icon"
+      href="img/icons/favicon.png"
+      type="image/x-icon"
+    />
     <link rel="stylesheet" href="./style.css" />
-    <script defer src="js/controller.js" type="module"></script>
-    <title>League of Legends – Drafting Tool</title>
+    <script defer src="js/index.js" type="module"></script>
+    <title>K-draft - League of Legends – Drafting Tool</title>
   </head>
 
   <body>
-    <h1>League of Legends – Drafting Tool</h1>
-    <main>
-      <div class="nav">
-        <span>
-          <input
-            id="champion"
-            type="text"
-            class="input"
-            placeholder="Champion..."
-          />
-          <input
-            id="rank"
-            type="text"
-            class="input"
-            placeholder="Rank..."
-            value=""
-          />
-          <input
-            id="role"
-            type="text"
-            class="input"
-            placeholder="Role..."
-            value=""
-          />
-          <input
-            id="vslane"
-            type="text"
-            class="input"
-            placeholder="vs role..."
-            value=""
-          />
-        </span>
-        <span class="buttons">
-          <button class="btn btn-counters">Counters</button>
-          <button class="btn btn-tierlist">Tierlist</button>
-        </span>
-      </div>
-      <div class="list-container">
-        <ul class="container">
-          <!-- <li class="row">
-            <p class="header void"></p>
-            <p class="header name header">Champion</p>
-            <p class="header">Winratio</p>
-            <p class="header">delta1</p>
-            <p class="header">delta2</p>
-          </li>
-          <li class="row">
-            <img src="img/champions/Aatrox.png" class="data thumbnail" />
-            <p class="data name">Aatrox</p>
-            <p class="data">50%</p>
-            <p class="data">2.1</p>
-            <p class="data">-0.5</p>
-          </li> -->
-        </ul>
-      </div>
-    </main>
+    <div class="main-container">
+      <header>
+        <div class="header header__logo">
+          <img src="img/icons/logo.png" class="logo" alt="K-draft" />
+        </div>
+        <div class="header header__central">
+          <button class="btn lang__btn">EN</button>
+        </div>
+        <div class="header header__login">
+          <button class="btn login__btn">Log In</button>
+          <span>
+            <svg class="user__icon">
+              <use href="img/icons/icons.svg#icon-user"></use>
+            </svg>
+          </span>
+        </div>
+      </header>
+      <main>
+        <section class="top-section">
+          <div class="input-section">
+            <div class="main__input lane__input selector">
+              <img
+                src="img/lanes/all.webp"
+                class="lane__btn input__clickable"
+                alt="Lanes"
+              />
+              <span>Lane</span>
+              <div class="popup lane__selector hidden">
+                <!-- Place to insert lane selector -->
+              </div>
+            </div>
+            <div class="main__input rank__input selector">
+              <img
+                src="img/ranks/all.webp"
+                class="rank__btn input__clickable"
+                alt="Ranks"
+              />
+              <span>All</span>
+              <div class="popup rank__selector hidden">
+                <!-- Place to insert rank selector -->
+              </div>
+            </div>
+            <div class="small__inputs">
+              <div class="small__input vslane__input selector">
+                <img
+                  src="img/lanes/all.webp"
+                  class="vslane__btn input__clickable"
+                  alt="Lanes"
+                />
+                <span>vs Lane</span>
+                <div class="popup vslane__selector hidden">
+                  <!-- Place to insert lane selector -->
+                </div>
+              </div>
+              <div class="small__input patch__input">
+                <button class="patch__btn input__clickable">PATCH</button>
+              </div>
+            </div>
+          </div>
+          <div class="champion__pull">
+            <div class="champion" id="c01">
+              <img src="img/champions/Lux.png" class="champion__img" />
+              <span>WR: <span class="champion__wr">50.34</span></span>
+              <span>Ban: <span class="champion__ban">13.4</span></span>
+            </div>
+            <div class="input" id="c01">
+              <input
+                id="champion"
+                type="text"
+                class="input"
+                placeholder="Champion..."
+              />
+              <span>
+                <svg class="search__icon">
+                  <use href="img/icons/icons.svg#icon-search"></use>
+                </svg>
+              </span>
+            </div>
+          </div>
+        </section>
+        <section class="data-section">
+          <div class="list-container">
+            <ul class="tierlist">
+              <li class="first-row">
+                <span class="fr__void"></span>
+                <span class="data">WR</span>
+                <span class="data">pick</span>
+                <span class="data fr__name">Champion</span>
+              </li>
+              <hr />
+              <!-- Place to insert tierlist -->
+              <!-- <li class="row">
+                <img
+                  src="img/lanes/middle.webp"
+                  class="icon__row"
+                  alt="vs Lane"
+                />
+                <span class="data">50.12</span>
+                <span class="data">12.2</span>
+                <img src="img/champions/Nunu.png" class="champ__img" />
+                <span class="data name">Nunu & Willump</span>
+              </li>
+              <li class="row">
+                <img
+                  src="img/lanes/middle.webp"
+                  class="icon__row"
+                  alt="vs Lane"
+                />
+                <span class="data">47.84</span>
+                <span class="data">6.7</span>
+                <img src="img/champions/Ahri.png" class="champ__img" />
+                <span class="data name">Ahri</span>
+              </li>
+              <li class="row">
+                <img
+                  src="img/lanes/middle.webp"
+                  class="icon__row"
+                  alt="vs Lane"
+                />
+                <span class="data">52.34</span>
+                <span class="data">10.0</span>
+                <img src="img/champions/Akali.png" class="champ__img" />
+                <span class="data name">Akali</span>
+              </li> -->
+            </ul>
+          </div>
+          <div class="counter-container">
+            <div class="counter" id="d01">
+              <ul class="counter-list">
+                <li class="first-row">
+                  <span class="data">Stats</span>
+                </li>
+                <hr />
+                <li class="row">
+                  <span class="results score">6</span>
+                  <span class="results"
+                    >51.24
+                    <p class="delta">Δ-2.3</p></span
+                  >
+                </li>
+                <li class="row">
+                  <span class="results score">6</span>
+                  <span class="results"
+                    >51.24
+                    <p class="delta">Δ+1.6</p></span
+                  >
+                </li>
+                <li class="row">
+                  <span class="results score">6</span>
+                  <span class="results"
+                    >51.24
+                    <p class="delta">Δ-2.3</p></span
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      </main>
+      <footer>
+        <p>League of Legends - Riot Games</p>
+      </footer>
+    </div>
   </body>
 </html>

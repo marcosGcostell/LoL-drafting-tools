@@ -4,15 +4,9 @@ const resetStaticData = async () => {
   await riotRole.deleteMany();
   await riotRole.create([
     {
-      index: 0,
-      id: 'main',
-      name: 'Main',
-      img: 'all.webp',
-    },
-    {
       index: 1,
       id: 'top',
-      name: 'Top Lane',
+      name: 'Top',
       img: 'top.webp',
     },
     {
@@ -24,13 +18,13 @@ const resetStaticData = async () => {
     {
       index: 3,
       id: 'middle',
-      name: 'Mid Lane',
+      name: 'Mid',
       img: 'middle.webp',
     },
     {
       index: 4,
       id: 'bottom',
-      name: 'AD Carry',
+      name: 'ADC',
       img: 'bottom.webp',
     },
     {
@@ -45,7 +39,7 @@ const resetStaticData = async () => {
     {
       index: 0,
       id: 'all',
-      name: 'All Ranks',
+      name: 'All',
       img: 'all.webp',
     },
     {
@@ -87,7 +81,7 @@ const resetStaticData = async () => {
     {
       index: 7,
       id: 'd2_plus',
-      name: '+Diamond 2',
+      name: '+D2',
       img: 'diamond.webp',
     },
     {

@@ -1,48 +1,54 @@
-import { IMG_SRC } from '../common/config.js';
+import { IMG_SRC, TIERLIST_ITEM_TEMPLATE } from '../common/config.js';
+import appData from '../model/app-data.js';
 import View from './view.js';
 
 class ListView extends View {
-  _parentElement = document.querySelector('.container');
+  _parentElement = document.querySelector('.tierlist');
   _errorMessage = 'No champion data recieved!';
   _message = '';
 
   addHandlerTierlist(handler) {
     document
-      .querySelector('.btn-tierlist')
+      .querySelector('.btn__tierlist')
       .addEventListener('click', function (e) {
         e.preventDefault();
         handler();
       });
   }
 
-  _generateMarkup() {
-    console.log(this._data);
-    const header = `
-      <li class="row">
-        <p class="header void"></p>
-        <p class="header name">Champion</p>
-        <p class="header">Winratio</p>
-        <p class="header">pick</p>
-        <p class="header">ban</p>
-      </li>
-    `;
+  async _generateMarkup(options) {
+    if (!options?.lane) return -1;
 
-    return (
-      header +
-      this._data.map(champion => this._generateItemMarkup(champion)).join('')
-    );
+    // TODO Maybe the templates should be cached in sessionStorage
+    const response = await fetch(`${TIERLIST_ITEM_TEMPLATE}`);
+    const itemTemplate = await response.text();
+
+    return this._data
+      .map(champion =>
+        this._generateItemMarkup(
+          champion,
+          appData.roles[options.lane],
+          itemTemplate
+        )
+      )
+      .join('');
   }
 
-  _generateItemMarkup(champion) {
-    return `
-      <li class="row">
-        <img src="${IMG_SRC}${champion.img}" class="data thumbnail" />
-        <p class="data name">${champion.name}</p>
-        <p class="data">${champion.winRatio}%</p>
-        <p class="data">${champion.pickRate}</p>
-        <p class="data">${champion.banRate}</p>
-      </li>
-    `;
+  _generateItemMarkup(champion, lane, itemTemplate) {
+    let output = itemTemplate.replace(/{%LANE_IMG%}/g, lane.img);
+    output = output.replace(/{%LANE_NAME%}/g, lane.name);
+    output = output.replace(/{%WR%}/g, champion.winRatio);
+    output = output.replace(/{%PR%}/g, champion.pickRate);
+    output = output.replace(/{%IMG_SRC%}/g, IMG_SRC);
+    output = output.replace(/{%IMG%}/g, champion.img);
+    output = output.replace(/{%NAME%}/g, champion.name);
+    return output;
+  }
+
+  _clear() {
+    this._parentElement
+      .querySelectorAll('.row, .spinner')
+      .forEach(el => el.remove());
   }
 }
 

@@ -1,27 +1,11 @@
 import appData from './app-data.js';
-import { LOCAL_API, TIERLIST, COUNTERS } from '../common/config.js';
+import { LOCAL_API, TIERLIST_ROUTE, COUNTERS_ROUTE } from '../common/config.js';
 
-///////////////////////////////////////
-// App state
-
+// FIXME replace this global variable for the State class
 export const state = {
   tierlist: [],
   counterList: [],
 };
-
-///////////////////////////////////////
-// Script
-
-export async function initApp() {
-  try {
-    // TODO This function may do the AppData.build() task
-    // Now an instance is imported as a Singleton
-    // but maybe it should be a global variable that can be reset here
-    console.log('Initializing App...');
-  } catch (error) {
-    throw error;
-  }
-}
 
 export async function getCounterList(
   champion,
@@ -35,7 +19,9 @@ export async function getCounterList(
   const query = `?lane=${role}&rank=${rank}${
     vslane ? `&vslane=${vslane}` : ''
   }`;
-  const response = await fetch(`${LOCAL_API}${COUNTERS}/${folder}${query}`);
+  const response = await fetch(
+    `${LOCAL_API}${COUNTERS_ROUTE}/${folder}${query}`
+  );
   const { data } = await response.json();
   state.counterList = data.counterList;
   completeListData(state.counterList);
@@ -48,15 +34,14 @@ export async function getTierList(role, rank, sortedBy = '') {
     const query = `?lane=${role}&rank=${rank}${
       sortedBy ? `&sort=${sortedBy}` : ''
     }`;
-    console.log(`${LOCAL_API}${TIERLIST}${query}`);
-    const response = await fetch(`${LOCAL_API}${TIERLIST}${query}`);
 
+    const response = await fetch(`${LOCAL_API}${TIERLIST_ROUTE}${query}`);
     const { data } = await response.json();
-    console.log(data.tierlist);
-    state.tierlist = data.tierlist;
-    completeListData(state.tierlist);
 
-    if (sortedBy) sortList(state.tierlist, sortedBy);
+    completeListData(data.tierlist);
+    if (sortedBy) sortList(data.tierlist, sortedBy);
+
+    return data.tierlist;
   } catch (error) {
     throw error;
   }
@@ -68,8 +53,8 @@ export async function getTierList(role, rank, sortedBy = '') {
 function addChampionIds(championList) {
   return championList.forEach(champion => {
     appData.champions[champion.name]
-      ? (champion.id = appData.champions[champion.name].riotId)
-      : (champion.id = appData.getChampionByName(champion.name).riotId);
+      ? (champion.id = appData.champions[champion.name].id)
+      : (champion.id = appData.getChampionByName(champion.name).id);
   });
 }
 function addChampionImages(championList) {

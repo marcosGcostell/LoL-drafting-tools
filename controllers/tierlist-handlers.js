@@ -1,6 +1,7 @@
 import Lolalytics from '../models/api/lolalytics-api.js';
 import Tierlist from '../models/tierlist-model.js';
 import { getListFromDb } from './common-list-handlers.js';
+import { riotLolRolesArray } from '../models/common/config.js';
 
 const saveTierlist = (lane, rank, list) => {
   try {
@@ -54,4 +55,26 @@ export const getTierlist = async (req, res) => {
       message: err.message,
     });
   }
+};
+
+export const getAllTierlist = async rank => {
+  const allData = await Promise.all(
+    riotLolRolesArray.map(lane => getTierlistData(lane, rank))
+  );
+  const allTierlists = {};
+  riotLolRolesArray.forEach(
+    lane => (allTierlists[lane] = allData.shift().tierlist)
+  );
+  return allTierlists;
+};
+
+export const getAllRoleRates = (championName, allTierlists) => {
+  const allRoleRates = {};
+  riotLolRolesArray.forEach(lane => {
+    const [champion] = allTierlists[lane].filter(
+      el => el.name === championName
+    );
+    allRoleRates[lane] = champion?.roleRate || 0;
+  });
+  return allRoleRates;
 };

@@ -8,22 +8,22 @@ class CountersView extends View {
 
   addHandlerCounters(handler) {
     document
-      .querySelector('.btn-counters')
+      .querySelector('.btn__counters')
       .addEventListener('click', function (e) {
         e.preventDefault();
         handler();
       });
   }
 
-  _generateMarkup() {
+  async _generateMarkup() {
     console.log(this._data);
     const header = `
       <li class="row">
-        <p class="header void"></p>
-        <p class="header name">Champion</p>
-        <p class="header">Winratio</p>
-        <p class="header">delta1</p>
-        <p class="header">delta2</p>
+        <p class="first-row void"></p>
+        <p class="first-row name">Champion</p>
+        <p class="first-row">Winratio</p>
+        <p class="first-row">delta1</p>
+        <p class="first-row">delta2</p>
       </li>
     `;
     return (

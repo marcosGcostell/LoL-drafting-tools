@@ -12,6 +12,10 @@ router
     appDataHandlers.getChampions
   );
 
+router
+  .route('/version')
+  .get(appDataHandlers.checkGameVersion, appDataHandlers.getVersion);
+
 // router.route('/:id').get(appDataHandlers.getChampionById);
 
 export default router;
