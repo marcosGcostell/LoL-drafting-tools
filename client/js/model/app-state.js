@@ -15,6 +15,7 @@ class AppState extends EventTarget {
     this.tierList = [];
     this.championsShowed = [];
     this.counterLists = [];
+    this.popUpOn = '';
 
     // Load values from session
     const localData = sessionStorage.getItem(LS_STATE);

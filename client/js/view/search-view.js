@@ -2,13 +2,22 @@ import { IMG_SRC, SEARCH_ITEM_TEMPLATE } from '../common/config.js';
 import View from './view.js';
 
 class ListView extends View {
+  _panelElement = document.querySelector('.search__popup');
   _parentElement = document.querySelector('.search__results');
   _errorMessage = 'No champion data recieved!';
   _message = '<li class="row">No champion match that name...</li>';
+  isPanelShowed = false;
 
-  addHandlerTierlist(handler) {
+  addHandlerSearchContent(handler) {
+    document.querySelector('#search').addEventListener('input', function (e) {
+      e.preventDefault();
+      handler(e);
+    });
+  }
+
+  addHandlerAddChampion(handler) {
     document
-      .querySelector('.btn__tierlist')
+      .querySelector('#select-champion')
       .addEventListener('click', function (e) {
         e.preventDefault();
         handler();
@@ -33,6 +42,11 @@ class ListView extends View {
     output = output.replace(/{%IMG%}/g, champion.img);
     output = output.replace(/{%NAME%}/g, champion.name);
     return output;
+  }
+
+  toggleSearchPanel() {
+    this._panelElement.classList.toggle('hidden');
+    this.isPanelShowed = !this.isPanelShowed;
   }
 }
 

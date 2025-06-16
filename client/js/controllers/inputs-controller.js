@@ -4,7 +4,10 @@ import inputsView from '../view/inputs-view.js';
 import { tierlistHandler } from './tierlist-controller.js';
 
 const displayOptionsHandler = target => {
-  inputsView.toggleSelector(target);
+  if (!appState.popUpOn || appState.popUpOn === target) {
+    inputsView.toggleSelector(target);
+    appState.popUpOn = inputsView.selectorDisplayed;
+  }
 };
 
 const setOptionHandler = id => {
@@ -34,7 +37,7 @@ const optionsChangedHandler = e => {
   console.log(e);
 };
 
-export async function initInputs() {
+export async function setHandlers() {
   // Handlers to show and hide selectors
   ['lane', 'vslane', 'rank', 'patch'].forEach(el =>
     inputsView.addHandlerBtn(displayOptionsHandler, el)
