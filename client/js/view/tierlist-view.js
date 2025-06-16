@@ -7,6 +7,7 @@ class ListView extends View {
   _errorMessage = 'No champion data recieved!';
   _message = '';
 
+  // FIXME this handler has no purpose anymore
   addHandlerTierlist(handler) {
     document
       .querySelector('.btn__tierlist')

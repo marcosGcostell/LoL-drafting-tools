@@ -67,10 +67,9 @@ class InputsView {
     const image = document.querySelector(`.${target}__input img`);
     const text = document.querySelector(`.${target}__input span`);
 
-    const prefix = target === 'vslane' ? 'vs ' : '';
     const folder = target === 'rank' ? 'ranks' : 'lanes';
     image.setAttribute('src', `img/${folder}/${option.img}`);
-    text.textContent = `${prefix}${option.name}`;
+    text.textContent = option.name;
   }
 }
 

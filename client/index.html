@@ -20,6 +20,7 @@
 
   <body>
     <div class="main-container">
+      <!-- HEADER -->
       <header>
         <div class="header header__logo">
           <img src="img/icons/logo.png" class="logo" alt="K-draft" />
@@ -36,8 +37,11 @@
           </span>
         </div>
       </header>
+      <!-- MAIN -->
       <main>
+        <!-- TOP SECTION -->
         <section class="top-section">
+          <!-- INPUT SECTION -->
           <div class="input-section">
             <div class="main__input lane__input selector">
               <img
@@ -68,9 +72,12 @@
                   class="vslane__btn input__clickable"
                   alt="Lanes"
                 />
-                <span>vs Lane</span>
+                <div class="vslane__label">
+                  <div class="label">vs</div>
+                  <span>Lane</span>
+                </div>
                 <div class="popup vslane__selector hidden">
-                  <!-- Place to insert lane selector -->
+                  <!-- Place to insert vslane selector -->
                 </div>
               </div>
               <div class="small__input patch__input">
@@ -78,13 +85,48 @@
               </div>
             </div>
           </div>
-          <div class="champion__pull">
+          <!-- CHAMPION SECTION -->
+          <div class="champion-section">
             <div class="champion" id="c01">
               <img src="img/champions/Lux.png" class="champion__img" />
               <span>WR: <span class="champion__wr">50.34</span></span>
               <span>Ban: <span class="champion__ban">13.4</span></span>
             </div>
-            <div class="input" id="c01">
+          </div>
+          <div class="search-section">
+            <div class="champion input__clickable" id="select-champion">
+              <svg class="add__champion">
+                <use href="img/icons/icons.svg#icon-plus-circle"></use>
+              </svg>
+              <span class="champion__text">Add</span>
+              <span class="champion__text">Champion</span>
+            </div>
+            <div class="popup__container">
+              <div class="popup search__popup">
+                <div class="search">
+                  <input
+                    id="search"
+                    type="text"
+                    class="input"
+                    placeholder="Champion..."
+                  />
+                  <span>
+                    <svg class="search__icon">
+                      <use href="img/icons/icons.svg#icon-search"></use>
+                    </svg>
+                  </span>
+                </div>
+                <ul class="search__results">
+                  <!-- Place to insert search resutlts -->
+                  <li class="row selector__clickable" value="lux">
+                    <img src="img/champions/Lux.png" class="search__img" />
+                    <span>Lux</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- <div class="input" id="search">
               <input
                 id="champion"
                 type="text"
@@ -96,10 +138,12 @@
                   <use href="img/icons/icons.svg#icon-search"></use>
                 </svg>
               </span>
-            </div>
+            </div> -->
           </div>
         </section>
+        <!-- DATA SECTION -->
         <section class="data-section">
+          <!-- TIERLIST SECTION -->
           <div class="list-container">
             <ul class="tierlist">
               <li class="first-row">
@@ -112,6 +156,7 @@
               <!-- Place to insert tierlist -->
             </ul>
           </div>
+          <!-- STATS SECTION -->
           <div class="counter-container">
             <div class="counter" id="d01">
               <ul class="counter-list">
@@ -145,6 +190,7 @@
           </div>
         </section>
       </main>
+      <!-- FOOTER -->
       <footer>
         <p>League of Legends - Riot Games</p>
       </footer>

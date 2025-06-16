@@ -1,12 +1,16 @@
 /* Champions section stytles */
 
-.champion__pull {
-  flex: 1 1 75%;
-  min-width: 50rem;
+.champion-section {
+  flex: 1;
+  /* min-width: 50rem; */
   height: 9rem;
   display: flex;
   justify-content: flex-start;
   align-items: center;
+}
+
+#select-champion:hover {
+  transform: scale(1.05);
 }
 
 .champion {
@@ -35,24 +39,12 @@
   font-size: 1rem;
 }
 
-.input {
-  display: flex;
-  flex: 1;
-  align-items: center;
-  justify-content: flex-end;
-  padding: 0 2rem;
+.add__champion {
+  width: 4rem;
+  fill: var(--color-grey-light-5);
 }
 
-input {
-  border-radius: 1.1rem;
-  height: 2.2rem;
-  font-size: 1.1rem;
-  background-color: var(--color-grey-light-3);
-}
-
-.search__icon {
-  fill: var(--color-grad-2);
-  max-height: 1.8rem;
-  max-width: 3rem;
-  margin-left: -3.2rem;
+.champion__text {
+  font-size: 1rem;
+  color: var(--color-grey-light-5);
 }

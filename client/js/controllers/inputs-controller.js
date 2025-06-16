@@ -19,7 +19,7 @@ const setOptionHandler = id => {
     inputsView.changeOption('vslane', option);
   }
   inputsView.toggleSelector();
-  // call the proper method: 'set' + Capitalized target. 'setLane'
+  // call the proper method: 'set' + Capitalized target. (e.g. = 'setLane')
   appState[`set${target.charAt(0).toUpperCase() + target.slice(1)}`](id);
 };
 
