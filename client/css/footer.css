@@ -1,0 +1,12 @@
+/* Footer styles */
+
+footer {
+  justify-content: flex-end;
+  text-align: center;
+  height: 2.8rem;
+  color: var(--color-grey-light-4);
+}
+
+footer p {
+  margin-top: 0.5rem;
+}

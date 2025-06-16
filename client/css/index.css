@@ -1,0 +1,13 @@
+/* Import global variables */
+@import url('_variables.css');
+
+/* Import all css files */
+@import url('main.css');
+@import url('components.css');
+@import url('header.css');
+@import url('inputs.css');
+@import url('inputs-selectors.css');
+@import url('champions.css');
+@import url('lists.css');
+@import url('footer.css');
+@import url('modifiers.css');

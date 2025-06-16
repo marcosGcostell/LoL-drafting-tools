@@ -1,0 +1,71 @@
+/* Inputs selectors and popus stytles */
+
+.selector {
+  position: relative;
+}
+
+.popup {
+  position: absolute;
+  top: 30%;
+  left: 100%;
+  display: flex;
+  background: var(--color-grey-dark-2);
+  padding: 0.5rem;
+  border: 1px solid var(--color-grey-dark-4);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+}
+
+.selector__text {
+  font-size: 0.75rem;
+  padding: 0;
+  font-stretch: extra-condensed;
+}
+
+.lane__selector,
+.vslane__selector {
+  top: 25%;
+  left: 100%;
+  gap: 6px;
+}
+
+.vslane__selector {
+  left: 40%;
+  text-align: center;
+}
+
+.lane__selector img,
+.vslane__selector img {
+  height: 2rem;
+  padding: 0;
+  cursor: pointer;
+}
+
+.vslane__selector img {
+  margin: 0;
+}
+
+.rank__selector {
+  top: 80%;
+  left: 10%;
+  gap: 8px;
+  width: 16rem;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.rank__selector img {
+  height: 2.5rem;
+  cursor: pointer;
+}
+
+.selector__item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 3rem;
+  padding: 0;
+}
