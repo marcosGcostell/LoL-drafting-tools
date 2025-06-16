@@ -12,7 +12,6 @@ export const toggleSearchPanel = e => {
 
 const handleQuery = e => {
   const query = e.target.value;
-  e.stopPropagation();
   if (!query) return searchView._clear();
 
   const { starterQuery, containsQuery } = searchModel.searchChampions(query);
@@ -26,12 +25,15 @@ const handleQuery = e => {
 };
 
 const getPickedChampion = e => {
-  const id = e.target.value;
+  const id = e.target.closest('li').getAttribute('value');
   searchView.toggleSearchPanel();
   appState.popUpOn = searchView.isPanelShowed ? 'search' : '';
-  e.stopPropagation();
   if (id) {
     console.log(id);
+    // TODO Champion view and champion controller to add the champion
+    // Model to get the counters and champion data
+    // Update new data to appState
+    // Handel the new events from appState
   }
 };
 

@@ -61,6 +61,11 @@
   height: 2rem;
 }
 
+.search__results hr {
+  border-color: var(--color-grey-light-4);
+  margin: 0.2rem 0;
+}
+
 .search__img {
   height: 1.8rem;
   margin-right: 0.8rem;

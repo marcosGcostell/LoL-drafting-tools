@@ -7,7 +7,7 @@ export const state = {
   counterList: [],
 };
 
-export async function getCounterList(
+export async function getStatsList(
   champion,
   role,
   rank,

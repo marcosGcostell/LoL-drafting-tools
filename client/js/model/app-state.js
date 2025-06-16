@@ -81,7 +81,7 @@ class AppState extends EventTarget {
     this.#updateChampions('add', champion);
   }
 
-  removeChampion(champion, counterList) {
+  removeChampion(champion) {
     const index = this.championsShowed.indexOf(champion);
     if (index > -1) {
       this.championsShowed.splice(index, 1);

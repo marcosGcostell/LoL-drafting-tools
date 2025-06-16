@@ -5,6 +5,7 @@ class ListView extends View {
   constructor() {
     super();
     this._panelElement = document.querySelector('.search__popup');
+    this._inputElement = document.querySelector('#search');
     this._parentElement = document.querySelector('.search__results');
     this._errorMessage = 'No champion match that name...';
     this._message = 'Please, enter a champion name...';
@@ -15,7 +16,7 @@ class ListView extends View {
   }
 
   addHandlerSearchContent(handler) {
-    document.querySelector('#search').addEventListener('input', function (e) {
+    this._inputElement.addEventListener('input', function (e) {
       e.preventDefault();
       handler(e);
     });
@@ -66,6 +67,8 @@ class ListView extends View {
   }
 
   toggleSearchPanel() {
+    this._inputElement.value = '';
+    this._clear();
     this._panelElement.classList.toggle('hidden');
     this.isPanelShowed = !this.isPanelShowed;
   }
