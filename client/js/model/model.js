@@ -1,7 +1,7 @@
 import appData from './app-data.js';
 import { LOCAL_API, TIERLIST_ROUTE, COUNTERS_ROUTE } from '../common/config.js';
 
-// FIXME replace this global variable for the State class
+// FIXME replace this for the State class in counterList
 export const state = {
   tierlist: [],
   counterList: [],

@@ -2,11 +2,17 @@ import { IMG_SRC, SEARCH_ITEM_TEMPLATE } from '../common/config.js';
 import View from './view.js';
 
 class ListView extends View {
-  _panelElement = document.querySelector('.search__popup');
-  _parentElement = document.querySelector('.search__results');
-  _errorMessage = 'No champion data recieved!';
-  _message = '<li class="row">No champion match that name...</li>';
-  isPanelShowed = false;
+  constructor() {
+    super();
+    this._panelElement = document.querySelector('.search__popup');
+    this._parentElement = document.querySelector('.search__results');
+    this._errorMessage = 'No champion match that name...';
+    this._message = 'Please, enter a champion name...';
+    this.isPanelShowed = false;
+
+    // prevent propagation for clicking inside a displayed popup
+    this._panelElement.addEventListener('click', e => e.stopPropagation());
+  }
 
   addHandlerSearchContent(handler) {
     document.querySelector('#search').addEventListener('input', function (e) {
@@ -20,19 +26,34 @@ class ListView extends View {
       .querySelector('#select-champion')
       .addEventListener('click', function (e) {
         e.preventDefault();
-        handler();
+        handler(e);
       });
   }
 
+  addHandlerPickChampion(handler) {
+    this._parentElement.addEventListener('click', function (e) {
+      e.preventDefault();
+      handler(e);
+    });
+  }
+
   async _generateMarkup(options) {
-    if (!options?.length) return _message;
+    if (!options?.length) {
+      return this._message;
+    }
 
     // TODO Maybe the templates should be cached in sessionStorage
     const response = await fetch(`${SEARCH_ITEM_TEMPLATE}`);
     const itemTemplate = await response.text();
 
     return this._data
-      .map(champion => this._generateItemMarkup(champion, itemTemplate))
+      .map(champion => {
+        if (champion?.id) {
+          return this._generateItemMarkup(champion, itemTemplate);
+        } else {
+          return '<hr>';
+        }
+      })
       .join('');
   }
 

@@ -30,3 +30,7 @@ hr {
     transform: rotate(360deg);
   }
 }
+
+.error svg {
+  height: 2rem;
+}

@@ -23,6 +23,8 @@ class AppState extends EventTarget {
       try {
         const parsed = JSON.parse(localData);
         Object.assign(this, parsed);
+        // On reload hide any pop-ups
+        this.popUpOn = '';
       } catch (err) {
         throw err;
       }

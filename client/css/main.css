@@ -61,7 +61,3 @@ main {
   flex: 1;
   border-bottom: var(--color-grey-dark-4) solid 2px;
 }
-
-.hidden {
-  display: none;
-}

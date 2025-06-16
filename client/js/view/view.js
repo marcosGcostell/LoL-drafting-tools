@@ -14,6 +14,7 @@ export default class View {
    */
   async render(data, options = {}) {
     console.log('Rendering the list');
+    console.log(data);
     // TODO Need to change the _parentElement relation
     // Should be a root element for messages and a parentelement to render data
     if (!data || (Array.isArray(data) && data.length === 0))
@@ -22,6 +23,7 @@ export default class View {
     this._data = data;
     const markup = await this._generateMarkup(options);
 
+    console.log(this._parentElement);
     if (options?.onlyMarkup === true) return markup;
 
     this._clear();
@@ -57,14 +59,14 @@ export default class View {
 
   renderError(message = this._errorMessage) {
     const markup = `
-        <div class="error">
-          <div>
-            <svg>
-              <use href="${ICONS}#icon-alert-triangle"></use>
-            </svg>
-          </div>
-          <p>${message}</p>
-        </div>
+        <li class="row error">
+          <svg>
+            <use href="${ICONS}#icon-alert-triangle"></use>
+          </svg>
+        </li>
+        <li class="row error">
+          <span>${message}</span>
+        </li>
       `;
     this._clear();
     this._parentElement.insertAdjacentHTML('beforeend', markup);
@@ -72,14 +74,14 @@ export default class View {
 
   renderMessage(message = this._message) {
     const markup = `
-        <div class="message">
-          <div>
-            <svg>
-              <use href="${ICONS}#icon-smile"></use>
-            </svg>
-          </div>
-          <p>${message}</p>
-        </div> 
+        <li class="row error">
+          <svg>
+            <use href="${ICONS}#icon-smile"></use>
+          </svg>
+        </li>
+        <li class="row error">
+          <span>${message}</span>
+        </li> 
       `;
     this._clear();
     this._parentElement.insertAdjacentHTML('beforeend', markup);
