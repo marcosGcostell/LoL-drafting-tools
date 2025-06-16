@@ -1,6 +1,7 @@
 import appData from '../model/app-data.js';
 import appState from '../model/app-state.js';
 import inputsView from '../view/inputs-view.js';
+import { tierlistHandler } from './tierlist-controller.js';
 
 const displayOptionsHandler = target => {
   inputsView.toggleSelector(target);
@@ -18,44 +19,18 @@ const setOptionHandler = id => {
     inputsView.changeOption('vslane', option);
   }
   inputsView.toggleSelector();
-  target[0] = target[0].toUpperCase();
   // call the proper method: 'set' + Capitalized target. 'setLane'
   appState[`set${target.charAt(0).toUpperCase() + target.slice(1)}`](id);
 };
 
-// const setLaneHandler = id => {
-//   if (!id) return;
-//   if (appState.laneSelected === id) return;
-
-//   const option = appData.roles[id];
-//   inputsView.changeOption('lane', option);
-//   inputsView.changeOption('vslane', option);
-//   inputsView.toggleSelector();
-//   appState.setLane(id, id);
-// };
-
-// const setRankHandler = id => {
-//   if (!id) return;
-//   if (appState.rankSelected === id) return;
-
-//   const option = appData.ranks[id];
-//   inputsView.changeOption('rank', option);
-//   inputsView.toggleSelector();
-//   appState.setRank(id);
-// };
-
-// const setVsLaneHandler = id => {
-//   if (!id) return;
-//   if (appState.vslaneSelected === id) return;
-
-//   const option = appData.roles[id];
-//   inputsView.changeOption('vslane', option);
-//   inputsView.toggleSelector();
-//   appState.setVslane(id);
-// };
-
 const optionsChangedHandler = e => {
   const { target, value } = e.detail;
+  if (target === 'rankSelected') {
+    tierlistHandler();
+  }
+  if (target === 'vslaneSelected') {
+    tierlistHandler();
+  }
   console.log(e);
 };
 
@@ -73,9 +48,6 @@ export async function initInputs() {
   );
 
   // Handlers to manage options selection
-  // inputsView.addHandlerSelector(setLaneHandler, 'lane');
-  // inputsView.addHandlerSelector(setVsLaneHandler, 'vslane');
-  // inputsView.addHandlerSelector(setRankHandler, 'rank');
   ['lane', 'vslane', 'rank'].forEach(el =>
     inputsView.addHandlerSelector(setOptionHandler, el)
   );

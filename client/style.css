@@ -80,6 +80,12 @@ body {
     border-radius: 0; */
 }
 
+hr {
+  width: 100%;
+  border-color: var(--color-grey-dark-4);
+  margin-bottom: 0.3rem;
+}
+
 header {
   width: 100%;
   display: flex;
@@ -92,6 +98,28 @@ header {
   display: flex;
   height: 2.2rem;
   align-items: center;
+}
+
+.spinner {
+  margin: 2rem auto;
+  text-align: center;
+}
+
+.spinner svg {
+  height: 4rem;
+  width: 4rem;
+  fill: var(--color-grey-light-5);
+  animation: rotate 2s infinite linear;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .header__logo,
@@ -398,7 +426,7 @@ input {
 }
 
 .first-row {
-  height: 1.5rem;
+  height: 1rem;
   font-style: italic;
   font-size: 0.8rem;
 }

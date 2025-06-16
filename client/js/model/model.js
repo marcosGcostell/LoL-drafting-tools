@@ -34,15 +34,14 @@ export async function getTierList(role, rank, sortedBy = '') {
     const query = `?lane=${role}&rank=${rank}${
       sortedBy ? `&sort=${sortedBy}` : ''
     }`;
-    console.log(`${LOCAL_API}${TIERLIST_ROUTE}${query}`);
+
     const response = await fetch(`${LOCAL_API}${TIERLIST_ROUTE}${query}`);
-
     const { data } = await response.json();
-    console.log(data.tierlist);
-    state.tierlist = data.tierlist;
-    completeListData(state.tierlist);
 
-    if (sortedBy) sortList(state.tierlist, sortedBy);
+    completeListData(data.tierlist);
+    if (sortedBy) sortList(data.tierlist, sortedBy);
+
+    return data.tierlist;
   } catch (error) {
     throw error;
   }
@@ -54,8 +53,8 @@ export async function getTierList(role, rank, sortedBy = '') {
 function addChampionIds(championList) {
   return championList.forEach(champion => {
     appData.champions[champion.name]
-      ? (champion.id = appData.champions[champion.name].riotId)
-      : (champion.id = appData.getChampionByName(champion.name).riotId);
+      ? (champion.id = appData.champions[champion.name].id)
+      : (champion.id = appData.getChampionByName(champion.name).id);
   });
 }
 function addChampionImages(championList) {

@@ -17,19 +17,3 @@ const countersHandler = async function () {
     countersView.renderError();
   }
 };
-
-const tierlistHandler = async function () {
-  try {
-    console.log('Handling a tier list');
-    // Get the input data
-    const { role, rank } = tierlistView.getInputs();
-
-    // Load the tierlist (optional sorting parameter)
-    await model.getTierList(role, rank);
-
-    // Render the list
-    tierlistView.render(model.state.tierlist);
-  } catch (error) {
-    tierlistView.renderError();
-  }
-};

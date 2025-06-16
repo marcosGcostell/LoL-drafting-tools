@@ -12,7 +12,7 @@ export default class View {
    * @author Marcos Garcia
    * @todo Finish the implementation
    */
-  async render(data, render = true) {
+  async render(data, options = {}) {
     console.log('Rendering the list');
     // TODO Need to change the _parentElement relation
     // Should be a root element for messages and a parentelement to render data
@@ -20,12 +20,12 @@ export default class View {
       return this.renderError();
 
     this._data = data;
-    const markup = await this._generateMarkup();
+    const markup = await this._generateMarkup(options);
 
-    if (!render) return markup;
+    if (options?.onlyMarkup === true) return markup;
 
     this._clear();
-    this._parentElement.insertAdjacentHTML('afterbegin', markup);
+    this._parentElement.insertAdjacentHTML('beforeend', markup);
   }
 
   getInputs() {
@@ -52,7 +52,7 @@ export default class View {
             </div>
       `;
     this._clear();
-    this._parentElement.insertAdjacentHTML('afterbegin', markup);
+    this._parentElement.insertAdjacentHTML('beforeend', markup);
   }
 
   renderError(message = this._errorMessage) {
@@ -67,7 +67,7 @@ export default class View {
         </div>
       `;
     this._clear();
-    this._parentElement.insertAdjacentHTML('afterbegin', markup);
+    this._parentElement.insertAdjacentHTML('beforeend', markup);
   }
 
   renderMessage(message = this._message) {
@@ -82,6 +82,6 @@ export default class View {
         </div> 
       `;
     this._clear();
-    this._parentElement.insertAdjacentHTML('afterbegin', markup);
+    this._parentElement.insertAdjacentHTML('beforeend', markup);
   }
 }
