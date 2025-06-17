@@ -31,7 +31,7 @@ class AppState extends EventTarget {
     }
   }
 
-  // private setters to set property, save to session and notify
+  // private setter to set property, save to session and notify
   // except adding or removing champions
   #update(target, value) {
     this[target] = value;
@@ -43,11 +43,11 @@ class AppState extends EventTarget {
     );
   }
 
-  #updateChampions(action, champion) {
+  #updateChampions(action, element) {
     this.#save();
     this.dispatchEvent(
       new CustomEvent('champion', {
-        detail: { action, champion },
+        detail: { action, element },
       })
     );
   }

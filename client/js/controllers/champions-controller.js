@@ -1,4 +1,4 @@
-import * as model from './model/model.js';
+import * as dataModel from '../model/data-model.js';
 import countersView from '../view/counters-view.js';
 import tierlistView from '../view/tierlist-view.js';
 
@@ -9,10 +9,10 @@ const countersHandler = async function () {
     const { champion, rank, role, vslane } = countersView.getInputs();
 
     // Load the counters
-    await model.getCounterList(champion, role, rank, vslane);
+    await dataModel.getCounterList(champion, role, rank, vslane);
 
     // Render the list
-    countersView.render(model.state.counterList);
+    countersView.render(dataModel.state.counterList);
   } catch (error) {
     countersView.renderError();
   }

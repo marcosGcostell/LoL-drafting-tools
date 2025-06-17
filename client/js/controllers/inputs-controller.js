@@ -1,7 +1,6 @@
 import appData from '../model/app-data.js';
 import appState from '../model/app-state.js';
 import inputsView from '../view/inputs-view.js';
-import { tierlistHandler } from './tierlist-controller.js';
 
 export const toggleSelectors = (e, target) => {
   if (!appState.popUpOn || appState.popUpOn === target) {
@@ -30,17 +29,6 @@ const setOptionHandler = id => {
   appState[`set${target.charAt(0).toUpperCase() + target.slice(1)}`](id);
 };
 
-const optionsChangedHandler = e => {
-  const { target, value } = e.detail;
-  if (target === 'rankSelected') {
-    tierlistHandler();
-  }
-  if (target === 'vslaneSelected') {
-    tierlistHandler();
-  }
-  console.log(e);
-};
-
 export async function setHandlers() {
   // Handlers to show and hide selectors
   ['lane', 'vslane', 'rank', 'patch'].forEach(el =>
@@ -58,7 +46,4 @@ export async function setHandlers() {
   ['lane', 'vslane', 'rank'].forEach(el =>
     inputsView.addHandlerSelector(setOptionHandler, el)
   );
-
-  // Handlers for appState changes
-  appState.addEventListener('change', optionsChangedHandler);
 }

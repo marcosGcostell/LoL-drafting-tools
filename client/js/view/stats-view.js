@@ -1,7 +1,7 @@
 import { IMG_SRC } from '../common/config.js';
 import View from './view.js';
 
-class CountersView extends View {
+class StatsView extends View {
   _parentElement = document.querySelector('.container');
   _errorMessage = 'No champion data recieved!';
   _message = '';
@@ -45,4 +45,4 @@ class CountersView extends View {
   }
 }
 
-export default new CountersView();
+export default new StatsView();

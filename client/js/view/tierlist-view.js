@@ -1,5 +1,4 @@
 import { IMG_SRC, TIERLIST_ITEM_TEMPLATE } from '../common/config.js';
-import appData from '../model/app-data.js';
 import View from './view.js';
 
 class ListView extends View {
@@ -26,11 +25,7 @@ class ListView extends View {
 
     return this._data
       .map(champion =>
-        this._generateItemMarkup(
-          champion,
-          appData.roles[options.lane],
-          itemTemplate
-        )
+        this._generateItemMarkup(champion, options.lane, itemTemplate)
       )
       .join('');
   }
