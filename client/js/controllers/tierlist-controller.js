@@ -24,6 +24,7 @@ export const tierlistHandler = async function () {
       },
       data: appData,
     });
+    appState.tierListLane = appState.vslaneSelected;
 
     // Render the list
     renderStateTierlist();

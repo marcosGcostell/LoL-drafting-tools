@@ -6,13 +6,21 @@ import * as poolController from './pool-controller.js';
 
 const optionsChangedHandler = e => {
   const { target, value } = e.detail;
+  if (target === 'laneSelected') {
+    if (appState.pool.length) {
+      appState.pool = [];
+      poolController.clearPool();
+    }
+    if (appState.tierListLane !== appState.vslaneSelected) {
+      tierlistController.tierlistHandler();
+    }
+  }
   if (target === 'rankSelected') {
     tierlistController.tierlistHandler();
   }
   if (target === 'vslaneSelected') {
     tierlistController.tierlistHandler();
   }
-  console.log(e);
 };
 
 const poolChangedHandler = e => {
@@ -40,17 +48,6 @@ const hidePopUps = e => {
 };
 
 export async function init() {
-  // Refresh and update form saved state
-  if (appState.laneSelected) {
-    inputsController.setOptionsFromState();
-  }
-  if (appState.tierList.length) {
-    tierlistController.renderStateTierlist();
-  }
-  if (appState.pool.length) {
-    poolController.updatePool(appState.pool);
-  }
-
   // Set the options inputs handlers
   await inputsController.setHandlers();
   // Set add champion and searching handlers
@@ -64,4 +61,15 @@ export async function init() {
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') hidePopUps(e);
   });
+
+  // Refresh and update form saved state
+  if (appState.laneSelected) {
+    inputsController.setOptionsFromState();
+  }
+  if (appState.tierList.length) {
+    tierlistController.renderStateTierlist();
+  }
+  if (appState.pool.length) {
+    poolController.updatePool(appState.pool);
+  }
 }

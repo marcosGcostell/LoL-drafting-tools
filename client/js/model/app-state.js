@@ -13,6 +13,7 @@ class AppState extends EventTarget {
     this.vslaneSelected = null;
     this.patchSelected = null;
     this.tierList = [];
+    this.tierListLane = null;
     this.pool = [];
     this.counterLists = [];
     this.popUpOn = '';
@@ -95,6 +96,7 @@ class AppState extends EventTarget {
     this.vslaneSelected = null;
     this.patchSelected = null;
     this.tierList = [];
+    this.tierListLane = null;
     this.pool = [];
     this.counterLists = [];
     this.#save();

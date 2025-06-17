@@ -26,6 +26,10 @@ export const updatePool = async champions => {
   });
 };
 
+export const clearPool = () => {
+  poolView._clear();
+};
+
 const countersHandler = async function () {
   try {
     console.log('Handling a counter list');
