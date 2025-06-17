@@ -24,17 +24,10 @@ export default class View {
 
     if (options?.onlyMarkup === true) return markup;
 
-    this._clear();
+    if (!options?.noClear) {
+      this._clear();
+    }
     this._parentElement.insertAdjacentHTML('beforeend', markup);
-  }
-
-  getInputs() {
-    return {
-      champion: document.getElementById('champion').value,
-      rank: document.getElementById('rank').value,
-      role: document.getElementById('role').value,
-      vslane: document.getElementById('vslane').value,
-    };
   }
 
   update(data) {}

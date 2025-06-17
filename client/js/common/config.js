@@ -21,6 +21,7 @@ export const LANE_ITEM_TEMPLATE = './templates/lane-selector-item.html';
 export const RANK_ITEM_TEMPLATE = './templates/rank-selector-item.html';
 export const TIERLIST_ITEM_TEMPLATE = './templates/tierlist-item.html';
 export const SEARCH_ITEM_TEMPLATE = './templates/search-item.html';
+export const CHAMPION_TEMPLATE = './templates/champion-item.html';
 
 // Config parameters
 export const PERCENT_LIMIT = 1.5;

@@ -68,10 +68,12 @@
   flex: 1;
   /* min-height: 46rem; */
   padding: 0.5rem 0;
+  padding-left: 0.5rem;
 }
 
 .counter {
-  margin: 0 0.5rem;
+  margin: 0;
+  margin-right: 0.6rem;
   width: 6rem;
 }
 

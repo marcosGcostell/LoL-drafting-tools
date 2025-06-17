@@ -13,7 +13,7 @@ class AppState extends EventTarget {
     this.vslaneSelected = null;
     this.patchSelected = null;
     this.tierList = [];
-    this.championsShowed = [];
+    this.pool = [];
     this.counterLists = [];
     this.popUpOn = '';
 
@@ -37,7 +37,7 @@ class AppState extends EventTarget {
     this[target] = value;
     this.#save();
     this.dispatchEvent(
-      new CustomEvent('change', {
+      new CustomEvent('options', {
         detail: { target, value },
       })
     );
@@ -46,7 +46,7 @@ class AppState extends EventTarget {
   #updateChampions(action, element) {
     this.#save();
     this.dispatchEvent(
-      new CustomEvent('champion', {
+      new CustomEvent('pool', {
         detail: { action, element },
       })
     );
@@ -75,16 +75,15 @@ class AppState extends EventTarget {
     this.#update('patchSelected', patch);
   }
 
-  addChampion(champion, counterList) {
-    this.championsShowed.push(champion);
-    this.counterLists.push(counterList);
+  addChampion(champion) {
+    this.pool.push(champion);
     this.#updateChampions('add', champion);
   }
 
   removeChampion(champion) {
-    const index = this.championsShowed.indexOf(champion);
+    const index = this.pool.indexOf(champion);
     if (index > -1) {
-      this.championsShowed.splice(index, 1);
+      this.pool.splice(index, 1);
       this.counterLists.splice(index, 1);
       this.#updateChampions('remove', index);
     }
@@ -96,7 +95,7 @@ class AppState extends EventTarget {
     this.vslaneSelected = null;
     this.patchSelected = null;
     this.tierList = [];
-    this.championsShowed = [];
+    this.pool = [];
     this.counterLists = [];
     this.#save();
     this.dispatchEvent(new CustomEvent('reset'));

@@ -2,6 +2,7 @@ import appState from '../model/app-state.js';
 import * as inputsController from './inputs-controller.js';
 import * as searchController from './search-controller.js';
 import { tierlistHandler } from './tierlist-controller.js';
+import * as poolController from './pool-controller.js';
 
 const optionsChangedHandler = e => {
   const { target, value } = e.detail;
@@ -12,6 +13,15 @@ const optionsChangedHandler = e => {
     tierlistHandler();
   }
   console.log(e);
+};
+
+const poolChangedHandler = e => {
+  const { action, element } = e.detail;
+  if (action === 'add') {
+    poolController.addChampionsHandler(element, appState.pool.length);
+  }
+  if (action === 'remove') {
+  }
 };
 
 const hidePopUps = e => {
@@ -35,7 +45,8 @@ export async function init() {
   // Set add champion and searching handlers
   searchController.setHandlers();
   // Handlers for appState changes
-  appState.addEventListener('change', optionsChangedHandler);
+  appState.addEventListener('options', optionsChangedHandler);
+  appState.addEventListener('pool', poolChangedHandler);
 
   // Hide popups if clicking outside them or press ESC
   document.addEventListener('click', hidePopUps);
