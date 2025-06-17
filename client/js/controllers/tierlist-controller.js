@@ -3,6 +3,12 @@ import appData from '../model/app-data.js';
 import tierlistView from '../view/tierlist-view.js';
 import * as dataModel from '../model/data-model.js';
 
+export const renderStateTierlist = () => {
+  tierlistView.render(appState.tierList, {
+    lane: appData.roles[appState.vslaneSelected],
+  });
+};
+
 export const tierlistHandler = async function () {
   try {
     tierlistView.renderSpinner();
@@ -20,9 +26,7 @@ export const tierlistHandler = async function () {
     });
 
     // Render the list
-    tierlistView.render(appState.tierList, {
-      lane: appData.roles[appState.vslaneSelected],
-    });
+    renderStateTierlist();
   } catch (error) {
     tierlistView.renderError();
   }

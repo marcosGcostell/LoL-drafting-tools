@@ -1,5 +1,4 @@
 import * as dataModel from '../model/data-model.js';
-import tierlistView from '../view/tierlist-view.js';
 import poolView from '../view/pool-view.js';
 
 export async function addChampionsHandler(champions, index) {

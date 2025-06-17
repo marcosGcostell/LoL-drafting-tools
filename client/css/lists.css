@@ -64,20 +64,20 @@
   text-align: left;
 }
 
-.counter-container {
+.stats-container {
   flex: 1;
   /* min-height: 46rem; */
   padding: 0.5rem 0;
   padding-left: 0.5rem;
 }
 
-.counter {
+.stats {
   margin: 0;
   margin-right: 0.6rem;
   width: 6rem;
 }
 
-.counter-list {
+.stats-list {
   display: flex;
   flex-direction: column;
   align-items: center;

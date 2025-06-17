@@ -29,6 +29,13 @@ const setOptionHandler = id => {
   appState[`set${target.charAt(0).toUpperCase() + target.slice(1)}`](id);
 };
 
+export function setOptionsFromState() {
+  inputsView.changeOption('lane', appData.roles[appState.laneSelected]);
+  inputsView.changeOption('rank', appData.ranks[appState.rankSelected]);
+  inputsView.changeOption('vslane', appData.roles[appState.vslaneSelected]);
+  // TODO Patch selection
+}
+
 export async function setHandlers() {
   // Handlers to show and hide selectors
   ['lane', 'vslane', 'rank', 'patch'].forEach(el =>

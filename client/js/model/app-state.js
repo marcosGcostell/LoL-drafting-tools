@@ -9,7 +9,7 @@ class AppState extends EventTarget {
 
     // Default values
     this.laneSelected = null;
-    this.rankSelected = null;
+    this.rankSelected = 'all';
     this.vslaneSelected = null;
     this.patchSelected = null;
     this.tierList = [];

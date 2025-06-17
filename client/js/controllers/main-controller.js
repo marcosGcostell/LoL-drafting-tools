@@ -1,16 +1,16 @@
 import appState from '../model/app-state.js';
 import * as inputsController from './inputs-controller.js';
 import * as searchController from './search-controller.js';
-import { tierlistHandler } from './tierlist-controller.js';
+import * as tierlistController from './tierlist-controller.js';
 import * as poolController from './pool-controller.js';
 
 const optionsChangedHandler = e => {
   const { target, value } = e.detail;
   if (target === 'rankSelected') {
-    tierlistHandler();
+    tierlistController.tierlistHandler();
   }
   if (target === 'vslaneSelected') {
-    tierlistHandler();
+    tierlistController.tierlistHandler();
   }
   console.log(e);
 };
@@ -40,6 +40,17 @@ const hidePopUps = e => {
 };
 
 export async function init() {
+  // Refresh and update form saved state
+  if (appState.laneSelected) {
+    inputsController.setOptionsFromState();
+  }
+  if (appState.tierList.length) {
+    tierlistController.renderStateTierlist();
+  }
+  if (appState.pool.length) {
+    poolController.updatePool(appState.pool);
+  }
+
   // Set the options inputs handlers
   await inputsController.setHandlers();
   // Set add champion and searching handlers
