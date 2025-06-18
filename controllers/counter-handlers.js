@@ -3,90 +3,76 @@ import Counter from '../models/counter-model.js';
 import { getAllRoleRates, getAllTierlist } from './tierlist-handlers.js';
 import { getListFromDb } from './common-list-handlers.js';
 import { DEFAULT_SORT_FIELD } from '../models/common/config.js';
+import catchAsync from '../models/common/catch-async.js';
 
 const saveCounterList = async (champion, lane, rank, vslane, list) => {
-  try {
-    const data = {
-      champion,
-      lane,
-      rank,
-      vslane,
-      createdAt: new Date().toISOString(),
-      list,
-    };
+  const data = {
+    champion,
+    lane,
+    rank,
+    vslane,
+    createdAt: new Date().toISOString(),
+    list,
+  };
 
-    await Counter.create(data);
-    console.log('Counter list saved! ✅');
-    return data;
-  } catch (err) {
-    throw err;
-  }
+  await Counter.create(data);
+  console.log('Counter list saved! ✅');
+  return data;
 };
 
 const getCounterListData = async (champion, lane, rank, vslane) => {
-  try {
-    console.log({ champion, lane, rank, vslane });
-    const data = await getListFromDb(Counter, { champion, lane, rank, vslane });
+  console.log({ champion, lane, rank, vslane });
+  const data = await getListFromDb(Counter, { champion, lane, rank, vslane });
 
-    if (data) {
-      return { counterList: data.list, updatedAt: data.createdAt };
-    }
-    const counterList = await Lolalytics.getCounters(
-      champion,
-      lane,
-      rank,
-      vslane
-    );
-    saveCounterList(champion, lane, rank, vslane, counterList);
-    return { counterList, updatedAt: new Date().toISOString() };
-  } catch (err) {
-    throw err;
+  if (data) {
+    return { counterList: data.list, updatedAt: data.createdAt };
   }
+  const counterList = await Lolalytics.getCounters(
+    champion,
+    lane,
+    rank,
+    vslane
+  );
+  saveCounterList(champion, lane, rank, vslane, counterList);
+  return { counterList, updatedAt: new Date().toISOString() };
 };
 
-export const getCounterList = async (req, res) => {
-  try {
-    const { counterList, updatedAt } = await getCounterListData(
-      req.champion,
-      req.lane,
-      req.rank,
-      req.vslane
+export const getCounterList = catchAsync(async (req, res, next) => {
+  const { counterList, updatedAt } = await getCounterListData(
+    req.champion,
+    req.lane,
+    req.rank,
+    req.vslane
+  );
+  const allTierlists = await getAllTierlist(req.rank);
+
+  const completeList = counterList.map(el => {
+    const [champion] = allTierlists[req.vslane].filter(
+      item => el.name === item.name
     );
-    const allTierlists = await getAllTierlist(req.rank);
+    return {
+      name: el.name,
+      winRatio: el.winRatio,
+      opponentWR: champion?.winRatio || 0,
+      opponentLane: req.vslane,
+      delta1: el.delta1,
+      delta2: el.delta2,
+      roleRates: getAllRoleRates(el.name, allTierlists),
+      pickRate: champion?.pickRate || 0,
+      banRate: champion?.banRate || 0,
+    };
+  });
 
-    const completeList = counterList.map(el => {
-      const [champion] = allTierlists[req.vslane].filter(
-        item => el.name === item.name
-      );
-      return {
-        name: el.name,
-        winRatio: el.winRatio,
-        opponentWR: champion?.winRatio || 0,
-        opponentLane: req.vslane,
-        delta1: el.delta1,
-        delta2: el.delta2,
-        roleRates: getAllRoleRates(el.name, allTierlists),
-        pickRate: champion?.pickRate || 0,
-        banRate: champion?.banRate || 0,
-      };
-    });
+  const sort = req.query.sort || DEFAULT_SORT_FIELD;
+  completeList.sort((a, b) => b[sort] - a[sort]);
 
-    const sort = req.query.sort || DEFAULT_SORT_FIELD;
-    completeList.sort((a, b) => b[sort] - a[sort]);
-
-    // Send response
-    res.status(200).json({
-      status: 'success',
-      results: completeList.length,
-      updatedAt,
-      data: {
-        counterList: completeList,
-      },
-    });
-  } catch (err) {
-    res.status(404).json({
-      status: 'fail',
-      message: err.message,
-    });
-  }
-};
+  // Send response
+  res.status(200).json({
+    status: 'success',
+    results: completeList.length,
+    updatedAt,
+    data: {
+      counterList: completeList,
+    },
+  });
+});

@@ -1,6 +1,7 @@
 import Lolalytics from '../models/api/lolalytics-api.js';
 import Stat from '../models/stat-model.js';
 import { getListFromDb } from './common-list-handlers.js';
+import catchAsync from '../models/common/catch-async.js';
 
 const saveStatsData = async (champion, lane, rank, stats) => {
   try {
@@ -36,27 +37,20 @@ const getStatsData = async (champion, lane, rank) => {
   }
 };
 
-export const getChampionStats = async (req, res) => {
-  try {
-    const { stats, updatedAt } = await getStatsData(
-      req.champion,
-      req.lane,
-      req.rank
-    );
+export const getChampionStats = catchAsync(async (req, res, next) => {
+  const { stats, updatedAt } = await getStatsData(
+    req.champion,
+    req.lane,
+    req.rank
+  );
 
-    // Send response
-    res.status(200).json({
-      status: 'success',
-      updatedAt,
-      id: req.champion,
-      lane: req.lane,
-      rank: req.rank,
-      stats,
-    });
-  } catch (err) {
-    res.status(404).json({
-      status: 'fail',
-      message: err.message,
-    });
-  }
-};
+  // Send response
+  res.status(200).json({
+    status: 'success',
+    updatedAt,
+    id: req.champion,
+    lane: req.lane,
+    rank: req.rank,
+    stats,
+  });
+});

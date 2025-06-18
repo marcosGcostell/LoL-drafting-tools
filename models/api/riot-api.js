@@ -32,15 +32,10 @@ class Riot {
       this.#locale
     }/champion.json`;
 
-    try {
-      const response = await fetch(url);
-      const lolChampions = await response.json();
+    const response = await fetch(url);
+    const lolChampions = await response.json();
 
-      return lolChampions.data;
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
+    return lolChampions.data;
   }
 
   // PUBLIC METHODS
@@ -53,14 +48,9 @@ class Riot {
   async getLastGameVersion() {
     const url = `${this.#dataDragon}api/versions.json`;
 
-    try {
-      const response = await fetch(url);
-      const [data] = await response.json();
-      return data;
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
+    const response = await fetch(url);
+    const [data] = await response.json();
+    return data;
   }
 
   /**
@@ -73,29 +63,24 @@ class Riot {
    */
   async getNewData(version = null) {
     // No version passed, gets the last version
-    try {
-      if (!version) version = await this.getLastGameVersion();
+    if (!version) version = await this.getLastGameVersion();
 
-      const lolChampions = await this.#getChampionData(version);
-      const championsData = {};
+    const lolChampions = await this.#getChampionData(version);
+    const championsData = {};
 
-      // In championsData create an object for each champion with some data
-      Object.keys(lolChampions).forEach(
-        championName =>
-          (championsData[championName] = {
-            version: lolChampions[championName].version,
-            riotId: lolChampions[championName].id,
-            key: lolChampions[championName].key,
-            name: lolChampions[championName].name,
-            img: lolChampions[championName].image.full,
-          })
-      );
+    // In championsData create an object for each champion with some data
+    Object.keys(lolChampions).forEach(
+      championName =>
+        (championsData[championName] = {
+          version: lolChampions[championName].version,
+          riotId: lolChampions[championName].id,
+          key: lolChampions[championName].key,
+          name: lolChampions[championName].name,
+          img: lolChampions[championName].image.full,
+        })
+    );
 
-      return championsData;
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
+    return championsData;
   }
 }
 
