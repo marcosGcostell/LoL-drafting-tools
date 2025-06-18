@@ -9,10 +9,11 @@ const optionsChangedHandler = e => {
   const { target, value } = e.detail;
   if (target === 'laneSelected') {
     if (appState.pool.length) {
-      appState.pool = [];
+      appState.resetPool();
       poolController.clearPool();
+      statsController.resetStats();
     }
-    if (appState.tierListLane !== appState.vslaneSelected) {
+    if (appState.tierlistLane !== appState.vslaneSelected) {
       tierlistController.tierlistHandler();
     }
   }
@@ -24,11 +25,19 @@ const optionsChangedHandler = e => {
   }
 };
 
-const poolChangedHandler = e => {
+const poolChangedHandler = async e => {
   const { action, element } = e.detail;
   if (action === 'add') {
-    poolController.addChampionsHandler(element, appState.pool.length);
-    // statsController.statsHandler(element.id, appState.statsLists.length, true);
+    console.log('Calling pool controller...');
+    await poolController.addChampionsHandler(element, appState.pool.length);
+    console.log('Pool controller finished...');
+    console.log('Calling stats controller...');
+    await statsController.statsHandler(
+      element.id,
+      appState.statsLists.length,
+      true
+    );
+    console.log('Stats controller finished...');
   }
   if (action === 'remove') {
   }
@@ -68,7 +77,7 @@ export async function init() {
   if (appState.laneSelected) {
     inputsController.setOptionsFromState();
   }
-  if (appState.tierList.length) {
+  if (appState.tierlist.length) {
     tierlistController.renderStateTierlist();
   }
   if (appState.pool.length) {

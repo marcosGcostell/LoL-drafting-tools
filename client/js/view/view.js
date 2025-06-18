@@ -13,7 +13,6 @@ export default class View {
    * @todo Finish the implementation
    */
   async render(data, options = {}) {
-    console.log('Rendering the list');
     // TODO Need to change the _parentElement relation
     // Should be a root element for messages and a parentelement to render data
     if (!data || (Array.isArray(data) && data.length === 0))

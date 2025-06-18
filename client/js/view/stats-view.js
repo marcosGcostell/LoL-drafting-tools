@@ -8,8 +8,7 @@ class StatsView extends View {
   constructor() {
     super();
     this._rootElement = document.querySelector('.stats-container');
-    this._parentElement = null;
-    this._listElements = null;
+    this._parentElement = this._rootElement;
     this._errorMessage = 'Cannot load the stats...';
     this._message = 'Please, select champion...';
     this._tempColumnPromise = fetch(`${STATS_COLUMN_TEMPLATE}`);
@@ -21,6 +20,12 @@ class StatsView extends View {
   }
 
   // handlers for clicking remove champion, move, etc.
+
+  checkOptions(options) {
+    return (
+      Number.isInteger(options?.index) && (options?.addColumn || options.length)
+    );
+  }
 
   async _resolveTemplates() {
     if (!this._templateColumn) {
@@ -35,39 +40,72 @@ class StatsView extends View {
 
   // options = { addColumn: true/false, length: list.length, index: column }
   async _generateMarkup(options) {
-    if (!options?.index || (!options?.addColumn && !options.length))
-      return this._message;
+    if (!this.checkOptions(options)) return this._message;
 
     await this._resolveTemplates();
 
-    let markup;
+    console.log('Generating markup...');
+    console.log(options);
     if (options.addColumn) {
-      markup = this._generateHeaderMarkup(options.index);
+      console.log('Adding new stat column markup...');
       this._parentElement = this._rootElement;
-    } else {
-      this._listElements = document.getElementsByClassName('.stats');
-      this._parentElement = this._listElements.item(options.index);
-      if (!this._parentElement) return this._message;
+      return this._generateSectionMarkup(options.index);
     }
 
-    markup += this._data
-      .map(stat => {
-        return this._generateItemMarkup(stat);
+    this._parentElement = this._rootElement.querySelector(
+      `#s${options.index} ul`
+    );
+    if (!this._parentElement) {
+      return this._message;
+    }
+
+    return this._data
+      .map(item => {
+        return this._generateItemMarkup(item);
       })
       .join('');
-
-    return markup;
   }
 
-  _generateHeaderMarkup(index) {
+  _generateItemMarkup(item) {
+    // TODO Score needs to be a computed
+    let output = this._templateItem.replace(
+      /{%SCORE%}/g,
+      item.winRatio !== 0 ? '5' : '-'
+    );
+    output = output.replace(
+      /{%WR%}/g,
+      item.winRatio !== 0 ? item.winRatio : '-'
+    );
+    output = output.replace(
+      /{%DELTA%}/g,
+      item.winRatio !== 0 ? `Δ${item.delta2}` : '-'
+    );
+    return output;
+  }
+
+  _generateSectionMarkup(index) {
     return this._templateColumn.replace(/{%INDEX%}/g, index);
   }
 
-  _generateItemMarkup(stat) {
-    let output = this._template.replace(/{%SCORE%}/g, stat.score);
-    output = output.replace(/{%WR%}/g, stat.winRatio);
-    output = output.replace(/{%BR%}/g, stat.delta);
-    return output;
+  _clear() {
+    this._parentElement
+      .querySelectorAll('.row, .spinner')
+      .forEach(el => el.remove());
+  }
+
+  async addNewColumn() {
+    console.log('Adding a new stats column...');
+    const index = this._rootElement.children.length;
+    await this.render(['no data'], { addColumn: true, noClear: true, index });
+    return index;
+  }
+
+  deleteColumn() {
+    this._rootElement.querySelector(`#${options.index}`).remove();
+  }
+
+  clearSection() {
+    this._rootElement.innerHTML = '';
   }
 }
 

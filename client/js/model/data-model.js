@@ -1,15 +1,5 @@
 import { LOCAL_API, TIERLIST_ROUTE, COUNTERS_ROUTE } from '../common/config.js';
 
-const fetchListFromAPI = async (route, query) => {
-  try {
-    const response = await fetch(`${LOCAL_API}${route}${query}`);
-    const { data } = await response.json();
-    return data;
-  } catch (err) {
-    throw err;
-  }
-};
-
 /////////////
 // TODO: All these formatting tasks should be in a state class ??
 
@@ -46,6 +36,17 @@ const checkQuery = (lane, rank, vslane = true, champion = true) => {
         !state.vslane ? ' (vslane)' : ''
       }`
     );
+  }
+};
+
+// Get a list from API
+const fetchListFromAPI = async (route, query) => {
+  try {
+    const response = await fetch(`${LOCAL_API}${route}${query}`);
+    const { data } = await response.json();
+    return data;
+  } catch (err) {
+    throw err;
   }
 };
 
@@ -87,6 +88,8 @@ export async function getCounterList({ state, data }) {
       state.vslane ? `&vslane=${state.vslane}` : ''
     }${state.sortedBy ? `&sort=${state.sortedBy}` : ''}`;
 
+    console.log(route, query);
+
     const { counterList } = await fetchListFromAPI(route, query);
     completeListData(counterList, data);
 
@@ -102,12 +105,17 @@ export async function getCounterList({ state, data }) {
 //   tierlist: appState.tierlist
 // }
 export async function getStatsList({ state, data, tierlist }) {
+  console.log('Reaching getStatsList...');
   try {
-    checkQuery(state.lane, state.rank, state.vslane, state.champion);
+    console.log('Getting Stats list...');
+    if (!tierlist) {
+      throw new Error('Need a tierlist to get the stats...');
+    }
+    console.log('Getting Counter list...');
     const counterList = await getCounterList({ state, data });
 
     return tierlist.map(champion => {
-      const match = counterList.filter(el => el.id === champion.id);
+      const [match] = counterList.filter(el => el.id === champion.id);
       return match ? match : { winRatio: 0, delta2: 0 };
     });
   } catch (error) {
