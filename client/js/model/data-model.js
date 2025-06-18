@@ -88,8 +88,6 @@ export async function getCounterList({ state, data }) {
       state.vslane ? `&vslane=${state.vslane}` : ''
     }${state.sortedBy ? `&sort=${state.sortedBy}` : ''}`;
 
-    console.log(route, query);
-
     const { counterList } = await fetchListFromAPI(route, query);
     completeListData(counterList, data);
 
@@ -105,13 +103,10 @@ export async function getCounterList({ state, data }) {
 //   tierlist: appState.tierlist
 // }
 export async function getStatsList({ state, data, tierlist }) {
-  console.log('Reaching getStatsList...');
   try {
-    console.log('Getting Stats list...');
     if (!tierlist) {
       throw new Error('Need a tierlist to get the stats...');
     }
-    console.log('Getting Counter list...');
     const counterList = await getCounterList({ state, data });
 
     return tierlist.map(champion => {

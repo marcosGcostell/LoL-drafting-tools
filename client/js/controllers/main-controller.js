@@ -5,7 +5,7 @@ import * as tierlistController from './tierlist-controller.js';
 import * as poolController from './pool-controller.js';
 import * as statsController from './stats-controller.js';
 
-const optionsChangedHandler = e => {
+const optionsChangedHandler = async e => {
   const { target, value } = e.detail;
   if (target === 'laneSelected') {
     if (appState.pool.length) {
@@ -18,32 +18,33 @@ const optionsChangedHandler = e => {
     }
   }
   if (target === 'rankSelected') {
-    tierlistController.tierlistHandler();
-    // appState.pool.forEach((champion, index) =>
-    //   statsController.statsHandler(champion.id, index)
-    // );
+    await tierlistController.tierlistHandler();
+    if (appState.pool.length) {
+      appState.pool.forEach((champion, index) =>
+        statsController.statsHandler(champion.id, index)
+      );
+    }
   }
   if (target === 'vslaneSelected') {
-    tierlistController.tierlistHandler();
-    // appState.pool.forEach((champion, index) =>
-    //   statsController.statsHandler(champion.id, index)
-    // );
+    await tierlistController.tierlistHandler();
+    if (appState.pool.length) {
+      appState.pool.forEach((champion, index) =>
+        statsController.statsHandler(champion.id, index)
+      );
+    }
   }
 };
 
 const poolChangedHandler = async e => {
   const { action, element } = e.detail;
   if (action === 'add') {
-    console.log('Calling pool controller...');
+    console.log('Adding new champion...');
     await poolController.addChampionsHandler(element, appState.pool.length);
-    console.log('Pool controller finished...');
-    console.log('Calling stats controller...');
     await statsController.statsHandler(
       element.id,
       appState.statsLists.length,
       true
     );
-    console.log('Stats controller finished...');
   }
   if (action === 'remove') {
   }
@@ -88,5 +89,6 @@ export async function init() {
   }
   if (appState.pool.length) {
     poolController.updatePool(appState.pool);
+    statsController.updateStats(appState.statsLists);
   }
 }

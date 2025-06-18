@@ -28,10 +28,6 @@ import statsView from '../view/stats-view.js';
 //   });
 // };
 
-export const resetStats = () => {
-  statsView.clearSection();
-};
-
 export const renderStatsList = async (statsList, options) => {
   await statsView.render(statsList, options);
 };
@@ -53,8 +49,6 @@ export const statsHandler = async function (championId, index, addColumn) {
     console.log(statsList);
 
     // Save state and render the list
-    const options = { addColumn, length: statsList.length, index };
-    console.log(options);
     if (addColumn) {
       appState.addStatsList(statsList, championId);
       const newIndex = await statsView.addNewColumn();
@@ -68,4 +62,17 @@ export const statsHandler = async function (championId, index, addColumn) {
   } catch (error) {
     statsView.renderError();
   }
+};
+
+export const updateStats = async statsLists => {
+  resetStats();
+  let index = 0;
+  for (const list of statsLists) {
+    await statsView.addNewColumn();
+    await renderStatsList(list, { length: list.length, index: index++ });
+  }
+};
+
+export const resetStats = () => {
+  statsView.clearSection();
 };
