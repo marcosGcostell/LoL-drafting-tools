@@ -17,6 +17,17 @@ class Lolalytics {
   // PRIVATE METHODS
 
   /**
+   * @method #getTierlistURL
+   * Returns the url for the tierlist webpage
+   * @return {String} The url for (this rank, and lane).
+   */
+  #getTierlistURL = function (lane = 'main', rank = 'all') {
+    return `${this.#baseURL}tierlist/?${
+      lane !== 'main' ? `lane=${lane}&` : ''
+    }tier=${rank}&view=grid`;
+  };
+
+  /**
    * @method #getCountersURL
    * Returns the url for counters webpage. champion should be Lolalytics folder name.
    * @return {String} The url for (this champion, rank, lane, [vs this lane]) .
@@ -28,15 +39,13 @@ class Lolalytics {
   }
 
   /**
-   * @method #getTierlistURL
-   * Returns the url for the tierlist webpage
-   * @return {String} The url for (this rank, and lane).
+   * @method #getBuildURL
+   * Returns the url for counters webpage. champion should be Lolalytics folder name.
+   * @return {String} The url for (this champion, rank, lane, [vs this lane]) .
    */
-  #getTierlistURL = function (lane = 'main', rank = 'all') {
-    return `${this.#baseURL}tierlist/?${
-      lane !== 'main' ? `lane=${lane}&` : ''
-    }tier=${rank}&view=grid`;
-  };
+  #getBuildURL(champion, lane, rank) {
+    return `${this.#baseURL}${champion}/build/?lane=${lane}&tier=${rank}`;
+  }
 
   /**
    * @async
@@ -203,6 +212,70 @@ class Lolalytics {
           ),
         };
       });
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
+  /**
+   * @async
+   * @method getStats
+   * Get counters data from lolalytics website
+   * @param {String} champion for this champion.
+   * @param {String} [rank] in this rank (default = 'all').
+   * @param {String} [lane] for this role (default = 'main').
+   * @param {String} [vsLane] versus this other role (default = 'lane').
+   * @return {Promise<Array>} of champion objects.
+   */
+  async getStats(champion, lane, rank = 'all', vsLane = lane) {
+    try {
+      // Scrape the lolalytics web page
+      const virtualDomDocument = await this.#scrapeWebPage(
+        this.#getBuildURL(champion, lane, rank)
+      );
+
+      // Select the table where the champion information is (HTMLCollection)
+      // convert it to an Array and filter only the <span> elements
+      const rolesItems = Array.from(
+        virtualDomDocument.getElementsByTagName('main')[0].firstElementChild
+          .firstElementChild.firstElementChild.children[1].children
+      );
+      console.log(rolesItems);
+
+      const roleRates = Object.fromEntries(
+        rolesItems.map(el => [
+          el.querySelector('img').getAttribute('alt').split(' ')[0],
+          Number.parseFloat(el.querySelector('div').textContent),
+        ])
+      );
+      console.log(roleRates);
+
+      const statsSection =
+        virtualDomDocument.getElementsByTagName('main')[0].children[4]
+          .children[1].children[1].children[2];
+
+      // return an object of some selected data
+      return {
+        winRatio: Number.parseFloat(
+          statsSection.firstElementChild.firstElementChild.firstElementChild
+            .textContent
+        ),
+        pickRate: Number.parseFloat(
+          statsSection.firstElementChild.lastElementChild.firstElementChild
+            .textContent
+        ),
+        banRate: Number.parseFloat(
+          statsSection.lastElementChild.children[2].firstElementChild
+            .textContent
+        ),
+        games: Number.parseInt(
+          statsSection.lastElementChild.lastElementChild.firstElementChild.textContent
+            .split(',')
+            .join('')
+        ),
+        roleRates,
+      };
     } catch (err) {
       console.error(err);
       throw err;

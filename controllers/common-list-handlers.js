@@ -10,10 +10,7 @@ export const checkId = async (req, res, next, val) => {
       $or: [{ riotID: val }, { id: val }, { name: val }],
     });
     if (!champion) {
-      return res.status(404).json({
-        status: 'fail',
-        message: 'Champion name not found',
-      });
+      throw new Error('Champion name not found');
     }
     // Use lolalytics id name
     req.champion = champion.id;
