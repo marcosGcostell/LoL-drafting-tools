@@ -32,7 +32,7 @@ class PoolView extends View {
 
     return this._data
       .map(champion => {
-        return this._generateItemMarkup(champion, options.index);
+        return this._generateItemMarkup(champion, options.index++);
       })
       .join('');
   }

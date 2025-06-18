@@ -3,6 +3,7 @@ import * as inputsController from './inputs-controller.js';
 import * as searchController from './search-controller.js';
 import * as tierlistController from './tierlist-controller.js';
 import * as poolController from './pool-controller.js';
+import * as statsController from './stats-controller.js';
 
 const optionsChangedHandler = e => {
   const { target, value } = e.detail;
@@ -27,6 +28,7 @@ const poolChangedHandler = e => {
   const { action, element } = e.detail;
   if (action === 'add') {
     poolController.addChampionsHandler(element, appState.pool.length);
+    // statsController.statsHandler(element.id, appState.statsLists.length, true);
   }
   if (action === 'remove') {
   }

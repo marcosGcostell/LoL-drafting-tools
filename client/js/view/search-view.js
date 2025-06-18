@@ -71,6 +71,9 @@ class ListView extends View {
     this._clear();
     this._panelElement.classList.toggle('hidden');
     this.isPanelShowed = !this.isPanelShowed;
+    if (this.isPanelShowed) {
+      this._inputElement.focus();
+    }
   }
 }
 

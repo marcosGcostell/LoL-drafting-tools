@@ -15,7 +15,7 @@ class AppState extends EventTarget {
     this.tierList = [];
     this.tierListLane = null;
     this.pool = [];
-    this.counterLists = [];
+    this.statsLists = [];
     this.popUpOn = '';
 
     // Load values from session
@@ -85,7 +85,7 @@ class AppState extends EventTarget {
     const index = this.pool.indexOf(champion);
     if (index > -1) {
       this.pool.splice(index, 1);
-      this.counterLists.splice(index, 1);
+      this.statsLists.splice(index, 1);
       this.#updateChampions('remove', index);
     }
   }
@@ -98,7 +98,7 @@ class AppState extends EventTarget {
     this.tierList = [];
     this.tierListLane = null;
     this.pool = [];
-    this.counterLists = [];
+    this.statsLists = [];
     this.#save();
     this.dispatchEvent(new CustomEvent('reset'));
   }

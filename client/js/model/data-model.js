@@ -37,41 +37,26 @@ const sortList = (list, property) => {
   list.sort((a, b) => b[property] - a[property]);
 };
 
-export async function getCounterList({ state, data }) {
-  try {
-    if (!state.id || !state.lane || !state.rank || !state.vslane) {
-      throw new Error(
-        `Can't get a counterlist without parameters:${
-          !state.id ? ' (championId)' : ''
-        }${!state.lane ? ' (lane)' : ''}${!state.rank ? ' (rank)' : ''}${
-          !state.vslane ? ' (vslane)' : ''
-        }`
-      );
-    }
-    // API works for lolalytics folders for champion names
-    const route = `${COUNTERS_ROUTE}/${data.champions[champion].id}`;
-    const query = `?lane=${state.lane}&rank=${state.rank}${
-      state.vslane ? `&vslane=${state.vslane}` : ''
-    }${state.sortedBy ? `&sort=${state.sortedBy}` : ''}`;
-
-    const { counterList } = await fetchListFromAPI(route, query);
-    completeListData(counterList, data);
-
-    return counterList;
-  } catch (err) {
-    throw err;
+const checkQuery = (lane, rank, vslane = true, champion = true) => {
+  if (!champion || !lane || !rank || !vslane) {
+    throw new Error(
+      `Can't get a counterlist without parameters:${
+        !state.champion ? ' (championId)' : ''
+      }${!state.lane ? ' (lane)' : ''}${!state.rank ? ' (rank)' : ''}${
+        !state.vslane ? ' (vslane)' : ''
+      }`
+    );
   }
-}
+};
 
+// Arguments = {
+//   state: {lane: vslaneSelected, rank, sortedBy: property},
+//   data: appData,
+// }
 export async function getTierList({ state, data }) {
   try {
-    if (!state.lane || !state.rank) {
-      throw new Error(
-        `Can't get a counterlist without parameters:${
-          !state.lane ? ' (lane)' : ''
-        }${!state.rank ? ' (rank)' : ''}`
-      );
-    }
+    checkQuery(state.lane, state.rank);
+
     const route = TIERLIST_ROUTE;
     const query = `?lane=${state.lane}&rank=${state.rank}${
       state.sortedBy ? `&sort=${state.sortedBy}` : ''
@@ -85,6 +70,47 @@ export async function getTierList({ state, data }) {
 
     return tierlist;
   } catch (err) {
+    throw err;
+  }
+}
+
+// Arguments = {
+//   state: {champion: id, lane, rank, vslane, sortedBy: property},
+//   data: appData,
+// }
+export async function getCounterList({ state, data }) {
+  try {
+    checkQuery(state.lane, state.rank, state.vslane, state.champion);
+    // API works for lolalytics folders for champion names
+    const route = `${COUNTERS_ROUTE}/${state.champion}`;
+    const query = `?lane=${state.lane}&rank=${state.rank}${
+      state.vslane ? `&vslane=${state.vslane}` : ''
+    }${state.sortedBy ? `&sort=${state.sortedBy}` : ''}`;
+
+    const { counterList } = await fetchListFromAPI(route, query);
+    completeListData(counterList, data);
+
+    return counterList;
+  } catch (err) {
+    throw err;
+  }
+}
+
+// Arguments = {
+//   state: {champion: id, lane, rank, vslane, sortedBy: property},
+//   data: appData,
+//   tierlist: appState.tierlist
+// }
+export async function getStatsList({ state, data, tierlist }) {
+  try {
+    checkQuery(state.lane, state.rank, state.vslane, state.champion);
+    const counterList = await getCounterList({ state, data });
+
+    return tierlist.map(champion => {
+      const match = counterList.filter(el => el.id === champion.id);
+      return match ? match : { winRatio: 0, delta2: 0 };
+    });
+  } catch (error) {
     throw err;
   }
 }

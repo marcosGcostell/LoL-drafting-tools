@@ -22,6 +22,8 @@ export const RANK_ITEM_TEMPLATE = './templates/rank-selector-item.html';
 export const TIERLIST_ITEM_TEMPLATE = './templates/tierlist-item.html';
 export const SEARCH_ITEM_TEMPLATE = './templates/search-item.html';
 export const CHAMPION_TEMPLATE = './templates/champion-item.html';
+export const STATS_COLUMN_TEMPLATE = './templates/stats-column.html';
+export const STATS_ITEM_TEMPLATE = './templates/stats-item.html';
 
 // Config parameters
 export const PERCENT_LIMIT = 1.5;
