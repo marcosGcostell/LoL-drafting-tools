@@ -34,6 +34,15 @@ export const renderStatsList = async (statsList, options) => {
 
 export const statsHandler = async function (championId, index, addColumn) {
   try {
+    // Add the new column
+    if (addColumn) {
+      const newIndex = await statsView.addNewColumn();
+      if (newIndex !== index) {
+        throw new Error('Pool items does not match the stats columns...');
+      }
+      statsView.renderSpinner();
+    }
+
     console.log('Handling stats');
     const statsList = await dataModel.getStatsList({
       state: {
@@ -48,16 +57,15 @@ export const statsHandler = async function (championId, index, addColumn) {
     });
     console.log(statsList);
 
-    // Save state and render the list
+    // Save state
     if (addColumn) {
       appState.addStatsList(statsList, championId);
-      const newIndex = await statsView.addNewColumn();
-      if (newIndex !== index)
-        throw new Error('Pool items does not match the stats columns...');
     } else {
       if (!appState.updateStatsList(statsList, index))
         throw new Error('The stats list does not exists...');
     }
+
+    // Render the list
     await renderStatsList(statsList, { length: statsList.length, index });
   } catch (error) {
     statsView.renderError();

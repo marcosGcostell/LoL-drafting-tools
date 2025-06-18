@@ -37,6 +37,11 @@ class StatsView extends View {
     );
   }
 
+  selectListContainerElement(index) {
+    this._parentElement = this._rootElement.querySelector(`#s${index} ul`);
+    return this._parentElement;
+  }
+
   // options = { addColumn: true/false, length: list.length, index: column }
   async _generateMarkup(options) {
     if (!this.checkOptions(options)) return this._message;
@@ -53,12 +58,7 @@ class StatsView extends View {
       return this._generateSectionMarkup(options.index);
     }
 
-    this._parentElement = this._rootElement.querySelector(
-      `#s${options.index} ul`
-    );
-    if (!this._parentElement) {
-      return this._message;
-    }
+    if (!this.selectListContainerElement(options.index)) return this._message;
 
     return this._data
       .map(item => {
@@ -98,6 +98,8 @@ class StatsView extends View {
     console.log('Adding a new stats column...');
     const index = this._rootElement.children.length;
     await this.render(['no data'], { addColumn: true, noClear: true, index });
+    // Leave the _parentElement selected to the list container
+    this.selectListContainerElement(index);
     return index;
   }
 
