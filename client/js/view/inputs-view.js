@@ -14,13 +14,28 @@ class InputsView extends View {
     this._vslaneElement = document.querySelector('.vslane__selector');
     this._errorMessage = 'Can not read champions';
     this._message = '';
+    this._laneTemplate = null;
+    this._rankTemplate = null;
+    this._laneTempPromise = fetch(`${LANE_ITEM_TEMPLATE}`)
+      .then(response => response.text())
+      .then(data => {
+        this._laneTemplate = data;
+        return data;
+      });
+    this._rankTempPromise = fetch(`${RANK_ITEM_TEMPLATE}`)
+      .then(response => response.text())
+      .then(data => {
+        this._rankTemplate = data;
+        return data;
+      });
 
     this.selectorDisplayed = null;
   }
 
   async insertSelectors(roles, ranks, version) {
-    this._laneTemplate = await this._getTemplate(LANE_ITEM_TEMPLATE);
-    this._rankTemplate = await this._getTemplate(RANK_ITEM_TEMPLATE);
+    if (!this._laneTemplate || !this._rankTemplate) {
+      await Promise.all([this._laneTempPromise, this._rankTempPromise]);
+    }
 
     this._currentTemplate = this._laneTemplate;
     this._parentElement = this._laneElement;
@@ -30,11 +45,6 @@ class InputsView extends View {
     this._currentTemplate = this._rankTemplate;
     this._parentElement = this._rankElement;
     await this.render(ranks);
-  }
-
-  async _getTemplate(url) {
-    const response = await fetch(`${url}`);
-    return await response.text();
   }
 
   async _generateMarkup(options) {

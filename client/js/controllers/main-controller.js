@@ -19,9 +19,15 @@ const optionsChangedHandler = e => {
   }
   if (target === 'rankSelected') {
     tierlistController.tierlistHandler();
+    // appState.pool.forEach((champion, index) =>
+    //   statsController.statsHandler(champion.id, index)
+    // );
   }
   if (target === 'vslaneSelected') {
     tierlistController.tierlistHandler();
+    // appState.pool.forEach((champion, index) =>
+    //   statsController.statsHandler(champion.id, index)
+    // );
   }
 };
 

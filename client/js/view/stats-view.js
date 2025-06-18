@@ -11,10 +11,20 @@ class StatsView extends View {
     this._parentElement = this._rootElement;
     this._errorMessage = 'Cannot load the stats...';
     this._message = 'Please, select champion...';
-    this._tempColumnPromise = fetch(`${STATS_COLUMN_TEMPLATE}`);
-    this._tempItemPromise = fetch(`${STATS_ITEM_TEMPLATE}`);
     this._templateColumn = null;
     this._templateItem = null;
+    this._tempColumnPromise = fetch(`${STATS_COLUMN_TEMPLATE}`)
+      .then(response => response.text())
+      .then(data => {
+        this._templateColumn = data;
+        return data;
+      });
+    this._tempItemPromise = fetch(`${STATS_ITEM_TEMPLATE}`)
+      .then(response => response.text())
+      .then(data => {
+        this._templateItem = data;
+        return data;
+      });
     // prevent propagation for clicking inside a displayed popup
     // this._panelElement.addEventListener('click', e => e.stopPropagation());
   }
@@ -27,22 +37,13 @@ class StatsView extends View {
     );
   }
 
-  async _resolveTemplates() {
-    if (!this._templateColumn) {
-      const response = await this._tempColumnPromise;
-      this._templateColumn = await response.text();
-    }
-    if (!this._templateItem) {
-      const response = await this._tempItemPromise;
-      this._templateItem = await response.text();
-    }
-  }
-
   // options = { addColumn: true/false, length: list.length, index: column }
   async _generateMarkup(options) {
     if (!this.checkOptions(options)) return this._message;
 
-    await this._resolveTemplates();
+    if (!this._templateColumn || !this._templateItem) {
+      await Promise.all([this._tempColumnPromise, this._tempItemPromise]);
+    }
 
     console.log('Generating markup...');
     console.log(options);

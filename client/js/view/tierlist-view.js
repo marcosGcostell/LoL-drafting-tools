@@ -2,9 +2,19 @@ import { IMG_SRC, TIERLIST_ITEM_TEMPLATE } from '../common/config.js';
 import View from './view.js';
 
 class ListView extends View {
-  _parentElement = document.querySelector('.tierlist');
-  _errorMessage = 'No champion data recieved!';
-  _message = '';
+  constructor() {
+    super();
+    this._parentElement = document.querySelector('.tierlist');
+    this._errorMessage = 'No champion data recieved!';
+    this._message = '';
+    this._itemTemplate = null;
+    this._templatePromise = fetch(`${TIERLIST_ITEM_TEMPLATE}`)
+      .then(response => response.text())
+      .then(data => {
+        this._itemTemplate = data;
+        return data;
+      });
+  }
 
   // FIXME this handler has no purpose anymore
   addHandlerTierlist(handler) {
@@ -20,18 +30,15 @@ class ListView extends View {
     if (!options?.lane) return -1;
 
     // TODO Maybe the templates should be cached in sessionStorage
-    const response = await fetch(`${TIERLIST_ITEM_TEMPLATE}`);
-    const itemTemplate = await response.text();
+    if (!this._itemTemplate) await this._templatePromise;
 
     return this._data
-      .map(champion =>
-        this._generateItemMarkup(champion, options.lane, itemTemplate)
-      )
+      .map(champion => this._generateItemMarkup(champion, options.lane))
       .join('');
   }
 
-  _generateItemMarkup(champion, lane, itemTemplate) {
-    let output = itemTemplate.replace(/{%LANE_IMG%}/g, lane.img);
+  _generateItemMarkup(champion, lane) {
+    let output = this._itemTemplate.replace(/{%LANE_IMG%}/g, lane.img);
     output = output.replace(/{%LANE_NAME%}/g, lane.name);
     output = output.replace(/{%WR%}/g, champion.winRatio);
     output = output.replace(/{%PR%}/g, champion.pickRate);

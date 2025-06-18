@@ -1,7 +1,7 @@
 import { IMG_SRC, SEARCH_ITEM_TEMPLATE } from '../common/config.js';
 import View from './view.js';
 
-class ListView extends View {
+class SearchView extends View {
   constructor() {
     super();
     this._panelElement = document.querySelector('.search__popup');
@@ -9,6 +9,14 @@ class ListView extends View {
     this._parentElement = document.querySelector('.search__results');
     this._errorMessage = 'No champion match that name...';
     this._message = 'Please, enter a champion name...';
+    this._template = null;
+    this._templatePromise = fetch(`${SEARCH_ITEM_TEMPLATE}`)
+      .then(response => response.text())
+      .then(data => {
+        this._template = data;
+        return data;
+      });
+
     this.isPanelShowed = false;
 
     // prevent propagation for clicking inside a displayed popup
@@ -39,18 +47,15 @@ class ListView extends View {
   }
 
   async _generateMarkup(options) {
-    if (!options?.length) {
-      return this._message;
-    }
+    if (!options?.length) return this._message;
 
     // TODO Maybe the templates should be cached in sessionStorage
-    const response = await fetch(`${SEARCH_ITEM_TEMPLATE}`);
-    const itemTemplate = await response.text();
+    if (!this._template) await this._templatePromise;
 
     return this._data
       .map(champion => {
         if (champion?.id) {
-          return this._generateItemMarkup(champion, itemTemplate);
+          return this._generateItemMarkup(champion);
         } else {
           return '<hr>';
         }
@@ -58,8 +63,8 @@ class ListView extends View {
       .join('');
   }
 
-  _generateItemMarkup(champion, itemTemplate) {
-    let output = itemTemplate.replace(/{%ID%}/g, champion.id);
+  _generateItemMarkup(champion) {
+    let output = this._template.replace(/{%ID%}/g, champion.id);
     output = output.replace(/{%IMG_SRC%}/g, IMG_SRC);
     output = output.replace(/{%IMG%}/g, champion.img);
     output = output.replace(/{%NAME%}/g, champion.name);
@@ -77,4 +82,4 @@ class ListView extends View {
   }
 }
 
-export default new ListView();
+export default new SearchView();

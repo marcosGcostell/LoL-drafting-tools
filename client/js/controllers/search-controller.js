@@ -2,7 +2,6 @@ import appState from '../model/app-state.js';
 import appData from '../model/app-data.js';
 import searchView from '../view/search-view.js';
 import * as searchModel from '../model/search-model.js';
-import * as dataModel from '../model/data-model.js';
 
 export const toggleSearchPanel = e => {
   if (!appState.popUpOn || appState.popUpOn === 'search') {

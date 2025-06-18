@@ -7,28 +7,23 @@ class PoolView extends View {
     this._parentElement = document.querySelector('.pool-section');
     this._errorMessage = 'No champion match that name...';
     this._message = 'Please, enter a champion name...';
-    this._templatePromise = fetch(`${CHAMPION_TEMPLATE}`);
     this._template = null;
+    this._templatePromise = fetch(`${CHAMPION_TEMPLATE}`)
+      .then(response => response.text())
+      .then(data => {
+        this._template = data;
+        return data;
+      });
     // prevent propagation for clicking inside a displayed popup
     // this._panelElement.addEventListener('click', e => e.stopPropagation());
   }
 
   // handlers for clicking remove champion, move, etc.
 
-  async _getTemplate() {
-    if (this._template) {
-      return this._template;
-    }
-    const response = await this._templatePromise;
-    return await response.text();
-  }
-
   async _generateMarkup(options) {
-    if (!options?.length) {
-      return this._message;
-    }
+    if (!options?.length) return this._message;
 
-    this._template = await this._getTemplate();
+    if (!this._template) await this._templatePromise;
 
     return this._data
       .map(champion => {
@@ -41,7 +36,7 @@ class PoolView extends View {
     let output = this._template.replace(/{%INDEX%}/g, index);
     output = output.replace(/{%IMG_SRC%}/g, IMG_SRC);
     output = output.replace(/{%IMG%}/g, champion.img);
-    // FIXME WinRate and BanRate sould come with champion from
+    // FIXME WinRate and BanRate sould come with champion from API
     output = output.replace(/{%WR%}/g, '50.00');
     output = output.replace(/{%BR%}/g, '3.00');
     return output;
