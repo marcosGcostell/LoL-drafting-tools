@@ -3,67 +3,36 @@ import appData from '../model/app-data.js';
 import * as dataModel from '../model/data-model.js';
 import statsView from '../view/stats-view.js';
 
-// export async function addChampionsHandler(champions, index) {
-//   try {
-//     console.log('Adding champions...');
-//     // TODO include endpoint in API to get basic champion data (build)
-
-//     const arrayChampions = Array.isArray(champions) ? champions : [champions];
-
-//     // Render the list
-//     await statsView.render(arrayChampions, {
-//       length: arrayChampions.length,
-//       index,
-//       noClear: true,
-//     });
-//   } catch (error) {
-//     statsView.renderError();
-//   }
-// }
-
-// export const updatePool = async champions => {
-//   await statsView.render(champions, {
-//     length: champions.length,
-//     index: 0,
-//   });
-// };
+const _getStatsList = async championId => {
+  return await dataModel.getStatsList({
+    state: {
+      champion: championId,
+      lane: appState.vslaneSelected,
+      rank: appState.rankSelected,
+      vslane: appState.vslaneSelected,
+      sortedBy: 'pickRate',
+    },
+    data: appData,
+    tierlist: appState.tierlist,
+  });
+};
 
 export const renderStatsList = async (statsList, options) => {
   await statsView.render(statsList, options);
 };
 
-export const statsHandler = async function (championId, index, addColumn) {
+export const addStatsColumn = async function (championId, index) {
   try {
     // Add the new column
-    if (addColumn) {
-      const newIndex = await statsView.addNewColumn();
-      if (newIndex !== index) {
-        throw new Error('Pool items does not match the stats columns...');
-      }
-      statsView.renderSpinner();
+    const newIndex = await statsView.addNewColumn();
+    if (newIndex !== index) {
+      throw new Error('Pool items does not match the stats columns...');
     }
+    statsView.renderSpinner();
 
-    console.log('Handling stats');
-    const statsList = await dataModel.getStatsList({
-      state: {
-        champion: championId,
-        lane: appState.vslaneSelected,
-        rank: appState.rankSelected,
-        vslane: appState.vslaneSelected,
-        sortedBy: 'pickRate',
-      },
-      data: appData,
-      tierlist: appState.tierlist,
-    });
-    console.log(statsList);
-
+    const statsList = await _getStatsList(championId);
     // Save state
-    if (addColumn) {
-      appState.addStatsList(statsList, championId);
-    } else {
-      if (!appState.updateStatsList(statsList, index))
-        throw new Error('The stats list does not exists...');
-    }
+    appState.addStatsList(statsList, championId);
 
     // Render the list
     await renderStatsList(statsList, { length: statsList.length, index });
@@ -72,7 +41,22 @@ export const statsHandler = async function (championId, index, addColumn) {
   }
 };
 
-export const updateStats = async statsLists => {
+export const updateStatsColumn = async function (championId, index) {
+  try {
+    const statsList = await _getStatsList(championId);
+
+    // Save state
+    if (!appState.updateStatsList(statsList, index))
+      throw new Error('The stats list does not exists...');
+
+    // Render the list
+    await renderStatsList(statsList, { length: statsList.length, index });
+  } catch (error) {
+    statsView.renderError();
+  }
+};
+
+export const loadAllStats = async statsLists => {
   resetStats();
   let index = 0;
   for (const list of statsLists) {

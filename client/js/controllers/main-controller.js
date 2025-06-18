@@ -14,22 +14,22 @@ const optionsChangedHandler = async e => {
       statsController.resetStats();
     }
     if (appState.tierlistLane !== appState.vslaneSelected) {
-      tierlistController.tierlistHandler();
+      tierlistController.loadTierlist();
     }
   }
   if (target === 'rankSelected') {
-    await tierlistController.tierlistHandler();
+    await tierlistController.loadTierlist();
     if (appState.pool.length) {
       appState.pool.forEach((champion, index) =>
-        statsController.statsHandler(champion.id, index)
+        statsController.updateStatsColumn(champion.id, index)
       );
     }
   }
   if (target === 'vslaneSelected') {
-    await tierlistController.tierlistHandler();
+    await tierlistController.loadTierlist();
     if (appState.pool.length) {
       appState.pool.forEach((champion, index) =>
-        statsController.statsHandler(champion.id, index)
+        statsController.updateStatsColumn(champion.id, index)
       );
     }
   }
@@ -39,11 +39,10 @@ const poolChangedHandler = async e => {
   const { action, element } = e.detail;
   if (action === 'add') {
     console.log('Adding new champion...');
-    await poolController.addChampionsHandler(element, appState.pool.length);
-    await statsController.statsHandler(
+    await poolController.addChampions(element, appState.pool.length);
+    await statsController.addStatsColumn(
       element.id,
-      appState.statsLists.length,
-      true
+      appState.statsLists.length
     );
   }
   if (action === 'remove') {
@@ -89,6 +88,6 @@ export async function init() {
   }
   if (appState.pool.length) {
     poolController.updatePool(appState.pool);
-    statsController.updateStats(appState.statsLists);
+    statsController.loadAllStats(appState.statsLists);
   }
 }

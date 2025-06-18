@@ -1,7 +1,7 @@
 import * as dataModel from '../model/data-model.js';
 import poolView from '../view/pool-view.js';
 
-export async function addChampionsHandler(champions, index) {
+export async function addChampions(champions, index) {
   try {
     console.log('Adding champions...');
     // TODO include endpoint in API to get basic champion data (build)

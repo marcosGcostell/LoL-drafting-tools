@@ -9,7 +9,7 @@ export const renderStateTierlist = () => {
   });
 };
 
-export const tierlistHandler = async function () {
+export const loadTierlist = async function () {
   try {
     tierlistView.renderSpinner();
     console.log(
