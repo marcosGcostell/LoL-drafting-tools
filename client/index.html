@@ -13,13 +13,14 @@
       href="img/icons/favicon.png"
       type="image/x-icon"
     />
-    <link rel="stylesheet" href="./style.css" />
+    <link rel="stylesheet" href="./css/index.css" />
     <script defer src="js/index.js" type="module"></script>
     <title>K-draft - League of Legends – Drafting Tool</title>
   </head>
 
   <body>
     <div class="main-container">
+      <!-- HEADER -->
       <header>
         <div class="header header__logo">
           <img src="img/icons/logo.png" class="logo" alt="K-draft" />
@@ -36,8 +37,11 @@
           </span>
         </div>
       </header>
+      <!-- MAIN -->
       <main>
+        <!-- TOP SECTION -->
         <section class="top-section">
+          <!-- INPUT SECTION -->
           <div class="input-section">
             <div class="main__input lane__input selector">
               <img
@@ -68,9 +72,12 @@
                   class="vslane__btn input__clickable"
                   alt="Lanes"
                 />
-                <span>vs Lane</span>
+                <div class="vslane__label">
+                  <div class="label">vs</div>
+                  <span>Lane</span>
+                </div>
                 <div class="popup vslane__selector hidden">
-                  <!-- Place to insert lane selector -->
+                  <!-- Place to insert vslane selector -->
                 </div>
               </div>
               <div class="small__input patch__input">
@@ -78,28 +85,43 @@
               </div>
             </div>
           </div>
-          <div class="champion__pull">
-            <div class="champion" id="c01">
-              <img src="img/champions/Lux.png" class="champion__img" />
-              <span>WR: <span class="champion__wr">50.34</span></span>
-              <span>Ban: <span class="champion__ban">13.4</span></span>
+          <!-- POOL SECTION -->
+          <div class="pool-section">
+            <!-- Place to insert champions selected -->
+          </div>
+          <div class="search-section">
+            <div class="champion input__clickable" id="select-champion">
+              <svg class="add__champion">
+                <use href="img/icons/icons.svg#icon-plus-circle"></use>
+              </svg>
+              <span class="champion__text">Add</span>
+              <span class="champion__text">Champion</span>
             </div>
-            <div class="input" id="c01">
-              <input
-                id="champion"
-                type="text"
-                class="input"
-                placeholder="Champion..."
-              />
-              <span>
-                <svg class="search__icon">
-                  <use href="img/icons/icons.svg#icon-search"></use>
-                </svg>
-              </span>
+            <div class="popup__container">
+              <div class="popup search__popup hidden">
+                <div class="search">
+                  <input
+                    id="search"
+                    type="text"
+                    class="input"
+                    placeholder="Champion..."
+                  />
+                  <span>
+                    <svg class="search__icon">
+                      <use href="img/icons/icons.svg#icon-search"></use>
+                    </svg>
+                  </span>
+                </div>
+                <ul class="search__results">
+                  <!-- Place to insert search resutlts -->
+                </ul>
+              </div>
             </div>
           </div>
         </section>
+        <!-- DATA SECTION -->
         <section class="data-section">
+          <!-- TIERLIST SECTION -->
           <div class="list-container">
             <ul class="tierlist">
               <li class="first-row">
@@ -110,49 +132,19 @@
               </li>
               <hr />
               <!-- Place to insert tierlist -->
-              <!-- <li class="row">
-                <img
-                  src="img/lanes/middle.webp"
-                  class="icon__row"
-                  alt="vs Lane"
-                />
-                <span class="data">50.12</span>
-                <span class="data">12.2</span>
-                <img src="img/champions/Nunu.png" class="champ__img" />
-                <span class="data name">Nunu & Willump</span>
-              </li>
-              <li class="row">
-                <img
-                  src="img/lanes/middle.webp"
-                  class="icon__row"
-                  alt="vs Lane"
-                />
-                <span class="data">47.84</span>
-                <span class="data">6.7</span>
-                <img src="img/champions/Ahri.png" class="champ__img" />
-                <span class="data name">Ahri</span>
-              </li>
-              <li class="row">
-                <img
-                  src="img/lanes/middle.webp"
-                  class="icon__row"
-                  alt="vs Lane"
-                />
-                <span class="data">52.34</span>
-                <span class="data">10.0</span>
-                <img src="img/champions/Akali.png" class="champ__img" />
-                <span class="data name">Akali</span>
-              </li> -->
             </ul>
           </div>
-          <div class="counter-container">
-            <div class="counter" id="d01">
-              <ul class="counter-list">
+          <!-- STATS SECTION -->
+          <div class="stats-container">
+            <!-- Place to insert a new stats column -->
+            <!-- <div class="stats" id="s01">
+              <ul class="stats-list">
                 <li class="first-row">
                   <span class="data">Stats</span>
                 </li>
-                <hr />
-                <li class="row">
+                <hr /> -->
+            <!-- Place to insert stats for a selected champion -->
+            <!-- <li class="row">
                   <span class="results score">6</span>
                   <span class="results"
                     >51.24
@@ -174,10 +166,11 @@
                   >
                 </li>
               </ul>
-            </div>
+            </div> -->
           </div>
         </section>
       </main>
+      <!-- FOOTER -->
       <footer>
         <p>League of Legends - Riot Games</p>
       </footer>

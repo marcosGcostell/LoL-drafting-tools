@@ -13,7 +13,6 @@ export default class View {
    * @todo Finish the implementation
    */
   async render(data, options = {}) {
-    console.log('Rendering the list');
     // TODO Need to change the _parentElement relation
     // Should be a root element for messages and a parentelement to render data
     if (!data || (Array.isArray(data) && data.length === 0))
@@ -24,17 +23,10 @@ export default class View {
 
     if (options?.onlyMarkup === true) return markup;
 
-    this._clear();
+    if (!options?.noClear) {
+      this._clear();
+    }
     this._parentElement.insertAdjacentHTML('beforeend', markup);
-  }
-
-  getInputs() {
-    return {
-      champion: document.getElementById('champion').value,
-      rank: document.getElementById('rank').value,
-      role: document.getElementById('role').value,
-      vslane: document.getElementById('vslane').value,
-    };
   }
 
   update(data) {}
@@ -57,14 +49,14 @@ export default class View {
 
   renderError(message = this._errorMessage) {
     const markup = `
-        <div class="error">
-          <div>
-            <svg>
-              <use href="${ICONS}#icon-alert-triangle"></use>
-            </svg>
-          </div>
-          <p>${message}</p>
-        </div>
+        <li class="row error">
+          <svg>
+            <use href="${ICONS}#icon-alert-triangle"></use>
+          </svg>
+        </li>
+        <li class="row error">
+          <span>${message}</span>
+        </li>
       `;
     this._clear();
     this._parentElement.insertAdjacentHTML('beforeend', markup);
@@ -72,14 +64,14 @@ export default class View {
 
   renderMessage(message = this._message) {
     const markup = `
-        <div class="message">
-          <div>
-            <svg>
-              <use href="${ICONS}#icon-smile"></use>
-            </svg>
-          </div>
-          <p>${message}</p>
-        </div> 
+        <li class="row error">
+          <svg>
+            <use href="${ICONS}#icon-smile"></use>
+          </svg>
+        </li>
+        <li class="row error">
+          <span>${message}</span>
+        </li> 
       `;
     this._clear();
     this._parentElement.insertAdjacentHTML('beforeend', markup);

@@ -22,7 +22,7 @@ class AppData {
     this.createdAt = data.version;
     this.champions = data.champions;
     this.idList = data.idList;
-    this.nameListe = data.nameList;
+    this.nameList = data.nameList;
     this.roles = data.roles;
     this.ranks = data.ranks;
   }

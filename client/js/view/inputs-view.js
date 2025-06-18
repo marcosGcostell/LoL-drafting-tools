@@ -1,38 +1,58 @@
+import View from './view.js';
 import { LANE_ITEM_TEMPLATE, RANK_ITEM_TEMPLATE } from '../common/config.js';
 
-class InputsView {
-  _data;
-  selectorDisplayed = null;
+class InputsView extends View {
+  _parentElement;
+
+  constructor() {
+    super();
+    this._laneTemplate = '';
+    this._rankTemplate = '';
+    this._currentTemplate = '';
+    this._laneElement = document.querySelector('.lane__selector');
+    this._rankElement = document.querySelector('.rank__selector');
+    this._vslaneElement = document.querySelector('.vslane__selector');
+    this._errorMessage = 'Can not read champions';
+    this._message = '';
+    this._laneTemplate = null;
+    this._rankTemplate = null;
+    this._laneTempPromise = fetch(`${LANE_ITEM_TEMPLATE}`)
+      .then(response => response.text())
+      .then(data => {
+        this._laneTemplate = data;
+        return data;
+      });
+    this._rankTempPromise = fetch(`${RANK_ITEM_TEMPLATE}`)
+      .then(response => response.text())
+      .then(data => {
+        this._rankTemplate = data;
+        return data;
+      });
+
+    this.selectorDisplayed = null;
+  }
 
   async insertSelectors(roles, ranks, version) {
-    this._data = roles;
-    await this.render(LANE_ITEM_TEMPLATE, '.lane__selector');
-    await this.render(LANE_ITEM_TEMPLATE, '.vslane__selector');
-    this._data = ranks;
-    await this.render(RANK_ITEM_TEMPLATE, '.rank__selector');
+    if (!this._laneTemplate || !this._rankTemplate) {
+      await Promise.all([this._laneTempPromise, this._rankTempPromise]);
+    }
+
+    this._currentTemplate = this._laneTemplate;
+    this._parentElement = this._laneElement;
+    await this.render(roles);
+    this._parentElement = this._vslaneElement;
+    await this.render(roles);
+    this._currentTemplate = this._rankTemplate;
+    this._parentElement = this._rankElement;
+    await this.render(ranks);
   }
 
-  async render(template, target) {
-    // if (!data || (Array.isArray(data) && data.length === 0))
-    //   return this.renderError();
-    const targetElement = document.querySelector(`${target}`);
-
-    const markup = await this._generateMarkup(template);
-
-    targetElement.innerHTML = '';
-    targetElement.insertAdjacentHTML('afterbegin', markup);
+  async _generateMarkup(options) {
+    return this._data.map(item => this._generateItemMarkup(item)).join('');
   }
 
-  async _generateMarkup(template) {
-    const response = await fetch(`${template}`);
-    const itemTemplate = await response.text();
-    return this._data
-      .map(item => this._generateItemMarkup(item, itemTemplate))
-      .join('');
-  }
-
-  _generateItemMarkup(item, itemTemplate) {
-    let output = itemTemplate.replace(/{%ID%}/g, item.id);
+  _generateItemMarkup(item) {
+    let output = this._currentTemplate.replace(/{%ID%}/g, item.id);
     output = output.replace(/{%NAME%}/g, item.name);
     output = output.replace(/{%IMG%}/g, item.img);
     return output;
@@ -43,7 +63,7 @@ class InputsView {
       .querySelector(`.${target}__btn`)
       .addEventListener('click', function (e) {
         e.preventDefault();
-        handler(target);
+        handler(e, target);
       });
   }
 
@@ -67,10 +87,9 @@ class InputsView {
     const image = document.querySelector(`.${target}__input img`);
     const text = document.querySelector(`.${target}__input span`);
 
-    const prefix = target === 'vslane' ? 'vs ' : '';
     const folder = target === 'rank' ? 'ranks' : 'lanes';
     image.setAttribute('src', `img/${folder}/${option.img}`);
-    text.textContent = `${prefix}${option.name}`;
+    text.textContent = option.name;
   }
 }
 

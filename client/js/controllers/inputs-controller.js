@@ -1,10 +1,15 @@
 import appData from '../model/app-data.js';
 import appState from '../model/app-state.js';
 import inputsView from '../view/inputs-view.js';
-import { tierlistHandler } from './tierlist-controller.js';
 
-const displayOptionsHandler = target => {
-  inputsView.toggleSelector(target);
+export const toggleSelectors = (e, target) => {
+  if (!appState.popUpOn || appState.popUpOn === target) {
+    inputsView.toggleSelector(target);
+    appState.popUpOn = inputsView.selectorDisplayed
+      ? inputsView.selectorDisplayed
+      : '';
+    e.stopPropagation();
+  }
 };
 
 const setOptionHandler = id => {
@@ -19,25 +24,22 @@ const setOptionHandler = id => {
     inputsView.changeOption('vslane', option);
   }
   inputsView.toggleSelector();
-  // call the proper method: 'set' + Capitalized target. 'setLane'
+  appState.popUpOn = '';
+  // call the proper method: 'set' + Capitalized target. (e.g. = 'setLane')
   appState[`set${target.charAt(0).toUpperCase() + target.slice(1)}`](id);
 };
 
-const optionsChangedHandler = e => {
-  const { target, value } = e.detail;
-  if (target === 'rankSelected') {
-    tierlistHandler();
-  }
-  if (target === 'vslaneSelected') {
-    tierlistHandler();
-  }
-  console.log(e);
-};
+export function setOptionsFromState() {
+  inputsView.changeOption('lane', appData.roles[appState.laneSelected]);
+  inputsView.changeOption('rank', appData.ranks[appState.rankSelected]);
+  inputsView.changeOption('vslane', appData.roles[appState.vslaneSelected]);
+  // TODO Patch selection
+}
 
-export async function initInputs() {
+export async function setHandlers() {
   // Handlers to show and hide selectors
   ['lane', 'vslane', 'rank', 'patch'].forEach(el =>
-    inputsView.addHandlerBtn(displayOptionsHandler, el)
+    inputsView.addHandlerBtn(toggleSelectors, el)
   );
 
   // Insert pop-ups in HTML
@@ -51,7 +53,4 @@ export async function initInputs() {
   ['lane', 'vslane', 'rank'].forEach(el =>
     inputsView.addHandlerSelector(setOptionHandler, el)
   );
-
-  // Handlers for appState changes
-  appState.addEventListener('change', optionsChangedHandler);
 }

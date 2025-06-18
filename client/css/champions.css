@@ -1,0 +1,52 @@
+/* Champions section stytles */
+
+.pool-section {
+  flex: 1;
+  /* min-width: 50rem; */
+  height: 9rem;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding-left: 0.5rem;
+}
+
+#select-champion:hover {
+  transform: scale(1.05);
+}
+
+.champion {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  margin: 0;
+  margin-right: 0.6rem;
+  width: 6rem;
+  height: 8rem;
+  border: var(--color-grey-dark-3) solid 1px;
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+.champion img {
+  width: 4.7rem;
+}
+
+.champion__wr {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.champion__ban {
+  font-size: 1rem;
+}
+
+.add__champion {
+  width: 4rem;
+  fill: var(--color-grey-light-5);
+}
+
+.champion__text {
+  font-size: 1rem;
+  color: var(--color-grey-light-5);
+}

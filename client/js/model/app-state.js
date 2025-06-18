@@ -9,12 +9,15 @@ class AppState extends EventTarget {
 
     // Default values
     this.laneSelected = null;
-    this.rankSelected = null;
+    this.rankSelected = 'all';
     this.vslaneSelected = null;
     this.patchSelected = null;
-    this.tierList = [];
-    this.championsShowed = [];
-    this.counterLists = [];
+    this.tierlist = [];
+    this.tierlistLane = null;
+    this.pool = [];
+    this.statsLists = [];
+    this.statsListsOwner = [];
+    this.popUpOn = '';
 
     // Load values from session
     const localData = sessionStorage.getItem(LS_STATE);
@@ -22,29 +25,31 @@ class AppState extends EventTarget {
       try {
         const parsed = JSON.parse(localData);
         Object.assign(this, parsed);
+        // On reload hide any pop-ups
+        this.popUpOn = '';
       } catch (err) {
         throw err;
       }
     }
   }
 
-  // private setters to set property, save to session and notify
+  // private setter to set property, save to session and notify
   // except adding or removing champions
-  #update(target, value) {
+  #updateOptions(target, value) {
     this[target] = value;
     this.#save();
     this.dispatchEvent(
-      new CustomEvent('change', {
+      new CustomEvent('options', {
         detail: { target, value },
       })
     );
   }
 
-  #updateChampions(action, champion) {
+  #updateChampions(action, element) {
     this.#save();
     this.dispatchEvent(
-      new CustomEvent('champion', {
-        detail: { action, champion },
+      new CustomEvent('pool', {
+        detail: { action, element },
       })
     );
   }
@@ -57,44 +62,72 @@ class AppState extends EventTarget {
   // Publics setters
   setLane(lane, vslane = undefined) {
     this.vslaneSelected = vslane ? vslane : lane;
-    this.#update('laneSelected', lane);
+    this.#updateOptions('laneSelected', lane);
   }
 
   setRank(rank) {
-    this.#update('rankSelected', rank);
+    this.#updateOptions('rankSelected', rank);
   }
 
   setVslane(vslane) {
-    this.#update('vslaneSelected', vslane);
+    this.#updateOptions('vslaneSelected', vslane);
   }
 
   setPatch(patch) {
-    this.#update('patchSelected', patch);
+    this.#updateOptions('patchSelected', patch);
   }
 
-  addChampion(champion, counterList) {
-    this.championsShowed.push(champion);
-    this.counterLists.push(counterList);
+  addTierlist(tierlist) {
+    this.tierlist = tierlist;
+    this.tierlistLane = this.vslaneSelected;
+    this.#save();
+  }
+
+  addChampion(champion) {
+    this.pool.push(champion);
     this.#updateChampions('add', champion);
   }
 
-  removeChampion(champion, counterList) {
-    const index = this.championsShowed.indexOf(champion);
+  removeChampion(champion) {
+    const index = this.pool.indexOf(champion);
     if (index > -1) {
-      this.championsShowed.splice(index, 1);
-      this.counterLists.splice(index, 1);
+      this.pool.splice(index, 1);
+      this.statsLists.splice(index, 1);
+      this.statsListsOwner.splice(index, 1);
       this.#updateChampions('remove', index);
     }
   }
 
-  clear() {
+  addStatsList(statsList, owner) {
+    this.statsLists.push(statsList);
+    this.statsListsOwner.push(owner);
+    this.#save();
+  }
+
+  updateStatsList(statsList, index) {
+    if (index >= this.statsLists.length) return false;
+    this.statsLists[index] = statsList;
+    this.#save();
+    return true;
+  }
+
+  resetPool() {
+    this.pool = [];
+    this.statsLists = [];
+    this.statsListsOwner = [];
+    this.#save();
+  }
+
+  resetAll() {
     this.laneSelected = null;
-    this.rankSelected = null;
+    this.rankSelected = 'all';
     this.vslaneSelected = null;
     this.patchSelected = null;
-    this.tierList = [];
-    this.championsShowed = [];
-    this.counterLists = [];
+    this.tierlist = [];
+    this.tierlistLane = null;
+    this.pool = [];
+    this.statsLists = [];
+    this.statsListsOwner = [];
     this.#save();
     this.dispatchEvent(new CustomEvent('reset'));
   }

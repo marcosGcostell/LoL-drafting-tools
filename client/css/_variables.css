@@ -1,0 +1,27 @@
+/* Global variables */
+:root {
+  --color-primary: #5b0775;
+  --color-grad-1: #17011e;
+  --color-grad-2: #360545;
+
+  --color-grey-light-1: #f8f3f9;
+  --color-grey-light-2: #eeedee;
+  --color-grey-light-3: #cbc3d3;
+  --color-grey-light-4: #ac9db0;
+  --color-grey-light-5: #8e8191;
+  --color-grey-dark-1: #190e19; /* Normal background */
+  --color-grey-dark-2: #2c1e2c;
+  --color-grey-dark-3: #402e43;
+  --color-grey-dark-4: #5b4860;
+
+  --gradient: linear-gradient(
+    to top left,
+    var(--color-grad-1),
+    var(--color-grad-2)
+  );
+
+  --bp-large: 78.15em;
+  --bp-medium: 61.25em;
+  --bp-small: 37.5em;
+  --bp-smallest: 31.25em;
+}

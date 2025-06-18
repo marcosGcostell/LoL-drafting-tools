@@ -1,0 +1,57 @@
+/* Header styles */
+header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1.2rem;
+  margin-bottom: 0.3rem;
+}
+
+.header {
+  display: flex;
+  height: 2.2rem;
+  align-items: center;
+}
+
+.header__logo {
+  /* flex: 0 0 25%; */
+  width: 20rem;
+  margin-right: 1.8rem;
+}
+
+.header__central {
+  flex: 1 1 auto;
+  justify-content: flex-end;
+}
+
+.header__login {
+  /* flex: 0 0 15%; */
+  width: 9rem;
+  justify-content: flex-end;
+  margin-left: 2rem;
+}
+
+.logo {
+  max-height: 2.2rem;
+}
+
+.login__btn,
+.lang__btn {
+  border-radius: 1.1rem;
+  height: 2.2rem;
+  font-size: 1.1rem;
+}
+
+.lang__btn {
+  width: 2.8rem;
+}
+
+.login__btn {
+  width: 6rem;
+}
+
+.user__icon {
+  display: flex;
+  max-height: 2.2rem;
+  max-width: 3rem;
+}
