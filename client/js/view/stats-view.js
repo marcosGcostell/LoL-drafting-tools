@@ -50,10 +50,7 @@ class StatsView extends View {
       await Promise.all([this._tempColumnPromise, this._tempItemPromise]);
     }
 
-    console.log('Generating markup...');
-    console.log(options);
     if (options.addColumn) {
-      console.log('Adding new stat column markup...');
       this._parentElement = this._rootElement;
       return this._generateSectionMarkup(options.index);
     }
@@ -95,7 +92,6 @@ class StatsView extends View {
   }
 
   async addNewColumn() {
-    console.log('Adding a new stats column...');
     const index = this._rootElement.children.length;
     await this.render(['no data'], { addColumn: true, noClear: true, index });
     // Leave the _parentElement selected to the list container

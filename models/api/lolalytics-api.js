@@ -2,7 +2,7 @@ import { JSDOM } from 'jsdom';
 
 import { MIN_DELAY, MAX_DELAY } from '../common/config.js';
 import { PROXY_ON, PROXY_URL } from '../common/config.js';
-import { getRandomNumber, wait } from '../common/helpers.js';
+import { getRandomNumber, waitMs } from '../common/helpers.js';
 
 ///////////////////////////////////////
 
@@ -14,18 +14,33 @@ class Lolalytics {
   #baseURL = 'https://lolalytics.com/lol/';
   listIntegrity;
 
+  constructor() {
+    this._lastConnection = Date.now() - MAX_DELAY * 1000;
+  }
+
   // PRIVATE METHODS
+
+  /**
+   * @method #allowConnection
+   * Prevents from making connections before a preset delay
+   */
+  async #allowConnection() {
+    const allowedTime =
+      getRandomNumber(MIN_DELAY, MAX_DELAY) * 1000 + this._lastConnection;
+    if (Date.now() < allowedTime) await waitMs(allowedTime - Date.now());
+    this._lastConnection = Date.now();
+  }
 
   /**
    * @method #getTierlistURL
    * Returns the url for the tierlist webpage
    * @return {String} The url for (this rank, and lane).
    */
-  #getTierlistURL = function (lane = 'main', rank = 'all') {
+  #getTierlistURL(lane = 'main', rank = 'all') {
     return `${this.#baseURL}tierlist/?${
       lane !== 'main' ? `lane=${lane}&` : ''
     }tier=${rank}&view=grid`;
-  };
+  }
 
   /**
    * @method #getCountersURL
@@ -56,7 +71,7 @@ class Lolalytics {
    */
   async #scrapeWebPage(url) {
     // Always wait for lolalytics requests
-    await wait(getRandomNumber(MIN_DELAY, MAX_DELAY));
+    await this.#allowConnection();
     const response = await fetch(`${PROXY_ON ? PROXY_URL : ''}${url}`);
     const html = await response.text();
     const dom = new JSDOM(html);
@@ -220,7 +235,6 @@ class Lolalytics {
       virtualDomDocument.getElementsByTagName('main')[0].firstElementChild
         .firstElementChild.firstElementChild.children[1].children
     );
-    console.log(rolesItems);
 
     const roleRates = Object.fromEntries(
       rolesItems.map(el => [
@@ -228,7 +242,6 @@ class Lolalytics {
         Number.parseFloat(el.querySelector('div').textContent),
       ])
     );
-    console.log(roleRates);
 
     const statsSection =
       virtualDomDocument.getElementsByTagName('main')[0].children[4].children[1]

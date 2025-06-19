@@ -14,7 +14,7 @@ const saveStatsData = async (champion, lane, rank, stats) => {
     };
 
     await Stat.create(data);
-    console.log('Counter list saved! ✅');
+    console.log('Stats saved! ✅');
     return data;
   } catch (err) {
     throw err;
@@ -27,8 +27,10 @@ const getStatsData = async (champion, lane, rank) => {
     const data = await getListFromDb(Stat, { champion, lane, rank });
 
     if (data) {
+      console.log('Getting Stats from database...');
       return { stats: data.stats, updatedAt: data.createdAt };
     }
+    console.log('Getting Stats from website...');
     const stats = await Lolalytics.getStats(champion, lane, rank);
     saveStatsData(champion, lane, rank, stats);
     return { stats, updatedAt: new Date().toISOString() };

@@ -3,13 +3,12 @@ import poolView from '../view/pool-view.js';
 
 export async function addChampions(champions, index) {
   try {
-    console.log('Adding champions...');
-    // TODO include endpoint in API to get basic champion data (build)
+    // TODO call new endpoint to fetch data
 
     const arrayChampions = Array.isArray(champions) ? champions : [champions];
 
-    // Render the list
-    await poolView.render(arrayChampions, {
+    // Render the list (needs an array)
+    poolView.render(arrayChampions, {
       length: arrayChampions.length,
       index,
       noClear: true,
@@ -20,7 +19,7 @@ export async function addChampions(champions, index) {
 }
 
 export const updatePool = async champions => {
-  await poolView.render(champions, {
+  poolView.render(champions, {
     length: champions.length,
     index: 0,
   });

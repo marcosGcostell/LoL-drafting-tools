@@ -21,9 +21,11 @@ export const getTierlistData = async (lane, rank) => {
   const data = await getListFromDb(Tierlist, { lane, rank });
 
   if (data) {
+    console.log('Getting Tierlist from database...');
     return { tierlist: data.list, updatedAt: data.createdAt };
   }
 
+  console.log('Getting Tierlist from website...');
   const tierlist = await Lolalytics.getTierlist(lane, rank);
   saveTierlist(lane, rank, tierlist);
   return { tierlist, updatedAt: new Date().toISOString() };

@@ -1,6 +1,6 @@
 // Constants for API connection to Lolalyttics Site
-export const MIN_DELAY = 0.4;
-export const MAX_DELAY = 1.6;
+export const MIN_DELAY = 0.5;
+export const MAX_DELAY = 1.2;
 export const PROXY_ON = false;
 export const PROXY_URL = 'https://cors-anywhere.herokuapp.com/';
 

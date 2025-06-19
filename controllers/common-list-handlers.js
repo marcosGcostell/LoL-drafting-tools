@@ -42,7 +42,6 @@ export const filterQuery = catchAsync(async (req, res, next) => {
 });
 
 export const getListFromDb = async (Model, queryObj) => {
-  console.log('Getting list from database...');
   const lists = await Model.deleteMany({
     createdAt: { $lte: expirationDate() },
   });

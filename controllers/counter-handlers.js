@@ -25,8 +25,10 @@ const getCounterListData = async (champion, lane, rank, vslane) => {
   const data = await getListFromDb(Counter, { champion, lane, rank, vslane });
 
   if (data) {
+    console.log('Getting Counters from database...');
     return { counterList: data.list, updatedAt: data.createdAt };
   }
+  console.log('Getting Counters from website...');
   const counterList = await Lolalytics.getCounters(
     champion,
     lane,
