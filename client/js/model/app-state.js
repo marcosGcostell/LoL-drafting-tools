@@ -88,6 +88,14 @@ class AppState extends EventTarget {
     this.#updateChampions('add', champion);
   }
 
+  updateChampion(champion, index) {
+    if (this.pool.length - 1 === index) {
+      this.pool.pop();
+      this.pool.push(champion);
+      this.#updateChampions('stats', champion);
+    }
+  }
+
   removeChampion(champion) {
     const index = this.pool.indexOf(champion);
     if (index > -1) {

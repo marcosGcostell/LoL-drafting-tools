@@ -39,7 +39,7 @@ const poolChangedHandler = async e => {
   const { action, element } = e.detail;
   if (action === 'add') {
     console.log('Adding new champion...');
-    await poolController.addChampions(element, appState.pool.length);
+    await poolController.addChampion(element, appState.pool.length - 1);
     await statsController.addStatsColumn(
       element.id,
       appState.statsLists.length

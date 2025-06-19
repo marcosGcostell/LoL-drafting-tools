@@ -1,4 +1,9 @@
-import { LOCAL_API, TIERLIST_ROUTE, COUNTERS_ROUTE } from '../common/config.js';
+import {
+  LOCAL_API,
+  TIERLIST_ROUTE,
+  COUNTERS_ROUTE,
+  STATS_ROUTE,
+} from '../common/config.js';
 
 /////////////
 // TODO: All these formatting tasks should be in a state class ??
@@ -70,6 +75,23 @@ export async function getTierList({ state, data }) {
     if (state.sortedBy) sortList(tierlist, state.sortedBy);
 
     return tierlist;
+  } catch (err) {
+    throw err;
+  }
+}
+
+// Arguments = {
+//   state: {champion: id, lane, rank, vslane, sortedBy: property},
+//   data: appData,
+// }
+export async function getChampionStats({ state }) {
+  try {
+    checkQuery(state.lane, state.rank, state.vslane, state.champion);
+    // API works for lolalytics folders for champion names
+    const route = `${STATS_ROUTE}/${state.champion}`;
+    const query = `?lane=${state.lane}&rank=${state.rank}`;
+
+    return await fetchListFromAPI(route, query);
   } catch (err) {
     throw err;
   }

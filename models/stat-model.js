@@ -18,10 +18,22 @@ const statSchema = new mongoose.Schema({
     default: new Date().toISOString(),
   },
   stats: {
-    winRatio: Number,
-    PickRate: Number,
-    BanRate: Number,
-    Games: Number,
+    winRatio: {
+      type: Number,
+      required: [true, 'winRatio must be fetched'],
+    },
+    pickRate: {
+      type: Number,
+      required: [true, 'pickRate must be fetched'],
+    },
+    banRate: {
+      type: Number,
+      required: [true, 'banRate must be fetched'],
+    },
+    games: {
+      type: Number,
+      required: [true, 'Games must be fetched'],
+    },
     roleRates: {
       top: Number,
       jungle: Number,

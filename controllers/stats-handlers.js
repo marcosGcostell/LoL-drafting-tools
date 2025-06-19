@@ -50,9 +50,11 @@ export const getChampionStats = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     updatedAt,
-    id: req.champion,
-    lane: req.lane,
-    rank: req.rank,
-    stats,
+    data: {
+      id: req.champion,
+      lane: req.lane,
+      rank: req.rank,
+      stats,
+    },
   });
 });
