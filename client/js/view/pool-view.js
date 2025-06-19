@@ -36,9 +36,8 @@ class PoolView extends View {
     let output = this._template.replace(/{%INDEX%}/g, index);
     output = output.replace(/{%IMG_SRC%}/g, IMG_SRC);
     output = output.replace(/{%IMG%}/g, champion.img);
-    // FIXME WinRate and BanRate sould come with champion from API
-    output = output.replace(/{%WR%}/g, '50.00');
-    output = output.replace(/{%BR%}/g, '3.00');
+    output = output.replace(/{%WR%}/g, champion.winRatio);
+    output = output.replace(/{%BR%}/g, champion.banRate);
     return output;
   }
 }

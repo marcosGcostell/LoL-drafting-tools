@@ -51,7 +51,7 @@ class AppData {
       const { data } = await response.json();
       return new AppData(data);
     } catch (err) {
-      // TODO!! the error should be handled here. There is no re-throw
+      // FIXME !! the error should be handled here. There is no re-throw
       console.error(err);
       throw err;
     }

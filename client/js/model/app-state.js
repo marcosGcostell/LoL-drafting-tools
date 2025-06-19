@@ -45,13 +45,15 @@ class AppState extends EventTarget {
     );
   }
 
-  #updateChampions(action, element) {
+  #updateChampions(action, element, fireEvent) {
     this.#save();
-    this.dispatchEvent(
-      new CustomEvent('pool', {
-        detail: { action, element },
-      })
-    );
+    if (fireEvent) {
+      this.dispatchEvent(
+        new CustomEvent('pool', {
+          detail: { action, element },
+        })
+      );
+    }
   }
 
   #save() {
@@ -85,7 +87,12 @@ class AppState extends EventTarget {
 
   addChampion(champion) {
     this.pool.push(champion);
-    this.#updateChampions('add', champion);
+    this.#updateChampions('add', champion, true);
+  }
+
+  completeChampion(champion, index, fireEvent) {
+    this.pool[index] = champion;
+    this.#updateChampions('stats', champion, fireEvent);
   }
 
   removeChampion(champion) {
@@ -98,9 +105,13 @@ class AppState extends EventTarget {
     }
   }
 
-  addStatsList(statsList, owner) {
-    this.statsLists.push(statsList);
-    this.statsListsOwner.push(owner);
+  addStatsList(statsList, owner, index) {
+    if (index < this.statsLists.length) {
+      this.statsLists[index] = statsList;
+    } else {
+      this.statsLists.push(statsList);
+      this.statsListsOwner.push(owner);
+    }
     this.#save();
   }
 

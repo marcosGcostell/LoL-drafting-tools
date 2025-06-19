@@ -4,6 +4,7 @@ export const APP_DATA_ROUTE = 'app-data';
 export const VERSION_ROUTE = 'app-data/version';
 export const TIERLIST_ROUTE = 'tierlist';
 export const COUNTERS_ROUTE = 'counters';
+export const STATS_ROUTE = 'stats';
 
 // Keys for local storage
 export const LS_APP_DATA = 'draftKingAppData';

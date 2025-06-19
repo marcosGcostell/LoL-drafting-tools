@@ -48,16 +48,13 @@ export const updateStatsColumn = async function (championId, index) {
     // Save state
     if (!appState.updateStatsList(statsList, index))
       throw new Error('The stats list does not exists...');
-
-    // Render the list
-    await renderStatsList(statsList, { length: statsList.length, index });
   } catch (error) {
     statsView.renderError();
   }
 };
 
-export const loadAllStats = async statsLists => {
-  resetStats();
+export const showAllStats = async statsLists => {
+  clearStatsSection();
   let index = 0;
   for (const list of statsLists) {
     await statsView.addNewColumn();
@@ -65,6 +62,6 @@ export const loadAllStats = async statsLists => {
   }
 };
 
-export const resetStats = () => {
+export const clearStatsSection = () => {
   statsView.clearSection();
 };

@@ -8,8 +8,11 @@ import morgan from 'morgan';
 import appDataRouter from './routes/app-data-routes.js';
 import tierlistRouter from './routes/tierlist-routes.js';
 import counterRouter from './routes/counter-routes.js';
+import statsRouter from './routes/stats-route.js';
+import globalErrorHandler from './controllers/error-handlers.js';
 
-// 0) Reset the static riot data from hard coded
+// For DEVELOPMENT purposes:
+// 0) Reset the static riot data from hard coded file
 // import resetStaticData from './models/riot-static-reset-data.js';
 // resetStaticData();
 
@@ -41,5 +44,9 @@ app.use((req, res, next) => {
 app.use('/api/v1/app-data', appDataRouter);
 app.use('/api/v1/tierlist', tierlistRouter);
 app.use('/api/v1/counters', counterRouter);
+app.use('/api/v1/stats', statsRouter);
+
+// ERROR MIDDLEWARE
+app.use(globalErrorHandler);
 
 export default app;

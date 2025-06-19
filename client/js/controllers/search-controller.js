@@ -33,12 +33,7 @@ const getPickedChampion = e => {
   searchView.toggleSearchPanel();
   appState.popUpOn = searchView.isPanelShowed ? 'search' : '';
   if (id) {
-    console.log(id);
     appState.addChampion(appData.champions[id]);
-    // TODO Champion view and champion controller to add the champion
-    // Model to get the counters and champion data
-    // Update new data to appState
-    // Handel the new events from appState
   }
 };
 
