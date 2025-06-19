@@ -59,7 +59,7 @@ const fetchListFromAPI = async (route, query) => {
 //   state: {lane: vslaneSelected, rank, sortedBy: property},
 //   data: appData,
 // }
-export async function getTierList({ state, data }) {
+export async function getTierlist({ state, data }) {
   try {
     checkQuery(state.lane, state.rank);
 

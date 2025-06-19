@@ -11,41 +11,55 @@ const optionsChangedHandler = async e => {
     if (appState.pool.length) {
       appState.resetPool();
       poolController.clearPool();
-      statsController.resetStats();
+      statsController.clearStatsSection();
     }
     if (appState.tierlistLane !== appState.vslaneSelected) {
-      tierlistController.loadTierlist();
+      tierlistController.getTierlist();
     }
   }
   if (target === 'rankSelected') {
-    await tierlistController.loadTierlist();
+    await tierlistController.getTierlist();
     if (appState.pool.length) {
-      appState.pool.forEach((champion, index) =>
-        statsController.updateStatsColumn(champion.id, index)
-      );
+      let index = 0;
+      for (const champion of appState.pool) {
+        await poolController.updateChampion(champion, index);
+        await statsController.updateStatsColumn(champion.id, index++);
+      }
+      poolController.showAllPool(appState.pool);
+      statsController.showAllStats(appState.statsLists);
     }
   }
   if (target === 'vslaneSelected') {
-    await tierlistController.loadTierlist();
+    await tierlistController.getTierlist();
     if (appState.pool.length) {
-      appState.pool.forEach((champion, index) =>
-        statsController.updateStatsColumn(champion.id, index)
-      );
+      let index = 0;
+      for (const champion of appState.pool) {
+        await statsController.updateStatsColumn(champion.id, index++);
+      }
+      statsController.showAllStats(appState.statsLists);
     }
   }
 };
 
 const poolChangedHandler = async e => {
   const { action, element } = e.detail;
-  if (action === 'add') {
-    console.log('Adding new champion...');
-    await poolController.addChampion(element, appState.pool.length - 1);
-    await statsController.addStatsColumn(
-      element.id,
-      appState.statsLists.length
-    );
-  }
-  if (action === 'remove') {
+  switch (action) {
+    case 'add':
+      console.log('Adding new champion...');
+      await poolController.getChampion(element);
+      break;
+    case 'stats':
+      console.log('Adding the stats...');
+      await statsController.addStatsColumn(
+        element.id,
+        appState.statsLists.length
+      );
+      break;
+    case 'remove':
+      break;
+
+    default:
+      break;
   }
 };
 
@@ -84,10 +98,10 @@ export async function init() {
     inputsController.setOptionsFromState();
   }
   if (appState.tierlist.length) {
-    tierlistController.renderStateTierlist();
+    tierlistController.showTierlistFromState();
   }
   if (appState.pool.length) {
-    poolController.updatePool(appState.pool);
-    statsController.loadAllStats(appState.statsLists);
+    poolController.showAllPool(appState.pool);
+    statsController.showAllStats(appState.statsLists);
   }
 }

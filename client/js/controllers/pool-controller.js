@@ -2,37 +2,60 @@ import * as dataModel from '../model/data-model.js';
 import poolView from '../view/pool-view.js';
 import appState from '../model/app-state.js';
 
-export async function addChampion(champion, index) {
+const _getChampionStats = async champion => {
+  return await dataModel.getChampionStats({
+    state: {
+      lane: appState.laneSelected,
+      rank: appState.rankSelected,
+      vslane: appState.vslaneSelected,
+      champion: champion.id,
+    },
+  });
+};
+
+const _hasChanged = (champion, index) => {
+  return (
+    appState.pool[index].rank !== appState.rankSelected ||
+    appState.pool[index].lane !== appState.laneSelected ||
+    appState.pool[index].id !== champion.id
+  );
+};
+
+// Get champion stats if champion is new or it has changed
+// For adding champions it renders it on the pull and fire event
+// For updating a champion, only save state and don't fire event
+export async function getChampion(champion) {
   try {
-    // TODO call new endpoint to fetch data
+    const { lane, rank, stats } = await _getChampionStats(champion);
 
-    const { lane, stats } = await dataModel.getChampionStats({
-      state: {
-        lane: appState.laneSelected,
-        rank: appState.rankSelected,
-        vslane: appState.vslaneSelected,
-        champion: champion.id,
-      },
-    });
+    const completeChampion = { ...champion, lane, rank, ...stats };
+    const index = appState.pool.length - 1;
 
-    const completeChampion = { ...champion, lane, ...stats };
-
-    // Render the list (needs an array)
+    // Render the list (needs an array) (only for adding champions)
     await poolView.render([completeChampion], {
       length: [completeChampion].length,
       index,
       noClear: true,
     });
 
-    appState.updateChampion(completeChampion, index);
+    appState.completeChampion(completeChampion, index, true);
   } catch (error) {
     poolView.renderError();
   }
 }
 
-export const updatePool = async champion => {
-  poolView.render(champion, {
-    length: champion.length,
+export async function updateChampion(champion, index) {
+  if (!_hasChanged(champion, index)) return;
+
+  const { lane, rank, stats } = await _getChampionStats(champion);
+  const completeChampion = { ...champion, lane, rank, ...stats };
+  appState.completeChampion(completeChampion, index, false);
+}
+
+export const showAllPool = async champions => {
+  clearPool();
+  poolView.render(champions, {
+    length: champions.length,
     index: 0,
   });
 };
