@@ -80,6 +80,10 @@ class SearchView extends View {
       this._inputElement.focus();
     }
   }
+
+  toggleSearchBtn() {
+    document.querySelector('#select-champion').classList.toggle('hidden');
+  }
 }
 
 export default new SearchView();

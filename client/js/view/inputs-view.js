@@ -1,5 +1,9 @@
 import View from './view.js';
-import { LANE_ITEM_TEMPLATE, RANK_ITEM_TEMPLATE } from '../common/config.js';
+import {
+  LANE_ITEM_TEMPLATE,
+  RANK_ITEM_TEMPLATE,
+  LANE_STARTER_TEMPLATE,
+} from '../common/config.js';
 
 class InputsView extends View {
   _parentElement;
@@ -12,10 +16,12 @@ class InputsView extends View {
     this._laneElement = document.querySelector('.lane__selector');
     this._rankElement = document.querySelector('.rank__selector');
     this._vslaneElement = document.querySelector('.vslane__selector');
+    this._starterElement = document.querySelector('.starter-options');
     this._errorMessage = 'Can not read champions';
     this._message = '';
     this._laneTemplate = null;
     this._rankTemplate = null;
+    this._starterTemplate = null;
     this._laneTempPromise = fetch(`${LANE_ITEM_TEMPLATE}`)
       .then(response => response.text())
       .then(data => {
@@ -28,15 +34,28 @@ class InputsView extends View {
         this._rankTemplate = data;
         return data;
       });
+    this._starterTempPromise = fetch(`${LANE_STARTER_TEMPLATE}`)
+      .then(response => response.text())
+      .then(data => {
+        this._starterTemplate = data;
+        return data;
+      });
 
     this.selectorDisplayed = null;
   }
 
   async insertSelectors(roles, ranks, version) {
-    if (!this._laneTemplate || !this._rankTemplate) {
-      await Promise.all([this._laneTempPromise, this._rankTempPromise]);
+    if (!this._laneTemplate || !this._rankTemplate || !this._starterTemplate) {
+      await Promise.all([
+        this._laneTempPromise,
+        this._rankTempPromise,
+        this._starterTempPromise,
+      ]);
     }
 
+    this._currentTemplate = this._starterTemplate;
+    this._parentElement = this._starterElement;
+    await this.render(roles);
     this._currentTemplate = this._laneTemplate;
     this._parentElement = this._laneElement;
     await this.render(roles);
@@ -45,6 +64,13 @@ class InputsView extends View {
     this._currentTemplate = this._rankTemplate;
     this._parentElement = this._rankElement;
     await this.render(ranks);
+  }
+
+  changeInputs() {
+    this._starterElement.classList.toggle('hidden');
+    document.querySelector('.welcome').classList.toggle('hidden');
+    document.querySelector('.options').classList.toggle('hidden');
+    document.querySelector('.settings').classList.toggle('hidden');
   }
 
   async _generateMarkup(options) {

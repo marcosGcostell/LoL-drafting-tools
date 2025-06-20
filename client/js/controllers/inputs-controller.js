@@ -29,6 +29,13 @@ const setOptionHandler = id => {
   appState[`set${target.charAt(0).toUpperCase() + target.slice(1)}`](id);
 };
 
+const starterOptionHandler = id => {
+  inputsView.changeOption('lane', appData.roles[id]);
+  inputsView.changeOption('vslane', appData.roles[id]);
+  appState.setLane(id);
+  inputsView.changeInputs();
+};
+
 export function setOptionsFromState() {
   inputsView.changeOption('lane', appData.roles[appState.laneSelected]);
   inputsView.changeOption('rank', appData.ranks[appState.rankSelected]);
@@ -36,7 +43,14 @@ export function setOptionsFromState() {
   // TODO Patch selection
 }
 
+export function changeInputs() {
+  inputsView.changeInputs();
+}
+
 export async function setHandlers() {
+  // Handler for starter options
+  inputsView.addHandlerSelector(starterOptionHandler, 'starter');
+
   // Handlers to show and hide selectors
   ['lane', 'vslane', 'rank', 'patch'].forEach(el =>
     inputsView.addHandlerBtn(toggleSelectors, el)

@@ -3,6 +3,14 @@ import appData from '../model/app-data.js';
 import searchView from '../view/search-view.js';
 import * as searchModel from '../model/search-model.js';
 
+export const toggleSearchButton = e => {
+  if (appState.popUpOn === 'search') {
+    searchView.toggleSearchPanel();
+    appState.popUpOn = searchView.isPanelShowed ? 'search' : '';
+  }
+  searchView.toggleSearchBtn();
+};
+
 export const toggleSearchPanel = e => {
   if (!appState.popUpOn || appState.popUpOn === 'search') {
     searchView.toggleSearchPanel();

@@ -32,3 +32,8 @@ export const getTierlist = async function () {
     tierlistView.renderError();
   }
 };
+
+export const clearTierlist = () => {
+  tierlistView._clear();
+  appState.tierlist = [];
+};

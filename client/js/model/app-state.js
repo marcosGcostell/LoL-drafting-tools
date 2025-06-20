@@ -17,7 +17,7 @@ class AppState extends EventTarget {
     this.pool = [];
     this.statsLists = [];
     this.statsListsOwner = [];
-    this.popUpOn = '';
+    this.popUpOn = 'starter';
 
     // Load values from session
     const localData = sessionStorage.getItem(LS_STATE);
@@ -26,7 +26,9 @@ class AppState extends EventTarget {
         const parsed = JSON.parse(localData);
         Object.assign(this, parsed);
         // On reload hide any pop-ups
-        this.popUpOn = '';
+        if (this.popUpOn !== 'starter') {
+          this.popUpOn = '';
+        }
       } catch (err) {
         throw err;
       }

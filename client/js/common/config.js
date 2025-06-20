@@ -20,6 +20,7 @@ export const RANK_ICONS = './img/ranks/';
 // HTML templates (relative from index.html)
 export const LANE_ITEM_TEMPLATE = './templates/lane-selector-item.html';
 export const RANK_ITEM_TEMPLATE = './templates/rank-selector-item.html';
+export const LANE_STARTER_TEMPLATE = './templates/lane-starter-item.html';
 export const TIERLIST_ITEM_TEMPLATE = './templates/tierlist-item.html';
 export const SEARCH_ITEM_TEMPLATE = './templates/search-item.html';
 export const CHAMPION_TEMPLATE = './templates/champion-item.html';
