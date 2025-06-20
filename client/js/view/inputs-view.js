@@ -16,6 +16,7 @@ class InputsView extends View {
     this._laneElement = document.querySelector('.lane__selector');
     this._rankElement = document.querySelector('.rank__selector');
     this._vslaneElement = document.querySelector('.vslane__selector');
+    this._patchBtn = document.querySelector('.patch__btn');
     this._starterElement = document.querySelector('.starter-options');
     this._errorMessage = 'Can not read champions';
     this._message = '';
@@ -64,6 +65,7 @@ class InputsView extends View {
     this._currentTemplate = this._rankTemplate;
     this._parentElement = this._rankElement;
     await this.render(ranks);
+    this.setPatch(version);
   }
 
   changeInputs() {
@@ -116,6 +118,16 @@ class InputsView extends View {
     const folder = target === 'rank' ? 'ranks' : 'lanes';
     image.setAttribute('src', `img/${folder}/${option.img}`);
     text.textContent = option.name;
+  }
+
+  setPatch(version) {
+    this._patchBtn.textContent = version ? version : 'Last 7 days';
+  }
+
+  switchPatch(version) {
+    const mode = this._patchBtn.textContent === version ? null : 'version';
+    this.setPatch(mode ? version : null);
+    return mode;
   }
 }
 

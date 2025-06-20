@@ -11,7 +11,7 @@ class AppState extends EventTarget {
     this.laneSelected = null;
     this.rankSelected = 'all';
     this.vslaneSelected = null;
-    this.patchSelected = null;
+    this.patchSelected = 'version';
     this.tierlist = [];
     this.tierlistLane = null;
     this.pool = [];
@@ -135,7 +135,7 @@ class AppState extends EventTarget {
     this.laneSelected = null;
     this.rankSelected = 'all';
     this.vslaneSelected = null;
-    this.patchSelected = null;
+    this.patchSelected = 'version';
     this.tierlist = [];
     this.tierlistLane = null;
     this.pool = [];

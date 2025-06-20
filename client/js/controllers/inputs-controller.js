@@ -4,10 +4,14 @@ import inputsView from '../view/inputs-view.js';
 
 export const toggleSelectors = (e, target) => {
   if (!appState.popUpOn || appState.popUpOn === target) {
-    inputsView.toggleSelector(target);
-    appState.popUpOn = inputsView.selectorDisplayed
-      ? inputsView.selectorDisplayed
-      : '';
+    if (target === 'patch') {
+      appState.setPatch(inputsView.switchPatch(appData.version));
+    } else {
+      inputsView.toggleSelector(target);
+      appState.popUpOn = inputsView.selectorDisplayed
+        ? inputsView.selectorDisplayed
+        : '';
+    }
     e.stopPropagation();
   }
 };
@@ -60,7 +64,7 @@ export async function setHandlers() {
   await inputsView.insertSelectors(
     appData.toSortedArray('roles'),
     appData.toSortedArray('ranks'),
-    appData.version
+    appState.patchSelected ? appData.version : null
   );
 
   // Handlers to manage options selection

@@ -11,40 +11,45 @@ const optionsChangedHandler = async e => {
     searchController.toggleSearchButton();
     appState.popUpOn = '';
   }
-  if (target === 'laneSelected') {
-    if (appState.pool.length) {
-      appState.resetPool();
-      poolController.clearPool();
-      statsController.clearStatsSection();
-    }
-    if (appState.tierlistLane !== appState.vslaneSelected) {
-      tierlistController.getTierlist();
-    }
-  }
-  if (target === 'rankSelected') {
-    await tierlistController.getTierlist();
-    if (appState.pool.length) {
-      await poolController.poolOnHold();
-      await statsController.statsOnHold();
-      let index = 0;
-      for (const champion of appState.pool) {
-        await poolController.updateChampion(champion, index);
-        await statsController.updateStatsColumn(champion.id, index++);
+  switch (target) {
+    case 'laneSelected':
+      if (appState.pool.length) {
+        appState.resetPool();
+        poolController.clearPool();
+        statsController.clearStatsSection();
       }
-      poolController.showAllPool(appState.pool);
-      statsController.showAllStats(appState.statsLists);
-    }
-  }
-  if (target === 'vslaneSelected') {
-    await tierlistController.getTierlist();
-    if (appState.pool.length) {
-      await statsController.statsOnHold();
-      let index = 0;
-      for (const champion of appState.pool) {
-        await statsController.updateStatsColumn(champion.id, index++);
+      if (appState.tierlistLane !== appState.vslaneSelected) {
+        tierlistController.getTierlist();
       }
-      statsController.showAllStats(appState.statsLists);
-    }
+      break;
+    case 'rankSelected':
+      await tierlistController.getTierlist();
+      if (appState.pool.length) {
+        await poolController.poolOnHold();
+        await statsController.statsOnHold();
+        let index = 0;
+        for (const champion of appState.pool) {
+          await poolController.updateChampion(champion, index);
+          await statsController.updateStatsColumn(champion.id, index++);
+        }
+        poolController.showAllPool(appState.pool);
+        statsController.showAllStats(appState.statsLists);
+      }
+      break;
+    case 'vslaneSelected':
+      await tierlistController.getTierlist();
+      if (appState.pool.length) {
+        await statsController.statsOnHold();
+        let index = 0;
+        for (const champion of appState.pool) {
+          await statsController.updateStatsColumn(champion.id, index++);
+        }
+        statsController.showAllStats(appState.statsLists);
+      }
+      break;
+    case 'patchSelected':
+      // TODO Load new data when changing the patch
+      break;
   }
 };
 
