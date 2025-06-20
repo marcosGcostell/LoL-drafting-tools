@@ -60,6 +60,15 @@ export const showAllPool = async champions => {
   });
 };
 
+export const poolOnHold = async () => {
+  clearPool();
+  poolView.render(appState.pool, {
+    length: appState.pool.length,
+    index: 0,
+    onHold: true,
+  });
+};
+
 export const clearPool = () => {
   poolView._clear();
 };

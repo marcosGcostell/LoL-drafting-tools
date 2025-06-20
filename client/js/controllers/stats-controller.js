@@ -55,10 +55,17 @@ export const updateStatsColumn = async function (championId, index) {
 
 export const showAllStats = async statsLists => {
   clearStatsSection();
-  let index = 0;
   for (const list of statsLists) {
+    const index = await statsView.addNewColumn();
+    await renderStatsList(list, { length: list.length, index });
+  }
+};
+
+export const statsOnHold = async () => {
+  clearStatsSection();
+  for (const col of appState.pool) {
     await statsView.addNewColumn();
-    await renderStatsList(list, { length: list.length, index: index++ });
+    statsView.renderSpinner();
   }
 };
 

@@ -20,6 +20,8 @@ const optionsChangedHandler = async e => {
   if (target === 'rankSelected') {
     await tierlistController.getTierlist();
     if (appState.pool.length) {
+      await poolController.poolOnHold();
+      await statsController.statsOnHold();
       let index = 0;
       for (const champion of appState.pool) {
         await poolController.updateChampion(champion, index);
