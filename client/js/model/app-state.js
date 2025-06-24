@@ -53,6 +53,16 @@ class AppState extends EventTarget {
     );
   }
 
+  #updateSettings(target, value) {
+    this[target] = value;
+    this.#save();
+    this.dispatchEvent(
+      new CustomEvent('settings', {
+        detail: { target, value },
+      })
+    );
+  }
+
   #updateChampions(action, element, fireEvent) {
     this.#save();
     if (fireEvent) {
@@ -85,6 +95,14 @@ class AppState extends EventTarget {
 
   setPatch(patch) {
     this.#updateOptions('patchSelected', patch);
+  }
+
+  setMaxItems(value) {
+    this.#updateSettings('maxListItems', value);
+  }
+
+  setPickRate(value) {
+    this.#updateSettings('pickRateThreshold', value);
   }
 
   addTierlist(tierlist) {

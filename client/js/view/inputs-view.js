@@ -105,6 +105,15 @@ class InputsView extends View {
       });
   }
 
+  addHandlerInput(handler, target) {
+    document
+      .querySelector(`#${target}`)
+      .addEventListener('change', function (e) {
+        e.preventDefault();
+        handler(this.value);
+      });
+  }
+
   toggleSelector(target = this.selectorDisplayed) {
     if (!target) return;
     document.querySelector(`.${target}__selector`).classList.toggle('hidden');
@@ -131,11 +140,15 @@ class InputsView extends View {
   }
 
   setMaxItems(value) {
-    document.querySelector('#max-items').value = value;
+    const maxItemsElement = document.querySelector('#max-items');
+    maxItemsElement.value = value;
+    maxItemsElement.blur();
   }
 
   setPickRateThreshold(value) {
-    document.querySelector('#min-pr').value = value;
+    const pickRateElement = document.querySelector('#min-pr');
+    pickRateElement.value = value.toFixed(1);
+    pickRateElement.blur();
   }
 }
 

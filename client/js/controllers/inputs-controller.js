@@ -40,11 +40,27 @@ const starterOptionHandler = id => {
   inputsView.changeInputs();
 };
 
+const listItemsHandler = value => {
+  if (Number.isInteger(+value)) {
+    appState.setMaxItems(+value);
+  }
+  inputsView.setMaxItems(appState.maxListItems);
+};
+
+const pickRateHandler = value => {
+  if (Number.isFinite(+value)) {
+    appState.setPickRate(+value);
+  }
+  inputsView.setPickRateThreshold(appState.pickRateThreshold);
+};
+
 export function setOptionsFromState() {
   inputsView.changeOption('lane', appData.roles[appState.laneSelected]);
   inputsView.changeOption('rank', appData.ranks[appState.rankSelected]);
   inputsView.changeOption('vslane', appData.roles[appState.vslaneSelected]);
-  // TODO Patch selection
+  inputsView.setPatch(appState.version ? appData.version : null);
+  inputsView.setMaxItems(appState.maxListItems);
+  inputsView.setPickRateThreshold(appState.pickRateThreshold);
 }
 
 export function changeInputs() {
@@ -71,4 +87,8 @@ export async function setHandlers() {
   ['lane', 'vslane', 'rank'].forEach(el =>
     inputsView.addHandlerSelector(setOptionHandler, el)
   );
+
+  // Handlers to manage inputs values
+  inputsView.addHandlerInput(listItemsHandler, 'max-items');
+  inputsView.addHandlerInput(pickRateHandler, 'min-pr');
 }

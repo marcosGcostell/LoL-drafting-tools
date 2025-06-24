@@ -53,6 +53,10 @@ const optionsChangedHandler = async e => {
   }
 };
 
+const settingsChangedHandler = async e => {
+  // TODO Display list and stats when settings change
+};
+
 const poolChangedHandler = async e => {
   const { action, element } = e.detail;
   switch (action) {
@@ -131,6 +135,7 @@ export async function init() {
   searchController.setHandlers();
   // Handlers for appState changes
   appState.addEventListener('options', optionsChangedHandler);
+  appState.addEventListener('settings', settingsChangedHandler);
   appState.addEventListener('pool', poolChangedHandler);
   appState.addEventListener('reset', resetEventHandler);
 
