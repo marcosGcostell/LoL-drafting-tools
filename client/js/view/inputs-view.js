@@ -129,6 +129,14 @@ class InputsView extends View {
     this.setPatch(mode ? version : null);
     return mode;
   }
+
+  setMaxItems(value) {
+    document.querySelector('#max-items').value = value;
+  }
+
+  setPickRateThreshold(value) {
+    document.querySelector('#min-pr').value = value;
+  }
 }
 
 export default new InputsView();

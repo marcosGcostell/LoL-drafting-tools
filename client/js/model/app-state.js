@@ -1,4 +1,8 @@
-import { LS_STATE } from '../common/config.js';
+import {
+  LS_STATE,
+  MAX_LIST_ITEMS,
+  PICK_RATE_THRESHOLD,
+} from '../common/config.js';
 
 ///////////////////////////////////////
 // App State class
@@ -12,6 +16,8 @@ class AppState extends EventTarget {
     this.rankSelected = 'all';
     this.vslaneSelected = null;
     this.patchSelected = 'version';
+    this.maxListItems = MAX_LIST_ITEMS;
+    this.pickRateThreshold = PICK_RATE_THRESHOLD;
     this.tierlist = [];
     this.tierlistLane = null;
     this.pool = [];

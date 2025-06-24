@@ -29,6 +29,6 @@ export const STATS_COLUMN_TEMPLATE = './templates/stats-column.html';
 export const STATS_ITEM_TEMPLATE = './templates/stats-item.html';
 
 // Config parameters
-export const PERCENT_LIMIT = 1.5;
+export const PICK_RATE_THRESHOLD = 1.0;
 export const MAX_LIST_ITEMS = 35;
 export const TIME_BEFORE_CHECK = 12;
