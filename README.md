@@ -13,12 +13,12 @@ This software is developed by Marcos García under the brand **KuantiK Software.
 ### Version
 
 API: 0.3.0
-Client: 0.1.0
+Client: 0.3.0
 
-### Register 2025/06/16
+### Register 2025/06/25
 
 The development is in the early stages and still is not a minimum viable project.
 
-The API is fully working with the basics features. It needs error hanlding improvement and users log in fetaures.
+The API is fully working with the basics features. It needs users log in fetaures and scheduler for automatic resource downloading.
 
-The Client is half way to be fully working.
+The Client is in the final development stage to its basic functionality. It needs user section and responsiveness for ordering lists.
