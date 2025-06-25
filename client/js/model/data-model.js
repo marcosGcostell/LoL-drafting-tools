@@ -71,8 +71,7 @@ export async function getTierlist({ state, data }) {
     const { tierlist } = await fetchListFromAPI(route, query);
     completeListData(tierlist, data);
 
-    // FIXME sort doesn't work on API tierlist. Only in counterlist
-    if (state.sortedBy) sortList(tierlist, state.sortedBy);
+    // if (state.sortedBy) sortList(tierlist, state.sortedBy);
 
     return tierlist;
   } catch (err) {

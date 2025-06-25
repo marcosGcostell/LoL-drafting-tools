@@ -15,7 +15,7 @@ export const getTierlist = async function () {
     console.log(
       `Getting tier list: ${appState.vslaneSelected} ${appState.rankSelected}`
     );
-    // Load the tierlist (optional sorting parameter)
+
     const tierlist = await dataModel.getTierlist({
       state: {
         lane: appState.vslaneSelected,

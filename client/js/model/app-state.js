@@ -12,17 +12,7 @@ class AppState extends EventTarget {
     super();
 
     // Default values
-    this.laneSelected = null;
-    this.rankSelected = 'all';
-    this.vslaneSelected = null;
-    this.patchSelected = 'version';
-    this.maxListItems = MAX_LIST_ITEMS;
-    this.pickRateThreshold = PICK_RATE_THRESHOLD;
-    this.tierlist = [];
-    this.tierlistLane = null;
-    this.pool = [];
-    this.statsLists = [];
-    this.statsListsOwner = [];
+    this.#defaultValues();
     this.popUpOn = 'starter';
 
     // Load values from session
@@ -41,8 +31,21 @@ class AppState extends EventTarget {
     }
   }
 
-  // private setter to set property, save to session and notify
-  // except adding or removing champions
+  #defaultValues() {
+    this.laneSelected = null;
+    this.rankSelected = 'all';
+    this.vslaneSelected = null;
+    this.patchSelected = 'version';
+    this.maxListItems = MAX_LIST_ITEMS;
+    this.pickRateThreshold = PICK_RATE_THRESHOLD;
+    this.tierlist = [];
+    this.tierlistLane = null;
+    this.pool = [];
+    this.statsLists = [];
+    this.statsListsOwner = [];
+  }
+
+  // set options property, save to session and notify
   #updateOptions(target, value) {
     this[target] = value;
     this.#save();
@@ -53,6 +56,7 @@ class AppState extends EventTarget {
     );
   }
 
+  // set settings property, save to session and notify
   #updateSettings(target, value) {
     this[target] = value;
     this.#save();
@@ -63,6 +67,7 @@ class AppState extends EventTarget {
     );
   }
 
+  // save after adding/removing champions to session and notify
   #updateChampions(action, element, fireEvent) {
     this.#save();
     if (fireEvent) {
@@ -156,15 +161,7 @@ class AppState extends EventTarget {
   }
 
   resetAll() {
-    this.laneSelected = null;
-    this.rankSelected = 'all';
-    this.vslaneSelected = null;
-    this.patchSelected = 'version';
-    this.tierlist = [];
-    this.tierlistLane = null;
-    this.pool = [];
-    this.statsLists = [];
-    this.statsListsOwner = [];
+    this.#defaultValues();
     this.#save();
     this.dispatchEvent(new CustomEvent('reset'));
   }

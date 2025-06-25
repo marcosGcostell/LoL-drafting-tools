@@ -2,6 +2,7 @@ import Lolalytics from '../models/api/lolalytics-api.js';
 import Tierlist from '../models/tierlist-model.js';
 import { getListFromDb } from './common-list-handlers.js';
 import { riotLolRolesArray } from '../models/common/config.js';
+import { DEFAULT_SORT_FIELD } from '../models/common/config.js';
 import catchAsync from '../models/common/catch-async.js';
 
 const saveTierlist = (lane, rank, list) => {
@@ -33,6 +34,9 @@ export const getTierlistData = async (lane, rank) => {
 
 export const getTierlist = catchAsync(async (req, res, next) => {
   const { tierlist, updatedAt } = await getTierlistData(req.lane, req.rank);
+
+  const sort = req.query.sort || DEFAULT_SORT_FIELD;
+  tierlist.sort((a, b) => b[sort] - a[sort]);
 
   // Send response
   res.status(200).json({
