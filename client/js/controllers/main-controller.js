@@ -33,7 +33,7 @@ const optionsChangedHandler = async e => {
           await statsController.updateStatsColumn(champion.id, index++);
         }
         poolController.showAllPool(appState.pool);
-        statsController.showAllStats(appState.statsLists);
+        statsController.showAllStats(appState.fixedStatsLists);
       }
       break;
     case 'vslaneSelected':
@@ -44,7 +44,7 @@ const optionsChangedHandler = async e => {
         for (const champion of appState.pool) {
           await statsController.updateStatsColumn(champion.id, index++);
         }
-        statsController.showAllStats(appState.statsLists);
+        statsController.showAllStats(appState.fixedStatsLists);
       }
       break;
     case 'patchSelected':
@@ -55,6 +55,10 @@ const optionsChangedHandler = async e => {
 
 const settingsChangedHandler = async e => {
   // TODO Display list and stats when settings change
+  appState.fixTierlist();
+  tierlistController.showTierlistFromState();
+  appState.fixedStatsLists.forEach((_, index) => appState.fixStatsList(index));
+  statsController.showAllStats(appState.fixedStatsLists);
 };
 
 const poolChangedHandler = async e => {
@@ -105,7 +109,7 @@ const refreshOnReload = () => {
   }
   if (appState.pool.length) {
     poolController.showAllPool(appState.pool);
-    statsController.showAllStats(appState.statsLists);
+    statsController.showAllStats(appState.fixedStatsLists);
   }
 };
 

@@ -23,9 +23,19 @@ const addChampionImages = (list, data) => {
   });
 };
 
+const addIndexes = list => {
+  return list.reduce((acc, champion) => {
+    champion.index = acc;
+    return ++acc;
+  }, 0);
+};
+
 const completeListData = (list, data) => {
   addChampionIds(list, data);
   addChampionImages(list, data);
+  // completeListData is only for fetching new tierlists
+  // sortBy is always 'pickRate'
+  addIndexes(list);
 };
 
 const sortList = (list, property) => {

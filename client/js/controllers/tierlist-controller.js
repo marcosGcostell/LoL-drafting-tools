@@ -4,7 +4,7 @@ import tierlistView from '../view/tierlist-view.js';
 import * as dataModel from '../model/data-model.js';
 
 export const showTierlistFromState = () => {
-  tierlistView.render(appState.tierlist, {
+  tierlistView.render(appState.fixedTierlist, {
     lane: appData.roles[appState.vslaneSelected],
   });
 };
@@ -35,5 +35,5 @@ export const getTierlist = async function () {
 
 export const clearTierlist = () => {
   tierlistView._clear();
-  appState.tierlist = [];
+  appState.fixedTierlist = [];
 };

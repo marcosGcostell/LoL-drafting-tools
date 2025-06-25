@@ -35,7 +35,10 @@ export const addStatsColumn = async function (championId, index) {
     appState.addStatsList(statsList, championId);
 
     // Render the list
-    await renderStatsList(statsList, { length: statsList.length, index });
+    await renderStatsList(appState.fixedStatsLists[index], {
+      length: appState.fixedStatsLists[index].length,
+      index,
+    });
   } catch (error) {
     statsView.renderError();
   }

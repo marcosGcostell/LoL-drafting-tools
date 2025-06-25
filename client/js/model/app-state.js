@@ -39,9 +39,11 @@ class AppState extends EventTarget {
     this.maxListItems = MAX_LIST_ITEMS;
     this.pickRateThreshold = PICK_RATE_THRESHOLD;
     this.tierlist = [];
+    this.fixedTierlist = [];
     this.tierlistLane = null;
     this.pool = [];
     this.statsLists = [];
+    this.fixedStatsLists = [];
     this.statsListsOwner = [];
   }
 
@@ -113,7 +115,16 @@ class AppState extends EventTarget {
   addTierlist(tierlist) {
     this.tierlist = tierlist;
     this.tierlistLane = this.vslaneSelected;
+    this.fixTierlist();
     this.#save();
+  }
+
+  fixTierlist() {
+    this.fixedTierlist = this.tierlist.slice(0, this.maxListItems);
+    const matchingItemsCount = this.fixedTierlist.findIndex(
+      el => el.pickRate < this.pickRateThreshold
+    );
+    this.fixedTierlist.splice(matchingItemsCount);
   }
 
   addChampion(champion) {
@@ -131,6 +142,7 @@ class AppState extends EventTarget {
     if (index > -1) {
       this.pool.splice(index, 1);
       this.statsLists.splice(index, 1);
+      this.fixedStatsLists.splice(index, 1);
       this.statsListsOwner.splice(index, 1);
       this.#updateChampions('remove', index);
     }
@@ -140,22 +152,34 @@ class AppState extends EventTarget {
     if (index < this.statsLists.length) {
       this.statsLists[index] = statsList;
     } else {
+      index = this.statsLists.length;
       this.statsLists.push(statsList);
+      this.fixedStatsLists.push([]);
       this.statsListsOwner.push(owner);
     }
+    this.fixStatsList(index);
     this.#save();
   }
 
   updateStatsList(statsList, index) {
     if (index >= this.statsLists.length) return false;
     this.statsLists[index] = statsList;
+    this.fixStatsList(index);
     this.#save();
     return true;
+  }
+
+  fixStatsList(index) {
+    this.fixedStatsLists[index] = this.statsLists[index].slice(
+      0,
+      this.fixedTierlist.length
+    );
   }
 
   resetPool() {
     this.pool = [];
     this.statsLists = [];
+    this.fixedStatsLists = [];
     this.statsListsOwner = [];
     this.#save();
   }
