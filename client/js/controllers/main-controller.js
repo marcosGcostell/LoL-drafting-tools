@@ -7,38 +7,58 @@ import * as statsController from './stats-controller.js';
 
 const optionsChangedHandler = async e => {
   const { target, value } = e.detail;
-  if (target === 'laneSelected') {
-    if (appState.pool.length) {
-      appState.resetPool();
-      poolController.clearPool();
-      statsController.clearStatsSection();
-    }
-    if (appState.tierlistLane !== appState.vslaneSelected) {
-      tierlistController.getTierlist();
-    }
+  if (appState.popUpOn === 'starter') {
+    searchController.toggleSearchButton();
+    appState.popUpOn = '';
   }
-  if (target === 'rankSelected') {
-    await tierlistController.getTierlist();
-    if (appState.pool.length) {
-      let index = 0;
-      for (const champion of appState.pool) {
-        await poolController.updateChampion(champion, index);
-        await statsController.updateStatsColumn(champion.id, index++);
+  switch (target) {
+    case 'laneSelected':
+      if (appState.pool.length) {
+        appState.resetPool();
+        poolController.clearPool();
+        statsController.clearStatsSection();
       }
-      poolController.showAllPool(appState.pool);
-      statsController.showAllStats(appState.statsLists);
-    }
-  }
-  if (target === 'vslaneSelected') {
-    await tierlistController.getTierlist();
-    if (appState.pool.length) {
-      let index = 0;
-      for (const champion of appState.pool) {
-        await statsController.updateStatsColumn(champion.id, index++);
+      if (appState.tierlistLane !== appState.vslaneSelected) {
+        tierlistController.getTierlist();
       }
-      statsController.showAllStats(appState.statsLists);
-    }
+      break;
+    case 'rankSelected':
+      await tierlistController.getTierlist();
+      if (appState.pool.length) {
+        await poolController.poolOnHold();
+        await statsController.statsOnHold();
+        let index = 0;
+        for (const champion of appState.pool) {
+          await poolController.updateChampion(champion, index);
+          await statsController.updateStatsColumn(champion.id, index++);
+        }
+        poolController.showAllPool(appState.pool);
+        statsController.showAllStats(appState.fixedStatsLists);
+      }
+      break;
+    case 'vslaneSelected':
+      await tierlistController.getTierlist();
+      if (appState.pool.length) {
+        await statsController.statsOnHold();
+        let index = 0;
+        for (const champion of appState.pool) {
+          await statsController.updateStatsColumn(champion.id, index++);
+        }
+        statsController.showAllStats(appState.fixedStatsLists);
+      }
+      break;
+    case 'patchSelected':
+      // TODO Load new data when changing the patch
+      break;
   }
+};
+
+const settingsChangedHandler = async e => {
+  // TODO Display list and stats when settings change
+  appState.fixTierlist();
+  tierlistController.showTierlistFromState();
+  appState.fixedStatsLists.forEach((_, index) => appState.fixStatsList(index));
+  statsController.showAllStats(appState.fixedStatsLists);
 };
 
 const poolChangedHandler = async e => {
@@ -63,19 +83,53 @@ const poolChangedHandler = async e => {
   }
 };
 
+const resetEventHandler = () => {
+  poolController.clearPool();
+  statsController.clearStatsSection();
+  tierlistController.clearTierlist();
+  if (appState.popUpOn !== 'starter') {
+    searchController.toggleSearchButton();
+    inputsController.changeInputs();
+    appState.popUpOn = 'starter';
+  }
+};
+
+const refreshOnReload = () => {
+  // Refresh and update form saved state
+  if (appState.laneSelected) {
+    inputsController.setOptionsFromState();
+  }
+  if (appState.popUpOn !== 'starter') {
+    inputsController.changeInputs();
+    searchController.toggleSearchButton();
+    appState.popUpOn = '';
+  }
+  if (appState.tierlist.length) {
+    tierlistController.showTierlistFromState();
+  }
+  if (appState.pool.length) {
+    poolController.showAllPool(appState.pool);
+    statsController.showAllStats(appState.fixedStatsLists);
+  }
+};
+
+const resetApp = () => {
+  appState.resetAll();
+};
+
 const hidePopUps = e => {
   console.log('Main hide popups');
   e.preventDefault();
   switch (appState.popUpOn) {
-    case '':
+    case ('', 'starter'):
       break;
     case 'search':
       searchController.toggleSearchPanel(e);
+      break;
     default:
       inputsController.toggleSelectors(e, appState.popUpOn);
       break;
   }
-  appState.popUpOn = '';
 };
 
 export async function init() {
@@ -85,7 +139,12 @@ export async function init() {
   searchController.setHandlers();
   // Handlers for appState changes
   appState.addEventListener('options', optionsChangedHandler);
+  appState.addEventListener('settings', settingsChangedHandler);
   appState.addEventListener('pool', poolChangedHandler);
+  appState.addEventListener('reset', resetEventHandler);
+
+  // FIXME This is a reset button for development on the logo
+  document.querySelector('.header__logo').addEventListener('click', resetApp);
 
   // Hide popups if clicking outside them or press ESC
   document.addEventListener('click', hidePopUps);
@@ -93,15 +152,5 @@ export async function init() {
     if (e.key === 'Escape') hidePopUps(e);
   });
 
-  // Refresh and update form saved state
-  if (appState.laneSelected) {
-    inputsController.setOptionsFromState();
-  }
-  if (appState.tierlist.length) {
-    tierlistController.showTierlistFromState();
-  }
-  if (appState.pool.length) {
-    poolController.showAllPool(appState.pool);
-    statsController.showAllStats(appState.statsLists);
-  }
+  refreshOnReload();
 }

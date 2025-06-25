@@ -4,7 +4,7 @@ import tierlistView from '../view/tierlist-view.js';
 import * as dataModel from '../model/data-model.js';
 
 export const showTierlistFromState = () => {
-  tierlistView.render(appState.tierlist, {
+  tierlistView.render(appState.fixedTierlist, {
     lane: appData.roles[appState.vslaneSelected],
   });
 };
@@ -15,7 +15,7 @@ export const getTierlist = async function () {
     console.log(
       `Getting tier list: ${appState.vslaneSelected} ${appState.rankSelected}`
     );
-    // Load the tierlist (optional sorting parameter)
+
     const tierlist = await dataModel.getTierlist({
       state: {
         lane: appState.vslaneSelected,
@@ -31,4 +31,9 @@ export const getTierlist = async function () {
   } catch (error) {
     tierlistView.renderError();
   }
+};
+
+export const clearTierlist = () => {
+  tierlistView._clear();
+  appState.fixedTierlist = [];
 };

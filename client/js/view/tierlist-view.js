@@ -40,8 +40,8 @@ class ListView extends View {
   _generateItemMarkup(champion, lane) {
     let output = this._itemTemplate.replace(/{%LANE_IMG%}/g, lane.img);
     output = output.replace(/{%LANE_NAME%}/g, lane.name);
-    output = output.replace(/{%WR%}/g, champion.winRatio);
-    output = output.replace(/{%PR%}/g, champion.pickRate);
+    output = output.replace(/{%WR%}/g, champion.winRatio.toFixed(2));
+    output = output.replace(/{%PR%}/g, champion.pickRate.toFixed(2));
     output = output.replace(/{%IMG_SRC%}/g, IMG_SRC);
     output = output.replace(/{%IMG%}/g, champion.img);
     output = output.replace(/{%NAME%}/g, champion.name);

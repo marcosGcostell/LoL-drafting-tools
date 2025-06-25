@@ -20,13 +20,15 @@ export const RANK_ICONS = './img/ranks/';
 // HTML templates (relative from index.html)
 export const LANE_ITEM_TEMPLATE = './templates/lane-selector-item.html';
 export const RANK_ITEM_TEMPLATE = './templates/rank-selector-item.html';
+export const LANE_STARTER_TEMPLATE = './templates/lane-starter-item.html';
 export const TIERLIST_ITEM_TEMPLATE = './templates/tierlist-item.html';
 export const SEARCH_ITEM_TEMPLATE = './templates/search-item.html';
 export const CHAMPION_TEMPLATE = './templates/champion-item.html';
+export const CHAMPION_ON_HOLD_TEMPLATE = './templates/champion-on-hold.html';
 export const STATS_COLUMN_TEMPLATE = './templates/stats-column.html';
 export const STATS_ITEM_TEMPLATE = './templates/stats-item.html';
 
 // Config parameters
-export const PERCENT_LIMIT = 1.5;
+export const PICK_RATE_THRESHOLD = 1.0;
 export const MAX_LIST_ITEMS = 35;
 export const TIME_BEFORE_CHECK = 12;

@@ -23,9 +23,19 @@ const addChampionImages = (list, data) => {
   });
 };
 
+const addIndexes = list => {
+  return list.reduce((acc, champion) => {
+    champion.index = acc;
+    return ++acc;
+  }, 0);
+};
+
 const completeListData = (list, data) => {
   addChampionIds(list, data);
   addChampionImages(list, data);
+  // completeListData is only for fetching new tierlists
+  // sortBy is always 'pickRate'
+  addIndexes(list);
 };
 
 const sortList = (list, property) => {
@@ -71,8 +81,7 @@ export async function getTierlist({ state, data }) {
     const { tierlist } = await fetchListFromAPI(route, query);
     completeListData(tierlist, data);
 
-    // FIXME sort doesn't work on API tierlist. Only in counterlist
-    if (state.sortedBy) sortList(tierlist, state.sortedBy);
+    // if (state.sortedBy) sortList(tierlist, state.sortedBy);
 
     return tierlist;
   } catch (err) {

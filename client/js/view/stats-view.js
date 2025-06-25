@@ -72,11 +72,11 @@ class StatsView extends View {
     );
     output = output.replace(
       /{%WR%}/g,
-      item.winRatio !== 0 ? item.winRatio : '-'
+      item.winRatio !== 0 ? item.winRatio.toFixed(2) : '-'
     );
     output = output.replace(
       /{%DELTA%}/g,
-      item.winRatio !== 0 ? `Δ${item.delta2}` : '-'
+      item.winRatio !== 0 ? `Δ${item.delta2.toFixed(2)}` : '-'
     );
     return output;
   }

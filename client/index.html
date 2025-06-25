@@ -41,47 +41,78 @@
       <main>
         <!-- TOP SECTION -->
         <section class="top-section">
+          <!-- START SECTION -->
+          <div class="start-section hidden"></div>
           <!-- INPUT SECTION -->
           <div class="input-section">
-            <div class="main__input lane__input selector">
-              <img
-                src="img/lanes/all.webp"
-                class="lane__btn input__clickable"
-                alt="Lanes"
-              />
-              <span>Lane</span>
-              <div class="popup lane__selector hidden">
-                <!-- Place to insert lane selector -->
-              </div>
+            <!-- Starter Inputs -->
+            <div class="starter-options starter__selector">
+              <!-- Place to insert starter lane selector -->
             </div>
-            <div class="main__input rank__input selector">
-              <img
-                src="img/ranks/all.webp"
-                class="rank__btn input__clickable"
-                alt="Ranks"
-              />
-              <span>All</span>
-              <div class="popup rank__selector hidden">
-                <!-- Place to insert rank selector -->
-              </div>
-            </div>
-            <div class="small__inputs">
-              <div class="small__input vslane__input selector">
+            <!-- Standard Inputs -->
+            <div class="options hidden">
+              <div class="main__input lane__input selector">
                 <img
                   src="img/lanes/all.webp"
-                  class="vslane__btn input__clickable"
+                  class="lane__btn input__clickable"
                   alt="Lanes"
                 />
-                <div class="vslane__label">
-                  <div class="label">vs</div>
-                  <span>Lane</span>
-                </div>
-                <div class="popup vslane__selector hidden">
-                  <!-- Place to insert vslane selector -->
+                <span>Lane</span>
+                <div class="popup lane__selector hidden">
+                  <!-- Place to insert lane selector -->
                 </div>
               </div>
-              <div class="small__input patch__input">
-                <button class="patch__btn input__clickable">PATCH</button>
+              <div class="main__input rank__input selector">
+                <img
+                  src="img/ranks/all.webp"
+                  class="rank__btn input__clickable"
+                  alt="Ranks"
+                />
+                <span>All</span>
+                <div class="popup rank__selector hidden">
+                  <!-- Place to insert rank selector -->
+                </div>
+              </div>
+              <div class="small__inputs">
+                <div class="small__input vslane__input selector">
+                  <img
+                    src="img/lanes/all.webp"
+                    class="vslane__btn input__clickable"
+                    alt="Lanes"
+                  />
+                  <div class="vslane__label">
+                    <div class="label">vs</div>
+                    <span>Lane</span>
+                  </div>
+                  <div class="popup vslane__selector hidden">
+                    <!-- Place to insert vslane selector -->
+                  </div>
+                </div>
+                <div class="small__input patch__input">
+                  <button class="patch__btn input__clickable">PATCH</button>
+                </div>
+              </div>
+            </div>
+            <div class="config">
+              <!-- Starter -->
+              <span class="welcome">Select a lane to start...</span>
+              <!-- Standard -->
+              <div class="settings hidden">
+                <hr />
+                <span>List max items</span>
+                <input
+                  id="max-items"
+                  type="text"
+                  class="settings__input"
+                  value="35"
+                />
+                <span>% Pick Rate > </span>
+                <input
+                  id="min-pr"
+                  type="text"
+                  class="settings__input"
+                  value="1.0"
+                />
               </div>
             </div>
           </div>
@@ -90,7 +121,7 @@
             <!-- Place to insert champions selected -->
           </div>
           <div class="search-section">
-            <div class="champion input__clickable" id="select-champion">
+            <div class="champion input__clickable hidden" id="select-champion">
               <svg class="add__champion">
                 <use href="img/icons/icons.svg#icon-plus-circle"></use>
               </svg>

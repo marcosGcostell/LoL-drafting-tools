@@ -1,4 +1,8 @@
-import { LS_STATE } from '../common/config.js';
+import {
+  LS_STATE,
+  MAX_LIST_ITEMS,
+  PICK_RATE_THRESHOLD,
+} from '../common/config.js';
 
 ///////////////////////////////////////
 // App State class
@@ -8,16 +12,8 @@ class AppState extends EventTarget {
     super();
 
     // Default values
-    this.laneSelected = null;
-    this.rankSelected = 'all';
-    this.vslaneSelected = null;
-    this.patchSelected = null;
-    this.tierlist = [];
-    this.tierlistLane = null;
-    this.pool = [];
-    this.statsLists = [];
-    this.statsListsOwner = [];
-    this.popUpOn = '';
+    this.#defaultValues();
+    this.popUpOn = 'starter';
 
     // Load values from session
     const localData = sessionStorage.getItem(LS_STATE);
@@ -26,15 +22,32 @@ class AppState extends EventTarget {
         const parsed = JSON.parse(localData);
         Object.assign(this, parsed);
         // On reload hide any pop-ups
-        this.popUpOn = '';
+        if (this.popUpOn !== 'starter') {
+          this.popUpOn = '';
+        }
       } catch (err) {
         throw err;
       }
     }
   }
 
-  // private setter to set property, save to session and notify
-  // except adding or removing champions
+  #defaultValues() {
+    this.laneSelected = null;
+    this.rankSelected = 'all';
+    this.vslaneSelected = null;
+    this.patchSelected = 'version';
+    this.maxListItems = MAX_LIST_ITEMS;
+    this.pickRateThreshold = PICK_RATE_THRESHOLD;
+    this.tierlist = [];
+    this.fixedTierlist = [];
+    this.tierlistLane = null;
+    this.pool = [];
+    this.statsLists = [];
+    this.fixedStatsLists = [];
+    this.statsListsOwner = [];
+  }
+
+  // set options property, save to session and notify
   #updateOptions(target, value) {
     this[target] = value;
     this.#save();
@@ -45,6 +58,18 @@ class AppState extends EventTarget {
     );
   }
 
+  // set settings property, save to session and notify
+  #updateSettings(target, value) {
+    this[target] = value;
+    this.#save();
+    this.dispatchEvent(
+      new CustomEvent('settings', {
+        detail: { target, value },
+      })
+    );
+  }
+
+  // save after adding/removing champions to session and notify
   #updateChampions(action, element, fireEvent) {
     this.#save();
     if (fireEvent) {
@@ -79,10 +104,27 @@ class AppState extends EventTarget {
     this.#updateOptions('patchSelected', patch);
   }
 
+  setMaxItems(value) {
+    this.#updateSettings('maxListItems', value);
+  }
+
+  setPickRate(value) {
+    this.#updateSettings('pickRateThreshold', value);
+  }
+
   addTierlist(tierlist) {
     this.tierlist = tierlist;
     this.tierlistLane = this.vslaneSelected;
+    this.fixTierlist();
     this.#save();
+  }
+
+  fixTierlist() {
+    this.fixedTierlist = this.tierlist.slice(0, this.maxListItems);
+    const matchingItemsCount = this.fixedTierlist.findIndex(
+      el => el.pickRate < this.pickRateThreshold
+    );
+    this.fixedTierlist.splice(matchingItemsCount);
   }
 
   addChampion(champion) {
@@ -100,6 +142,7 @@ class AppState extends EventTarget {
     if (index > -1) {
       this.pool.splice(index, 1);
       this.statsLists.splice(index, 1);
+      this.fixedStatsLists.splice(index, 1);
       this.statsListsOwner.splice(index, 1);
       this.#updateChampions('remove', index);
     }
@@ -109,36 +152,40 @@ class AppState extends EventTarget {
     if (index < this.statsLists.length) {
       this.statsLists[index] = statsList;
     } else {
+      index = this.statsLists.length;
       this.statsLists.push(statsList);
+      this.fixedStatsLists.push([]);
       this.statsListsOwner.push(owner);
     }
+    this.fixStatsList(index);
     this.#save();
   }
 
   updateStatsList(statsList, index) {
     if (index >= this.statsLists.length) return false;
     this.statsLists[index] = statsList;
+    this.fixStatsList(index);
     this.#save();
     return true;
+  }
+
+  fixStatsList(index) {
+    this.fixedStatsLists[index] = this.statsLists[index].slice(
+      0,
+      this.fixedTierlist.length
+    );
   }
 
   resetPool() {
     this.pool = [];
     this.statsLists = [];
+    this.fixedStatsLists = [];
     this.statsListsOwner = [];
     this.#save();
   }
 
   resetAll() {
-    this.laneSelected = null;
-    this.rankSelected = 'all';
-    this.vslaneSelected = null;
-    this.patchSelected = null;
-    this.tierlist = [];
-    this.tierlistLane = null;
-    this.pool = [];
-    this.statsLists = [];
-    this.statsListsOwner = [];
+    this.#defaultValues();
     this.#save();
     this.dispatchEvent(new CustomEvent('reset'));
   }
