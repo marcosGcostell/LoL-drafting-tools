@@ -1,8 +1,10 @@
+import puppeteer from 'puppeteer';
 import { JSDOM } from 'jsdom';
 
 import { MIN_DELAY, MAX_DELAY } from '../common/config.js';
 import { PROXY_ON, PROXY_URL } from '../common/config.js';
 import { getRandomNumber, waitMs } from '../common/helpers.js';
+import AppError from '../common/app-error.js';
 
 ///////////////////////////////////////
 
@@ -83,6 +85,16 @@ class Lolalytics {
     // const doc = parser.parseFromString(html, 'text/html');
   }
 
+  async #getVirtualWebPage(url) {
+    const browser = await puppeteer.launch({ headless: 'new' });
+    const webPage = await browser.newPage();
+    await webPage.goto(url, { waitUntil: 'networkidle2' });
+
+    // Wait to load <main>
+    await webPage.waitForSelector('body', { timeout: 10000 });
+    return webPage;
+  }
+
   // PUBLIC METHODS
 
   /**
@@ -140,35 +152,139 @@ class Lolalytics {
    */
   async getTierlist(lane = 'top', rank = 'all') {
     // Scrape the lolalytics web page
-    const virtualDomDocument = await this.#scrapeWebPage(
-      this.#getTierlistURL(lane, rank)
-    );
+    // const webPage = await this.#getVirtualWebPage(
+    //   this.#getTierlistURL(lane, rank)
+    // );
 
-    // Select the table where the champion information is (HTMLCollection)
-    // convert it to an Array and filter only champions (elements with children)
-    const championsGrid = Array.from(
-      virtualDomDocument.getElementsByTagName('main')[0].children[5].children[1]
-        .children
-    ).filter(element => element.children.length);
-
-    // return an array of objects of some selected data
-    // from the HTMLElemts array
-    return championsGrid.map(cell => {
-      const championElement = cell.firstElementChild.firstElementChild;
-      const dataSection =
-        championElement.children[1].children[1].firstElementChild;
-      return {
-        name: championElement.firstElementChild.textContent,
-        roleRate:
-          +championElement.children[1].firstElementChild.children[2]
-            .firstElementChild.textContent,
-        winRatio: +dataSection.children[1].textContent,
-        pickRate: +dataSection.children[2].textContent,
-        banRate: +dataSection.children[3].textContent,
-        // img: '',
-      };
+    const url = this.#getTierlistURL(lane, rank);
+    const browser = await puppeteer.launch({
+      headless: 'new',
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      slowMo: 100,
     });
+    const webPage = await browser.newPage();
+    await webPage.setUserAgent(
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36'
+    );
+    await webPage.setExtraHTTPHeaders({
+      'accept-language': 'en-US,en;q=0.9',
+      referer: 'https://www.google.com/',
+    });
+    await webPage.goto(url, { waitUntil: 'networkidle2' });
+
+    // Wait to the privacy settings pop-up
+    await webPage
+      .waitForSelector('.ncmp__btn', { timeout: 5000 })
+      .catch(() => {});
+    await webPage.evaluate(() => {
+      // Click accept button
+      const buttons = Array.from(document.querySelectorAll('.ncmp__btn'));
+      const acceptBtn = buttons.find(btn =>
+        btn.textContent?.toLowerCase().includes('accept')
+      );
+      if (acceptBtn) acceptBtn.click();
+    });
+
+    // Wait for the consent privacy to resolve the page
+    await waitMs(2000 + getRandomNumber(-500, 500));
+    await webPage.waitForSelector('main', { timeout: 10000 });
+
+    // Need to scroll down to load all champions on the grid
+    await webPage.evaluate(async () => {
+      await new Promise(resolve => {
+        let totalHeight = 0;
+        const distance = 300;
+        const timer = setInterval(() => {
+          window.scrollBy(0, distance);
+          totalHeight += distance;
+
+          if (totalHeight >= document.body.scrollHeight) {
+            clearInterval(timer);
+            resolve();
+          }
+        }, 250);
+      });
+    });
+    await waitMs(1500 + getRandomNumber(-500, 500));
+
+    // Get the webpage info navigating through children
+    const tierlist = await webPage.evaluate(() => {
+      // Get the grid checking the path
+      const main = document.querySelector('main');
+      console.log('Main selected: ', main);
+      if (!main) throw new Error('Main is not found');
+      // throw new AppError('Cannot access to internet data...', 500);
+
+      const section = main.children[5];
+      if (!section || !section.children[1])
+        throw new Error('Section or grid not found');
+      // throw new AppError('Cannot access to internet data...', 500);
+
+      // Convert HTMLCollection with champion information to an array
+      // Select only champion cells (skip elements without childrens)
+      const championsGrid = section.children[1];
+      const championCells = Array.from(championsGrid.children).filter(
+        el => el.children.length
+      );
+
+      // evaluate callback return an array of objects (one from each HTML Element)
+      return championCells
+        .map(cell => {
+          const championElement = cell.firstElementChild.firstElementChild;
+          const dataSection =
+            championElement.children[1].children[1].firstElementChild;
+          return {
+            name: championElement.firstElementChild.textContent.trim(),
+            roleRate: parseFloat(
+              championElement.children[1].firstElementChild.children[2]
+                .firstElementChild.textContent
+            ),
+            winRatio: parseFloat(dataSection.children[1].textContent),
+            pickRate: parseFloat(dataSection.children[2].textContent),
+            banRate: parseFloat(dataSection.children[3].textContent),
+          };
+        })
+        .filter(Boolean);
+    });
+
+    await browser.close();
+    return tierlist;
   }
+
+  // -------------------
+  // Fetch version without puppeteer
+  // -------------------
+  // async getTierlist(lane = 'top', rank = 'all') {
+  //   // Scrape the lolalytics web page
+  //   const virtualDomDocument = await this.#scrapeWebPage(
+  //     this.#getTierlistURL(lane, rank)
+  //   );
+
+  //   // Select the table where the champion information is (HTMLCollection)
+  //   // convert it to an Array and filter only champions (elements with children)
+  //   const championsGrid = Array.from(
+  //     virtualDomDocument.getElementsByTagName('main')[0].children[5].children[1]
+  //       .children
+  //   ).filter(element => element.children.length);
+
+  //   // return an array of objects of some selected data
+  //   // from the HTMLElemts array
+  //   return championsGrid.map(cell => {
+  //     const championElement = cell.firstElementChild.firstElementChild;
+  //     const dataSection =
+  //       championElement.children[1].children[1].firstElementChild;
+  //     return {
+  //       name: championElement.firstElementChild.textContent,
+  //       roleRate:
+  //         +championElement.children[1].firstElementChild.children[2]
+  //           .firstElementChild.textContent,
+  //       winRatio: +dataSection.children[1].textContent,
+  //       pickRate: +dataSection.children[2].textContent,
+  //       banRate: +dataSection.children[3].textContent,
+  //       // img: '',
+  //     };
+  //   });
+  // }
 
   /**
    * @async
