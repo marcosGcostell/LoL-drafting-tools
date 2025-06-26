@@ -233,6 +233,8 @@ class Lolalytics {
       const championCells = Array.from(championsGrid.children).filter(
         el => el.children.length
       );
+      // FIXME When it's no data (first days of patch) championsGrid has no children
+      // Should return some specific to be handled ('Not enough games')
 
       // evaluate callback returns an array of objects (one from each HTML Element)
       return championCells

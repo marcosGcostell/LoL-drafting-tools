@@ -31,4 +31,4 @@ export const STATS_ITEM_TEMPLATE = './templates/stats-item.html';
 // Config parameters
 export const PICK_RATE_THRESHOLD = 1.0;
 export const MAX_LIST_ITEMS = 35;
-export const TIME_BEFORE_CHECK = 12;
+export const TIME_BEFORE_UPDATE = 12;

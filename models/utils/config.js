@@ -25,7 +25,7 @@ export const USER_AGENTS = [
 ];
 
 // Config parameters
-export const TIME_BEFORE_CHECK = 12;
+export const TIME_BEFORE_UPDATE = 24;
 export const DEFAULT_SORT_FIELD = 'pickRate';
 
 // Riot static data

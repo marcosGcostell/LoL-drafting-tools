@@ -9,7 +9,8 @@
     "start:prod": "set NODE_ENV=production&&nodemon server.js",
     "client": "live-server ./client",
     "fullstack": "concurrently \"npm run start\" \"npm run client\"",
-    "worker": "node ./worker.js *> ./worker.log"
+    "worker": "node ./worker.js *> ./worker.log",
+    "worker:noreset": "node ./worker.js --noreset *> ./worker.log"
   },
   "author": "Kuantik Software",
   "license": "ISC",
