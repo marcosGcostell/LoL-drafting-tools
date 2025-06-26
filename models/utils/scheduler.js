@@ -7,6 +7,14 @@ import Tierlist from '../tierlist-model.js';
 import { saveTierlist } from '../../controllers/tierlist-handlers.js';
 import { getRandomInt, wait, isoTimeStamp } from './helpers.js';
 
+const REQ_MIN_LAPSE = 2;
+const REQ_MAX_LAPSE = 8;
+const GROUP_MIN_LAPSE = 45 * 60;
+const GROUP_MAX_LAPSE = 65 * 60;
+
+const log = (icon, message) =>
+  console.log(`${icon} - ${isoTimeStamp()}: ${message}`);
+
 const createGroups = async () => {
   const roles = await riotRole.find();
   const ranks = await riotRank.find();
@@ -42,27 +50,36 @@ const replaceTierlist = async ({ lane, rank, patch }) => {
     return console.error(
       `🔴 ERROR!: Couldn't get tierlist (${lane}, ${rank}, ${patch})`
     );
-  Tierlist.deleteOne({ lane, rank, patch });
+  await Tierlist.deleteOne({ lane, rank, patch });
   saveTierlist(lane, rank, patch, tierlist);
 };
 
 export const updateAllTierlists = async DB => {
   try {
-    mongoose
-      .connect(DB)
-      .then(() => console.log('Worker conected to DB: ', isoTimeStamp()));
-    const groups = await createGroups();
-    for (const tasks of groups) {
-      console.log('✅ Starting with new group...', isoTimeStamp());
-      for (const task of tasks) {
-        // console.log(task, isoTimeStamp());
+    await mongoose.connect(DB);
+    log('▶️', ' Worker conected to DB: ');
 
-        await wait(0.05);
+    const groups = await createGroups();
+
+    for (const tasks of groups) {
+      log('\n\n📦', 'Starting with new group...');
+      for (const task of tasks) {
+        try {
+          await replaceTierlist(task);
+          log('', '');
+        } catch (err) {
+          console.error(`❌ Error getting: ${task} (${err})`);
+        }
+        await wait(getRandomInt(REQ_MIN_LAPSE, REQ_MAX_LAPSE));
       }
-      if (groups.indexOf(tasks) < groups.length - 1) await wait(1);
+      // Last group doesn't wait for the next one
+      if (groups.indexOf(tasks) < groups.length - 1) {
+        await wait(getRandomInt(GROUP_MIN_LAPSE, GROUP_MAX_LAPSE));
+      }
     }
-    mongoose.disconnect();
+    await mongoose.disconnect();
+    log('⏹️', 'Worker finished and disconneted');
   } catch (err) {
-    console.log('🔴 ERROR!!!: ', err);
+    console.error('🔴 Critical Error!: ', err);
   }
 };
