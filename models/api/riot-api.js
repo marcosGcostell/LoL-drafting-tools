@@ -1,4 +1,4 @@
-import { RIOT_DATA_DRAGON } from '../common/config.js';
+import { RIOT_DATA_DRAGON } from '../utils/config.js';
 
 ///////////////////////////////////////
 // Riot Class

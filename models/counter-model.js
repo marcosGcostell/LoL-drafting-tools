@@ -17,6 +17,10 @@ const counterListSchema = new mongoose.Schema({
     type: String,
     required: [true, 'A lane vs lane must be selected'],
   },
+  patch: {
+    type: String,
+    required: [true, 'A patch must be selected'],
+  },
   createdAt: {
     type: Date,
     default: new Date().toISOString(),

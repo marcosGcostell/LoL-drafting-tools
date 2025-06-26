@@ -8,7 +8,8 @@
     "start": "nodemon server.js --ignore client/",
     "start:prod": "set NODE_ENV=production&&nodemon server.js",
     "client": "live-server ./client",
-    "fullstack": "concurrently \"npm run start\" \"npm run client\""
+    "fullstack": "concurrently \"npm run start\" \"npm run client\"",
+    "worker": "node ./worker.js *> ./worker.log"
   },
   "author": "Kuantik Software",
   "license": "ISC",

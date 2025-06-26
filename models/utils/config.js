@@ -52,18 +52,12 @@ export const riotLolRoles = {
     name: 'Support',
   },
 };
-export const riotLolRolesArray = Object.keys(riotLolRoles)
-  // .filter(role => role != 'main')
-  .map(el => riotLolRoles[el].id);
+export const riotLolRolesArray = Object.values(riotLolRoles).map(el => el.id);
 
 export const riotLolRanks = {
   all: {
     id: 'all',
     name: 'All Ranks',
-  },
-  onetric: {
-    id: '1tric',
-    name: 'One Trick Pony',
   },
   challenger: {
     id: 'challenger',

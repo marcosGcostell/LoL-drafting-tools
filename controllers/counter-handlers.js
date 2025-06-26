@@ -2,27 +2,37 @@ import Lolalytics from '../models/api/lolalytics-api.js';
 import Counter from '../models/counter-model.js';
 import { getAllRoleRates, getAllTierlist } from './tierlist-handlers.js';
 import { getListFromDb } from './common-list-handlers.js';
-import { DEFAULT_SORT_FIELD } from '../models/common/config.js';
-import catchAsync from '../models/common/catch-async.js';
+import { DEFAULT_SORT_FIELD } from '../models/utils/config.js';
+import { isoTimeStamp } from '../models/utils/helpers.js';
+import catchAsync from '../models/utils/catch-async.js';
 
-const saveCounterList = async (champion, lane, rank, vslane, list) => {
+const saveCounterList = async (champion, lane, rank, vslane, patch, list) => {
   const data = {
     champion,
     lane,
     rank,
     vslane,
-    createdAt: new Date().toISOString(),
+    patch,
+    createdAt: isoTimeStamp(),
     list,
   };
 
   await Counter.create(data);
-  console.log('Counter list saved! ✅');
+  console.log(
+    `✅ Counter list saved: (${champion}, ${lane}, ${rank}, ${vslane}, ${patch})`
+  );
   return data;
 };
 
-const getCounterListData = async (champion, lane, rank, vslane) => {
-  console.log({ champion, lane, rank, vslane });
-  const data = await getListFromDb(Counter, { champion, lane, rank, vslane });
+const getCounterListData = async (champion, lane, rank, vslane, patch) => {
+  console.log({ champion, lane, rank, vslane, patch });
+  const data = await getListFromDb(Counter, {
+    champion,
+    lane,
+    rank,
+    vslane,
+    patch,
+  });
 
   if (data) {
     console.log('Getting Counters from database...');
@@ -33,10 +43,11 @@ const getCounterListData = async (champion, lane, rank, vslane) => {
     champion,
     lane,
     rank,
-    vslane
+    vslane,
+    patch
   );
-  saveCounterList(champion, lane, rank, vslane, counterList);
-  return { counterList, updatedAt: new Date().toISOString() };
+  saveCounterList(champion, lane, rank, vslane, patch, counterList);
+  return { counterList, updatedAt: isoTimeStamp() };
 };
 
 export const getCounterList = catchAsync(async (req, res, next) => {
@@ -44,9 +55,10 @@ export const getCounterList = catchAsync(async (req, res, next) => {
     req.champion,
     req.lane,
     req.rank,
-    req.vslane
+    req.vslane,
+    req.patch
   );
-  const allTierlists = await getAllTierlist(req.rank);
+  const allTierlists = await getAllTierlist(req.rank, req.patch);
 
   const completeList = counterList.map(el => {
     const [champion] = allTierlists[req.vslane].filter(
@@ -74,6 +86,11 @@ export const getCounterList = catchAsync(async (req, res, next) => {
     results: completeList.length,
     updatedAt,
     data: {
+      id: req.champion,
+      lane: req.lane,
+      rank: req.rank,
+      vslane: req.vslane,
+      patch: req.patch,
       counterList: completeList,
     },
   });

@@ -23,4 +23,9 @@ versionSchema.statics.replaceFromString = async function (version) {
   return version;
 };
 
+versionSchema.statics.getVersionString = async function () {
+  const [data] = await this.find();
+  return data.id;
+};
+
 export default mongoose.model('Version', versionSchema);

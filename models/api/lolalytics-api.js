@@ -1,13 +1,19 @@
 import puppeteer from 'puppeteer';
 import { JSDOM } from 'jsdom';
 
-import { MIN_DELAY, MAX_DELAY, PROXY_ON, PROXY_URL } from '../common/config.js';
+import {
+  MIN_DELAY,
+  MAX_DELAY,
+  PROXY_ON,
+  PROXY_URL,
+  MAX_USER_AGENT_REQUESTS,
+} from '../utils/config.js';
 import {
   getRandomNumber,
   waitMs,
   getRandomUserAgent,
-} from '../common/helpers.js';
-import AppError from '../common/app-error.js';
+} from '../utils/helpers.js';
+import AppError from '../utils/app-error.js';
 
 ///////////////////////////////////////
 
@@ -43,10 +49,10 @@ class Lolalytics {
    * Returns the url for the tierlist webpage
    * @return {String} The url for (this rank, and lane).
    */
-  #getTierlistURL(lane = 'main', rank = 'all') {
+  #getTierlistURL(lane = 'main', rank = 'all', patch = '') {
     return `${this.#baseURL}tierlist/?${
       lane !== 'main' ? `lane=${lane}&` : ''
-    }tier=${rank}&view=grid`;
+    }tier=${rank}${patch === '7' ? '&patch=7' : ''}&view=grid`;
   }
 
   /**
@@ -54,9 +60,10 @@ class Lolalytics {
    * Returns the url for counters webpage. champion should be Lolalytics folder name.
    * @return {String} The url for (this champion, rank, lane, [vs this lane]) .
    */
-  #getCountersURL(champion, lane, rank, vsLane = lane) {
+  #getCountersURL(champion, lane, rank, vsLane = lane, patch) {
     let str = `${this.#baseURL}${champion}/counters/?lane=${lane}&tier=${rank}`;
     if (vsLane !== 'main' && vsLane !== lane) str += `&vslane=${vsLane}`;
+    if (patch === '7') str += '&patch=7';
     return str;
   }
 
@@ -65,8 +72,10 @@ class Lolalytics {
    * Returns the url for counters webpage. champion should be Lolalytics folder name.
    * @return {String} The url for (this champion, rank, lane, [vs this lane]) .
    */
-  #getBuildURL(champion, lane, rank) {
-    return `${this.#baseURL}${champion}/build/?lane=${lane}&tier=${rank}`;
+  #getBuildURL(champion, lane, rank, patch) {
+    return `${this.#baseURL}${champion}/build/?lane=${lane}&tier=${rank}${
+      patch === '7' ? '&patch=7' : ''
+    }`;
   }
 
   /**
@@ -204,23 +213,19 @@ class Lolalytics {
    * @param {String} [lane] for this role (default = 'main').
    * @return {Promise<Array>} of champion objects.
    */
-  async getTierlist(lane = 'top', rank = 'all') {
+  async getTierlist(lane = 'top', rank = 'all', patch = '') {
     // Get the puppeteer browser and lolalytics web page
     const { browser, webPage } = await this.#getVirtualWebPage(
-      this.#getTierlistURL(lane, rank)
+      this.#getTierlistURL(lane, rank, patch)
     );
 
     // Get the webpage info navigating through children
     const tierlist = await webPage.evaluate(() => {
       // Get the grid checking the path
       const main = document.querySelector('main');
-      if (!main) throw new Error('Main is not found');
-      // throw new AppError('Cannot access to internet data...', 500);
-
+      if (!main) return null;
       const section = main.children[5];
-      if (!section || !section.children[1])
-        throw new Error('Section or grid not found');
-      // throw new AppError('Cannot access to internet data...', 500);
+      if (!section || !section.children[1]) return null;
 
       // Convert HTMLCollection with champion information to an array
       // Select only champion cells (skip elements without childrens)
@@ -229,7 +234,7 @@ class Lolalytics {
         el => el.children.length
       );
 
-      // evaluate callback return an array of objects (one from each HTML Element)
+      // evaluate callback returns an array of objects (one from each HTML Element)
       return championCells
         .map(cell => {
           const championElement = cell.firstElementChild.firstElementChild;
@@ -250,6 +255,8 @@ class Lolalytics {
     });
 
     await browser.close();
+    if (tierlist === null)
+      throw new AppError('Could not find the tierlists data', 404);
     return tierlist;
   }
 
@@ -298,10 +305,10 @@ class Lolalytics {
    * @param {String} [vsLane] versus this other role (default = 'lane').
    * @return {Promise<Array>} of champion objects.
    */
-  async getCounters(champion, lane, rank = 'all', vsLane = lane) {
+  async getCounters(champion, lane, rank = 'all', vsLane = lane, patch = '') {
     // Scrape the lolalytics web page
     const virtualDomDocument = await this.#scrapeWebPage(
-      this.#getCountersURL(champion, lane, rank, vsLane)
+      this.#getCountersURL(champion, lane, rank, vsLane, patch)
     );
 
     // Select the table where the champion information is (HTMLCollection)
@@ -318,13 +325,11 @@ class Lolalytics {
         cell.firstElementChild.firstElementChild.firstElementChild;
       return {
         name: dataSection.firstElementChild.textContent,
-        winRatio: Number.parseFloat(
-          dataSection.children[2].children[1].textContent
-        ),
-        delta1: Number.parseFloat(
+        winRatio: parseFloat(dataSection.children[2].children[1].textContent),
+        delta1: parseFloat(
           dataSection.children[3].firstElementChild.textContent.slice(3)
         ),
-        delta2: Number.parseFloat(
+        delta2: parseFloat(
           dataSection.children[3].children[1].textContent.slice(3)
         ),
       };
@@ -341,10 +346,10 @@ class Lolalytics {
    * @param {String} [vsLane] versus this other role (default = 'lane').
    * @return {Promise<Array>} of champion objects.
    */
-  async getStats(champion, lane, rank = 'all', vsLane = lane) {
+  async getStats(champion, lane, rank = 'all', vsLane = lane, patch = '') {
     // Scrape the lolalytics web page
     const virtualDomDocument = await this.#scrapeWebPage(
-      this.#getBuildURL(champion, lane, rank)
+      this.#getBuildURL(champion, lane, rank, patch)
     );
 
     // Select the table where the champion information is (HTMLCollection)
@@ -357,7 +362,7 @@ class Lolalytics {
     const roleRates = Object.fromEntries(
       rolesItems.map(el => [
         el.querySelector('img').getAttribute('alt').split(' ')[0],
-        Number.parseFloat(el.querySelector('div').textContent),
+        parseFloat(el.querySelector('div').textContent),
       ])
     );
 
@@ -367,18 +372,18 @@ class Lolalytics {
 
     // return an object of some selected data
     return {
-      winRatio: Number.parseFloat(
+      winRatio: parseFloat(
         statsSection.firstElementChild.firstElementChild.firstElementChild
           .textContent
       ),
-      pickRate: Number.parseFloat(
+      pickRate: parseFloat(
         statsSection.firstElementChild.lastElementChild.firstElementChild
           .textContent
       ),
-      banRate: Number.parseFloat(
+      banRate: parseFloat(
         statsSection.lastElementChild.children[2].firstElementChild.textContent
       ),
-      games: Number.parseInt(
+      games: parseInt(
         statsSection.lastElementChild.lastElementChild.firstElementChild.textContent
           .split(',')
           .join('')

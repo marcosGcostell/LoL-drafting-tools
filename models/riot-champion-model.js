@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { findAsObject } from './common/helpers.js';
+import { findAsObject } from './utils/helpers.js';
 
 const championSchema = new mongoose.Schema({
   id: {
