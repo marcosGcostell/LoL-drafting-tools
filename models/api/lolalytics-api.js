@@ -1,9 +1,12 @@
 import puppeteer from 'puppeteer';
 import { JSDOM } from 'jsdom';
 
-import { MIN_DELAY, MAX_DELAY } from '../common/config.js';
-import { PROXY_ON, PROXY_URL } from '../common/config.js';
-import { getRandomNumber, waitMs } from '../common/helpers.js';
+import { MIN_DELAY, MAX_DELAY, PROXY_ON, PROXY_URL } from '../common/config.js';
+import {
+  getRandomNumber,
+  waitMs,
+  getRandomUserAgent,
+} from '../common/helpers.js';
 import AppError from '../common/app-error.js';
 
 ///////////////////////////////////////
@@ -18,6 +21,8 @@ class Lolalytics {
 
   constructor() {
     this._lastConnection = Date.now() - MAX_DELAY * 1000;
+    this._currentUserAgent = getRandomUserAgent();
+    this._userAgentCount = 0;
   }
 
   // PRIVATE METHODS
@@ -79,20 +84,69 @@ class Lolalytics {
     const dom = new JSDOM(html);
 
     return dom.window.document;
-
-    // This is with DOMParser of browser DOM API. Doesn't work in node.js
-    // const parser = new DOMParser();
-    // const doc = parser.parseFromString(html, 'text/html');
   }
 
   async #getVirtualWebPage(url) {
-    const browser = await puppeteer.launch({ headless: 'new' });
+    const browserArgs = ['--no-sandbox', '--disable-setuid-sandbox'];
+    if (PROXY_ON) {
+      browserArgs.push(`--proxy-server=${PROXY_URL}`);
+    }
+    const browser = await puppeteer.launch({
+      headless: 'new',
+      args: browserArgs,
+      slowMo: 100,
+    });
     const webPage = await browser.newPage();
+    // Rotate user agents
+    if (
+      this._userAgentCount >
+      MAX_USER_AGENT_REQUESTS + getRandomNumber(-2, 5)
+    ) {
+      this._userAgentCount = 0;
+      this._currentUserAgent = getRandomUserAgent();
+    }
+    await webPage.setUserAgent(this._currentUserAgent);
+    await webPage.setExtraHTTPHeaders({
+      'accept-language': 'en-US,en;q=0.9',
+      referer: 'https://www.google.com/',
+    });
     await webPage.goto(url, { waitUntil: 'networkidle2' });
 
-    // Wait to load <main>
-    await webPage.waitForSelector('body', { timeout: 10000 });
-    return webPage;
+    // Wait to the privacy settings pop-up
+    await webPage
+      .waitForSelector('.ncmp__btn', { timeout: 5000 })
+      .catch(() => {});
+    await webPage.evaluate(() => {
+      // Click accept button
+      const buttons = Array.from(document.querySelectorAll('.ncmp__btn'));
+      const acceptBtn = buttons.find(btn =>
+        btn.textContent?.toLowerCase().includes('accept')
+      );
+      if (acceptBtn) acceptBtn.click();
+    });
+
+    // Wait for the consent privacy to resolve the page
+    await waitMs(2000 + getRandomNumber(-500, 500));
+    await webPage.waitForSelector('main', { timeout: 10000 });
+
+    // Need to scroll down to load all champions on the grid
+    await webPage.evaluate(async () => {
+      await new Promise(resolve => {
+        let totalHeight = 0;
+        const distance = 300 + (Math.random() * 100 - 50);
+        const timer = setInterval(() => {
+          window.scrollBy(0, distance);
+          totalHeight += distance;
+
+          if (totalHeight >= document.body.scrollHeight) {
+            clearInterval(timer);
+            resolve();
+          }
+        }, 150);
+      });
+    });
+    await waitMs(1500 + getRandomNumber(-500, 500));
+    return { browser, webPage };
   }
 
   // PUBLIC METHODS
@@ -151,67 +205,15 @@ class Lolalytics {
    * @return {Promise<Array>} of champion objects.
    */
   async getTierlist(lane = 'top', rank = 'all') {
-    // Scrape the lolalytics web page
-    // const webPage = await this.#getVirtualWebPage(
-    //   this.#getTierlistURL(lane, rank)
-    // );
-
-    const url = this.#getTierlistURL(lane, rank);
-    const browser = await puppeteer.launch({
-      headless: 'new',
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-      slowMo: 100,
-    });
-    const webPage = await browser.newPage();
-    await webPage.setUserAgent(
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36'
+    // Get the puppeteer browser and lolalytics web page
+    const { browser, webPage } = await this.#getVirtualWebPage(
+      this.#getTierlistURL(lane, rank)
     );
-    await webPage.setExtraHTTPHeaders({
-      'accept-language': 'en-US,en;q=0.9',
-      referer: 'https://www.google.com/',
-    });
-    await webPage.goto(url, { waitUntil: 'networkidle2' });
-
-    // Wait to the privacy settings pop-up
-    await webPage
-      .waitForSelector('.ncmp__btn', { timeout: 5000 })
-      .catch(() => {});
-    await webPage.evaluate(() => {
-      // Click accept button
-      const buttons = Array.from(document.querySelectorAll('.ncmp__btn'));
-      const acceptBtn = buttons.find(btn =>
-        btn.textContent?.toLowerCase().includes('accept')
-      );
-      if (acceptBtn) acceptBtn.click();
-    });
-
-    // Wait for the consent privacy to resolve the page
-    await waitMs(2000 + getRandomNumber(-500, 500));
-    await webPage.waitForSelector('main', { timeout: 10000 });
-
-    // Need to scroll down to load all champions on the grid
-    await webPage.evaluate(async () => {
-      await new Promise(resolve => {
-        let totalHeight = 0;
-        const distance = 300;
-        const timer = setInterval(() => {
-          window.scrollBy(0, distance);
-          totalHeight += distance;
-
-          if (totalHeight >= document.body.scrollHeight) {
-            clearInterval(timer);
-            resolve();
-          }
-        }, 250);
-      });
-    });
-    await waitMs(1500 + getRandomNumber(-500, 500));
 
     // Get the webpage info navigating through children
     const tierlist = await webPage.evaluate(() => {
       // Get the grid checking the path
       const main = document.querySelector('main');
-      console.log('Main selected: ', main);
       if (!main) throw new Error('Main is not found');
       // throw new AppError('Cannot access to internet data...', 500);
 
@@ -305,8 +307,8 @@ class Lolalytics {
     // Select the table where the champion information is (HTMLCollection)
     // convert it to an Array and filter only the <span> elements
     const championsGrid = Array.from(
-      virtualDomDocument.getElementsByTagName('main')[0].children[5]
-        .firstElementChild.children[1].children
+      virtualDomDocument.querySelector('main').children[5].firstElementChild
+        .children[1].children
     ).filter(element => element.tagName === 'SPAN');
 
     // return an array of objects of some selected data

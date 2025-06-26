@@ -1,4 +1,4 @@
-import { TIME_BEFORE_CHECK } from './config.js';
+import { TIME_BEFORE_CHECK, USER_AGENTS } from './config.js';
 
 export const getRandomNumber = (min, max) => Math.random() * (max - min) + min;
 
@@ -26,4 +26,8 @@ export const findAsObject = async function () {
     acc[doc.id] = doc;
     return acc;
   }, {});
+};
+
+export const getRandomUserAgent = () => {
+  return USER_AGENTS[Math.floor(getRandomNumber(0, USER_AGENTS.length))];
 };
