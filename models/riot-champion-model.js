@@ -41,7 +41,7 @@ championSchema.pre(/^find/, function (next) {
 championSchema.statics.findAsObject = findAsObject;
 
 championSchema.statics.replaceFromObject = async function (champions) {
-  const data = Object.keys(champions).map(id => champions[id]);
+  const data = Object.values(champions);
   await this.deleteMany();
   await this.create(data);
 };

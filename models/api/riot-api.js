@@ -66,21 +66,19 @@ class Riot {
     if (!version) version = await this.getLastGameVersion();
 
     const lolChampions = await this.#getChampionData(version);
-    const championsData = {};
 
-    // In championsData create an object for each champion with some data
-    Object.keys(lolChampions).forEach(
-      championName =>
-        (championsData[championName] = {
-          version: lolChampions[championName].version,
-          riotId: lolChampions[championName].id,
-          key: lolChampions[championName].key,
-          name: lolChampions[championName].name,
-          img: lolChampions[championName].image.full,
-        })
-    );
-
-    return championsData;
+    // Return an object where each champion is an object stored in a property
+    // with some of the data selected from lolChampions
+    return Object.values(lolChampions).reduce((acc, champion) => {
+      acc[champion.id] = {
+        version: champion.version,
+        riotId: champion.id,
+        key: champion.key,
+        name: champion.name,
+        img: champion.image.full,
+      };
+      return acc;
+    }, {});
   }
 }
 
