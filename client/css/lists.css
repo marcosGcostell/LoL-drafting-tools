@@ -42,9 +42,20 @@
 }
 
 .champ__img {
-  padding: 0.1rem 0.5rem;
-  width: 3rem;
-  height: auto;
+  display: inline-block;
+  width: 2.1rem;
+  height: 2.1rem;
+  overflow: hidden;
+  margin-right: 0.5rem;
+}
+
+.champ__sprite {
+  width: 48px;
+  height: 48px;
+  background-repeat: no-repeat;
+  background-size: 480px auto;
+  transform: scale(0.665);
+  transform-origin: top left;
 }
 
 .icon__row {

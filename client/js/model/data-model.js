@@ -23,6 +23,13 @@ const addChampionImages = (list, data) => {
   });
 };
 
+const addChampionSprites = (list, data) => {
+  return list.forEach(champion => {
+    if (data.champions[champion.id])
+      champion.sprite = data.champions[champion.id].sprite;
+  });
+};
+
 const addIndexes = list => {
   return list.reduce((acc, champion) => {
     champion.index = acc;
@@ -33,9 +40,7 @@ const addIndexes = list => {
 const completeListData = (list, data) => {
   addChampionIds(list, data);
   addChampionImages(list, data);
-  // completeListData is only for fetching new tierlists
-  // sortBy is always 'pickRate'
-  addIndexes(list);
+  addChampionSprites(list, data);
 };
 
 const sortList = (list, property) => {
@@ -80,6 +85,7 @@ export async function getTierlist({ state, data }) {
 
     const { tierlist } = await fetchListFromAPI(route, query);
     completeListData(tierlist, data);
+    addIndexes(tierlist);
 
     // if (state.sortedBy) sortList(tierlist, state.sortedBy);
 

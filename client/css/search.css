@@ -67,6 +67,18 @@
 }
 
 .search__img {
+  display: inline-block;
+  width: 1.8rem;
   height: 1.8rem;
+  overflow: hidden;
   margin-right: 0.8rem;
+}
+
+.search__sprite {
+  width: 48px;
+  height: 48px;
+  background-repeat: no-repeat;
+  background-size: 480px auto;
+  transform: scale(0.57);
+  transform-origin: top left;
 }

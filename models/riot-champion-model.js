@@ -27,6 +27,28 @@ const championSchema = new mongoose.Schema({
     required: [true, 'Champions must have an image path'],
     unique: true,
   },
+  sprite: {
+    file: {
+      type: String,
+      required: [true, 'Champions must have a sprite file'],
+    },
+    x: {
+      type: Number,
+      required: [true, 'Champions must have a sprite coords'],
+    },
+    y: {
+      type: Number,
+      required: [true, 'Champions must have a sprite coords'],
+    },
+    w: {
+      type: Number,
+      required: [true, 'Champions must have a sprite coords'],
+    },
+    h: {
+      type: Number,
+      required: [true, 'Champions must have a sprite coords'],
+    },
+  },
   version: {
     type: String,
     required: [true, 'Champions must have an image path'],
