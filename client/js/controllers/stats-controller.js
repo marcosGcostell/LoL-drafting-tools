@@ -10,6 +10,7 @@ const _getStatsList = async championId => {
       lane: appState.vslaneSelected,
       rank: appState.rankSelected,
       vslane: appState.vslaneSelected,
+      patch: appState.patchSelected ? '' : '7',
       sortedBy: 'pickRate',
     },
     data: appData,

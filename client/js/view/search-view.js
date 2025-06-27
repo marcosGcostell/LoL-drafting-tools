@@ -1,4 +1,4 @@
-import { IMG_SRC, SEARCH_ITEM_TEMPLATE } from '../common/config.js';
+import { SPRITE_SRC, SEARCH_ITEM_TEMPLATE } from '../common/config.js';
 import View from './view.js';
 
 class SearchView extends View {
@@ -65,8 +65,10 @@ class SearchView extends View {
 
   _generateItemMarkup(champion) {
     let output = this._template.replace(/{%ID%}/g, champion.id);
-    output = output.replace(/{%IMG_SRC%}/g, IMG_SRC);
-    output = output.replace(/{%IMG%}/g, champion.img);
+    output = output.replace(/{%SPRITE_SRC%}/g, SPRITE_SRC);
+    output = output.replace(/{%FILE%}/g, champion.sprite.file);
+    output = output.replace(/{%X%}/g, champion.sprite.x);
+    output = output.replace(/{%Y%}/g, champion.sprite.y);
     output = output.replace(/{%NAME%}/g, champion.name);
     return output;
   }

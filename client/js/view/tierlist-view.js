@@ -1,4 +1,4 @@
-import { IMG_SRC, TIERLIST_ITEM_TEMPLATE } from '../common/config.js';
+import { SPRITE_SRC, TIERLIST_ITEM_TEMPLATE } from '../common/config.js';
 import View from './view.js';
 
 class ListView extends View {
@@ -42,8 +42,10 @@ class ListView extends View {
     output = output.replace(/{%LANE_NAME%}/g, lane.name);
     output = output.replace(/{%WR%}/g, champion.winRatio.toFixed(2));
     output = output.replace(/{%PR%}/g, champion.pickRate.toFixed(2));
-    output = output.replace(/{%IMG_SRC%}/g, IMG_SRC);
-    output = output.replace(/{%IMG%}/g, champion.img);
+    output = output.replace(/{%SPRITE_SRC%}/g, SPRITE_SRC);
+    output = output.replace(/{%FILE%}/g, champion.sprite.file);
+    output = output.replace(/{%X%}/g, champion.sprite.x);
+    output = output.replace(/{%Y%}/g, champion.sprite.y);
     output = output.replace(/{%NAME%}/g, champion.name);
     return output;
   }

@@ -58,7 +58,7 @@ export function setOptionsFromState() {
   inputsView.changeOption('lane', appData.roles[appState.laneSelected]);
   inputsView.changeOption('rank', appData.ranks[appState.rankSelected]);
   inputsView.changeOption('vslane', appData.roles[appState.vslaneSelected]);
-  inputsView.setPatch(appState.version ? appData.version : null);
+  inputsView.setPatch(appState.patchSelected ? appData.version : null);
   inputsView.setMaxItems(appState.maxListItems);
   inputsView.setPickRateThreshold(appState.pickRateThreshold);
 }
