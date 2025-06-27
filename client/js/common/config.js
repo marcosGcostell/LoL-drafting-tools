@@ -14,6 +14,8 @@ export const LS_STATE = 'draftKingState';
 export const ICONS = './img/icons/icons.svg';
 export const IMG_SRC =
   'https://ddragon.leagueoflegends.com/cdn/15.11.1/img/champion/';
+export const SPRITE_SRC =
+  'https://ddragon.leagueoflegends.com/cdn/15.13.1/img/sprite/';
 export const LANE_ICONS = './img/lanes/';
 export const RANK_ICONS = './img/ranks/';
 
@@ -31,4 +33,4 @@ export const STATS_ITEM_TEMPLATE = './templates/stats-item.html';
 // Config parameters
 export const PICK_RATE_THRESHOLD = 1.0;
 export const MAX_LIST_ITEMS = 35;
-export const TIME_BEFORE_UPDATE = 12;
+export const TIME_BEFORE_UPDATE = 24;

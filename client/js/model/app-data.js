@@ -65,11 +65,9 @@ class AppData {
 
   static async initAppData() {
     try {
-      // TODO to unload the API, maybe appData should be stored in localStorage
-      // So all this expired version checking has some meaning
       console.log('Initializing App...');
       let isCacheValid = false;
-      const data = sessionStorage.getItem(LS_APP_DATA);
+      const data = localStorage.getItem(LS_APP_DATA);
       if (data) {
         const cache = JSON.parse(data);
         const lastUpdated = new Date(cache.createdAt);
@@ -92,10 +90,7 @@ class AppData {
       } else {
         console.log('Reading appData from API...');
         const appData = await AppData.getFromAPI();
-        sessionStorage.setItem(
-          LS_APP_DATA,
-          JSON.stringify(appData.SaveToJSON())
-        );
+        localStorage.setItem(LS_APP_DATA, JSON.stringify(appData.SaveToJSON()));
         // return instance set form API
         return appData;
       }

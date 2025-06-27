@@ -10,7 +10,7 @@
     "client": "live-server ./client",
     "fullstack": "concurrently \"npm run start\" \"npm run client\"",
     "worker": "node ./worker.js *> ./worker.log",
-    "worker:noreset": "node ./worker.js --noreset *>> ./worker.log"
+    "worker:noreset": "node ./worker.js --noreset >> ./worker.log 2>>&1"
   },
   "author": "Kuantik Software",
   "license": "ISC",

@@ -76,6 +76,13 @@ class Riot {
         key: champion.key,
         name: champion.name,
         img: champion.image.full,
+        sprite: {
+          file: champion.image.sprite,
+          x: champion.image.x,
+          y: champion.image.y,
+          w: champion.image.w,
+          h: champion.image.h,
+        },
       };
       return acc;
     }, {});

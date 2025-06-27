@@ -70,7 +70,7 @@ export const updateAllTierlists = async (DB, options) => {
     await mongoose.connect(DB);
     log('▶️', ' Worker conected to DB: ');
 
-    const remainingRanks = options.noreset ? getRemainingRanks() : null;
+    const remainingRanks = options.noreset ? await getRemainingRanks() : null;
     const groups = await createGroups(remainingRanks);
 
     for (const tasks of groups) {
