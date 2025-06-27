@@ -1,25 +1,30 @@
 import Lolalytics from '../models/api/lolalytics-api.js';
 import Tierlist from '../models/tierlist-model.js';
 import { getListFromDb } from './common-list-handlers.js';
-import { riotLolRolesArray } from '../models/common/config.js';
-import { DEFAULT_SORT_FIELD } from '../models/common/config.js';
-import catchAsync from '../models/common/catch-async.js';
+import {
+  riotLolRolesArray,
+  DEFAULT_SORT_FIELD,
+} from '../models/utils/config.js';
+import { isoTimeStamp } from '../models/utils/helpers.js';
+import catchAsync from '../models/utils/catch-async.js';
+import AppError from '../models/utils/app-error.js';
 
-const saveTierlist = (lane, rank, list) => {
+export const saveTierlist = (lane, rank, patch, list) => {
   const data = {
     rank,
     lane,
-    createdAt: new Date().toISOString(),
+    patch,
+    createdAt: isoTimeStamp(),
     list,
   };
 
   Tierlist.create(data);
-  console.log('Tierlist saved! ✅');
+  console.log(`✅ Tierlist saved: (${lane}, ${rank}, ${patch})`);
 };
 
-export const getTierlistData = async (lane, rank) => {
-  console.log({ lane, rank });
-  const data = await getListFromDb(Tierlist, { lane, rank });
+export const getTierlistData = async (lane, rank, patch) => {
+  console.log({ lane, rank, patch });
+  const data = await getListFromDb(Tierlist, { lane, rank, patch });
 
   if (data) {
     console.log('Getting Tierlist from database...');
@@ -27,13 +32,19 @@ export const getTierlistData = async (lane, rank) => {
   }
 
   console.log('Getting Tierlist from website...');
-  const tierlist = await Lolalytics.getTierlist(lane, rank);
-  saveTierlist(lane, rank, tierlist);
-  return { tierlist, updatedAt: new Date().toISOString() };
+  const tierlist = await Lolalytics.getTierlist(lane, rank, patch);
+  if (!tierlist.length)
+    throw new AppError('Could not find the tierlists data', 404);
+  saveTierlist(lane, rank, patch, tierlist);
+  return { tierlist, updatedAt: isoTimeStamp() };
 };
 
 export const getTierlist = catchAsync(async (req, res, next) => {
-  const { tierlist, updatedAt } = await getTierlistData(req.lane, req.rank);
+  const { tierlist, updatedAt } = await getTierlistData(
+    req.lane,
+    req.rank,
+    req.patch
+  );
 
   const sort = req.query.sort || DEFAULT_SORT_FIELD;
   tierlist.sort((a, b) => b[sort] - a[sort]);
@@ -44,14 +55,17 @@ export const getTierlist = catchAsync(async (req, res, next) => {
     results: tierlist.length,
     updatedAt,
     data: {
+      lane: req.lane,
+      rank: req.rank,
+      patch: req.patch,
       tierlist,
     },
   });
 });
 
-export const getAllTierlist = async rank => {
+export const getAllTierlist = async (rank, patch) => {
   const allData = await Promise.all(
-    riotLolRolesArray.map(lane => getTierlistData(lane, rank))
+    riotLolRolesArray.map(lane => getTierlistData(lane, rank, patch))
   );
   const allTierlists = {};
   riotLolRolesArray.forEach(

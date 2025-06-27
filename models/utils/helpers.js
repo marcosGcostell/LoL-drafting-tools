@@ -1,6 +1,9 @@
-import { TIME_BEFORE_CHECK } from './config.js';
+import { TIME_BEFORE_UPDATE, USER_AGENTS } from './config.js';
 
 export const getRandomNumber = (min, max) => Math.random() * (max - min) + min;
+
+export const getRandomInt = (min, max) =>
+  Math.floor(getRandomNumber(min, max + 1));
 
 export const wait = function (seconds) {
   return new Promise(response => {
@@ -14,10 +17,14 @@ export const waitMs = function (miliseconds) {
   });
 };
 
-export const expirationDate = () => {
-  return new Date(
-    Date.now() - TIME_BEFORE_CHECK * 60 * 60 * 1000
-  ).toISOString();
+export const isoTimeStamp = () => new Date().toISOString();
+
+export const getRandomUserAgent = () => {
+  return USER_AGENTS[getRandomInt(0, USER_AGENTS.length - 1)];
+};
+
+export const expirationDate = (hours = TIME_BEFORE_UPDATE) => {
+  return new Date(Date.now() - hours * 60 * 60 * 1000).toISOString();
 };
 
 export const findAsObject = async function () {

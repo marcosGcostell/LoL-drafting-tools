@@ -9,6 +9,10 @@ const tierlistSchema = new mongoose.Schema({
     type: String,
     required: [true, 'A rank must be selected'],
   },
+  patch: {
+    type: String,
+    required: [true, 'A patch must be selected'],
+  },
   createdAt: {
     type: Date,
     default: new Date().toISOString(),

@@ -2,10 +2,11 @@ import qs from 'qs';
 
 import { riotRole, riotRank } from '../models/riot-static-model.js';
 import Champion from '../models/riot-champion-model.js';
-import { expirationDate } from '../models/common/helpers.js';
-import catchAsync from '../models/common/catch-async.js';
-import catchAsyncParam from '../models/common/catch-async-param.js';
-import AppError from '../models/common/app-error.js';
+import Version from '../models/riot-version-model.js';
+import { expirationDate } from '../models/utils/helpers.js';
+import catchAsync from '../models/utils/catch-async.js';
+import catchAsyncParam from '../models/utils/catch-async-param.js';
+import AppError from '../models/utils/app-error.js';
 
 export const checkId = catchAsyncParam(async (req, res, next, val) => {
   const champion = await Champion.findOne({
@@ -22,7 +23,7 @@ export const checkId = catchAsyncParam(async (req, res, next, val) => {
 
 export const filterQuery = catchAsync(async (req, res, next) => {
   const queryObj = { ...qs.parse(req.query) };
-  const { lane, rank, vslane } = queryObj;
+  const { lane, rank, vslane, patch } = queryObj;
 
   const checkedLane = await riotRole.findOne({
     $or: [{ id: lane }, { name: lane }],
@@ -38,6 +39,7 @@ export const filterQuery = catchAsync(async (req, res, next) => {
   req.lane = checkedLane ? checkedLane.id : 'top';
   req.vslane = checkedVsLane ? checkedVsLane.id : req.lane;
   req.rank = checkedRank ? checkedRank.id : 'all';
+  req.patch = patch === '7' ? '7' : await Version.getVersionString();
   next();
 });
 

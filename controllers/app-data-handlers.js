@@ -4,8 +4,8 @@ import Lolalytics from '../models/api/lolalytics-api.js';
 import Version from '../models/riot-version-model.js';
 import Champion from '../models/riot-champion-model.js';
 import { riotRole, riotRank } from '../models/riot-static-model.js';
-import { expirationDate } from '../models/common/helpers.js';
-import catchAsync from '../models/common/catch-async.js';
+import { expirationDate } from '../models/utils/helpers.js';
+import catchAsync from '../models/utils/catch-async.js';
 
 export const checkGameVersion = catchAsync(async (req, res, next) => {
   const [validVersion] = await Version.find({

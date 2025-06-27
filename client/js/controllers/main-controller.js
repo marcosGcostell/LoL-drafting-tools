@@ -54,7 +54,6 @@ const optionsChangedHandler = async e => {
 };
 
 const settingsChangedHandler = async e => {
-  // TODO Display list and stats when settings change
   appState.fixTierlist();
   tierlistController.showTierlistFromState();
   appState.fixedStatsLists.forEach((_, index) => appState.fixStatsList(index));
