@@ -80,8 +80,8 @@ export async function getTierlist({ state, data }) {
 
     const route = TIERLIST_ROUTE;
     const query = `?lane=${state.lane}&rank=${state.rank}${
-      state.sortedBy ? `&sort=${state.sortedBy}` : ''
-    }`;
+      state.patch ? `&patch=${state.patch}` : ''
+    }${state.sortedBy ? `&sort=${state.sortedBy}` : ''}`;
 
     const { tierlist } = await fetchListFromAPI(route, query);
     completeListData(tierlist, data);
@@ -104,7 +104,9 @@ export async function getChampionStats({ state }) {
     checkQuery(state.lane, state.rank, state.vslane, state.champion);
     // API works for lolalytics folders for champion names
     const route = `${STATS_ROUTE}/${state.champion}`;
-    const query = `?lane=${state.lane}&rank=${state.rank}`;
+    const query = `?lane=${state.lane}&rank=${state.rank}${
+      state.patch ? `&patch=${state.patch}` : ''
+    }`;
 
     return await fetchListFromAPI(route, query);
   } catch (err) {
@@ -123,7 +125,9 @@ export async function getCounterList({ state, data }) {
     const route = `${COUNTERS_ROUTE}/${state.champion}`;
     const query = `?lane=${state.lane}&rank=${state.rank}${
       state.vslane ? `&vslane=${state.vslane}` : ''
-    }${state.sortedBy ? `&sort=${state.sortedBy}` : ''}`;
+    }${state.patch ? `&patch=${state.patch}` : ''}${
+      state.sortedBy ? `&sort=${state.sortedBy}` : ''
+    }`;
 
     const { counterList } = await fetchListFromAPI(route, query);
     completeListData(counterList, data);

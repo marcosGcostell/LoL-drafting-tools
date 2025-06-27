@@ -8,6 +8,7 @@ const _getChampionStats = async champion => {
       lane: appState.laneSelected,
       rank: appState.rankSelected,
       vslane: appState.vslaneSelected,
+      patch: appState.patchSelected ? '' : '7',
       champion: champion.id,
     },
   });

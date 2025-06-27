@@ -20,6 +20,7 @@ export const getTierlist = async function () {
       state: {
         lane: appState.vslaneSelected,
         rank: appState.rankSelected,
+        patch: appState.patchSelected ? '' : '7',
         sortedBy: 'pickRate',
       },
       data: appData,

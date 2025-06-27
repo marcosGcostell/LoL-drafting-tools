@@ -5,6 +5,27 @@ import * as tierlistController from './tierlist-controller.js';
 import * as poolController from './pool-controller.js';
 import * as statsController from './stats-controller.js';
 
+const updateListsOnChange = async (updateAll = false) => {
+  await tierlistController.getTierlist();
+  if (appState.pool.length) {
+    if (updateAll) {
+      await poolController.poolOnHold();
+    }
+    await statsController.statsOnHold();
+    let index = 0;
+    for (const champion of appState.pool) {
+      if (updateAll) {
+        await poolController.updateChampion(champion, index);
+      }
+      await statsController.updateStatsColumn(champion.id, index++);
+    }
+    if (updateAll) {
+      poolController.showAllPool(appState.pool);
+    }
+    statsController.showAllStats(appState.fixedStatsLists);
+  }
+};
+
 const optionsChangedHandler = async e => {
   const { target, value } = e.detail;
   if (appState.popUpOn === 'starter') {
@@ -23,32 +44,14 @@ const optionsChangedHandler = async e => {
       }
       break;
     case 'rankSelected':
-      await tierlistController.getTierlist();
-      if (appState.pool.length) {
-        await poolController.poolOnHold();
-        await statsController.statsOnHold();
-        let index = 0;
-        for (const champion of appState.pool) {
-          await poolController.updateChampion(champion, index);
-          await statsController.updateStatsColumn(champion.id, index++);
-        }
-        poolController.showAllPool(appState.pool);
-        statsController.showAllStats(appState.fixedStatsLists);
-      }
+      await updateListsOnChange(true);
       break;
     case 'vslaneSelected':
-      await tierlistController.getTierlist();
-      if (appState.pool.length) {
-        await statsController.statsOnHold();
-        let index = 0;
-        for (const champion of appState.pool) {
-          await statsController.updateStatsColumn(champion.id, index++);
-        }
-        statsController.showAllStats(appState.fixedStatsLists);
-      }
+      await updateListsOnChange();
       break;
     case 'patchSelected':
       // TODO Load new data when changing the patch
+      await updateListsOnChange(true);
       break;
   }
 };
