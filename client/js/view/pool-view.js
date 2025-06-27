@@ -52,8 +52,8 @@ class PoolView extends View {
     let output = this._template.replace(/{%INDEX%}/g, index);
     output = output.replace(/{%IMG_SRC%}/g, IMG_SRC);
     output = output.replace(/{%IMG%}/g, champion.img);
-    output = output.replace(/{%WR%}/g, champion.winRatio);
-    output = output.replace(/{%BR%}/g, champion.banRate);
+    output = output.replace(/{%WR%}/g, champion.winRatio.toFixed(2));
+    output = output.replace(/{%BR%}/g, champion.banRate.toFixed(2));
     return output;
   }
 

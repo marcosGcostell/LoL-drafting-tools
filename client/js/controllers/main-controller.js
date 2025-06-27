@@ -5,24 +5,18 @@ import * as tierlistController from './tierlist-controller.js';
 import * as poolController from './pool-controller.js';
 import * as statsController from './stats-controller.js';
 
-const updateListsOnChange = async (updateAll = false) => {
-  await tierlistController.getTierlist();
+const updateListsOnChange = async ({ tierlist, pool, stats }) => {
+  if (tierlist) await tierlistController.getTierlist();
   if (appState.pool.length) {
-    if (updateAll) {
-      await poolController.poolOnHold();
-    }
-    await statsController.statsOnHold();
+    if (pool) await poolController.poolOnHold();
+    if (stats) await statsController.statsOnHold();
     let index = 0;
     for (const champion of appState.pool) {
-      if (updateAll) {
-        await poolController.updateChampion(champion, index);
-      }
-      await statsController.updateStatsColumn(champion.id, index++);
+      if (pool) await poolController.updateChampion(champion, index);
+      if (stats) await statsController.updateStatsColumn(champion.id, index++);
     }
-    if (updateAll) {
-      poolController.showAllPool(appState.pool);
-    }
-    statsController.showAllStats(appState.fixedStatsLists);
+    if (pool) poolController.showAllPool(appState.pool);
+    if (stats) statsController.showAllStats(appState.fixedStatsLists);
   }
 };
 
@@ -44,14 +38,13 @@ const optionsChangedHandler = async e => {
       }
       break;
     case 'rankSelected':
-      await updateListsOnChange(true);
+      await updateListsOnChange({ tierlist: true, pool: true, stats: true });
       break;
     case 'vslaneSelected':
-      await updateListsOnChange();
+      await updateListsOnChange({ tierlist: true, stats: true });
       break;
     case 'patchSelected':
-      // TODO Load new data when changing the patch
-      await updateListsOnChange(true);
+      await updateListsOnChange({ tierlist: true, pool: true, stats: true });
       break;
   }
 };
