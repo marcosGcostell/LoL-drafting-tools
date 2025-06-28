@@ -8,7 +8,7 @@ const _getStatsList = async (championId, index) => {
     state: {
       champion: championId,
       winRatio: appState.pool[index].winRatio,
-      lane: appState.vslaneSelected,
+      lane: appState.laneSelected,
       rank: appState.rankSelected,
       vslane: appState.vslaneSelected,
       patch: appState.patchSelected ? '' : '7',
