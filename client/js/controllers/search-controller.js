@@ -47,11 +47,11 @@ const handleSubmittedQuery = e => {
 
   if (
     starterQuery.length === 1 ||
-    (!starterQuery && containsQuery.length === 1)
+    (!starterQuery.length && containsQuery.length === 1)
   ) {
     searchView.toggleSearchPanel();
     appState.popUpOn = searchView.isPanelShowed ? 'search' : '';
-    starterQuery
+    starterQuery.length
       ? appState.addChampion(...starterQuery)
       : appState.addChampion(...containsQuery);
   }

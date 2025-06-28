@@ -42,50 +42,48 @@ const _resetPoolHandlers = () => {
   });
 };
 
+const _showNewChampion = async (champions, index) => {
+  await poolView.render(champions, {
+    length: champions.length,
+    index,
+    noClear: true,
+  });
+  poolView.addHandler(_deleteChampion, index, 'close');
+  poolView.addHandler(_bookmarkChampion, index, 'bookmark');
+};
+
 // Get champion stats if champion is new or it has changed
-// For adding champions it renders it on the pull and fire event
+// For adding champions (updateIndex = null) renders it and fire event
 // For updating a champion, only save state and don't fire event
-export async function getChampion(champion) {
+export async function getChampion(champion, updateIndex = -1) {
   try {
+    if (updateIndex >= 0 && !_hasChanged(champion, updateIndex)) return;
+
     const { lane, rank, patch, stats } = await _getChampionStats(champion);
 
     const completeChampion = {
       ...champion,
       lane,
       rank,
-      patch: patch === 7 ? null : 'version',
+      patch: patch === '7' ? null : 'version',
       ...stats,
     };
-    const index = appState.pool.length - 1;
+    const index = updateIndex < 0 ? appState.pool.length - 1 : updateIndex;
 
-    // Render the list (needs an array) (only for adding champions)
-    await poolView.render([completeChampion], {
-      length: [completeChampion].length,
-      index,
-      noClear: true,
-    });
-    poolView.addHandler(_deleteChampion, index, 'close');
-    poolView.addHandler(_bookmarkChampion, index, 'bookmark');
+    if (updateIndex < 0) {
+      // Render the list (needs an array) (only for adding champions)
+      await _showNewChampion([completeChampion], index);
+    }
 
-    appState.completeChampion(completeChampion, index, true);
+    appState.completeChampion(completeChampion, index, updateIndex < 0);
   } catch (error) {
     poolView.renderError();
   }
 }
 
-export async function updateChampion(champion, index) {
-  if (!_hasChanged(champion, index)) return;
-
-  const { lane, rank, patch, stats } = await _getChampionStats(champion);
-  const completeChampion = {
-    ...champion,
-    lane,
-    rank,
-    patch: patch === 7 ? null : 'version',
-    ...stats,
-  };
-  appState.completeChampion(completeChampion, index, false);
-}
+export const clearPool = () => {
+  poolView._clear();
+};
 
 export const showAllPool = async champions => {
   clearPool();
@@ -103,8 +101,4 @@ export const poolOnHold = async () => {
     index: 0,
     onHold: true,
   });
-};
-
-export const clearPool = () => {
-  poolView._clear();
 };
