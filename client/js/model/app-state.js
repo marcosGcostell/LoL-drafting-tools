@@ -128,6 +128,7 @@ class AppState extends EventTarget {
   }
 
   addChampion(champion) {
+    if (this.pool.find(el => el.id === champion.id)) return;
     this.pool.push(champion);
     this.#updateChampions('add', champion, true);
   }

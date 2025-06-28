@@ -35,6 +35,7 @@ const setOptionHandler = id => {
 
 const starterOptionHandler = id => {
   inputsView.changeOption('lane', appData.roles[id]);
+  inputsView.changeOption('rank', appData.ranks[appState.rankSelected]);
   inputsView.changeOption('vslane', appData.roles[id]);
   appState.setLane(id);
   inputsView.changeInputs();
