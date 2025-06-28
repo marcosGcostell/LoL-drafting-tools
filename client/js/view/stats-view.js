@@ -66,7 +66,7 @@ class StatsView extends View {
     // TODO Score needs to be a computed
     let output = this._templateItem.replace(
       /{%SCORE%}/g,
-      item.winRatio !== 0 ? '5' : '-'
+      item.winRatio !== 0 ? item.score : '-'
     );
     output = output.replace(
       /{%WR%}/g,

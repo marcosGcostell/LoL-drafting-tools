@@ -3,10 +3,11 @@ import appData from '../model/app-data.js';
 import * as dataModel from '../model/data-model.js';
 import statsView from '../view/stats-view.js';
 
-const _getStatsList = async championId => {
+const _getStatsList = async (championId, index) => {
   return await dataModel.getStatsList({
     state: {
       champion: championId,
+      winRatio: appState.pool[index].winRatio,
       lane: appState.vslaneSelected,
       rank: appState.rankSelected,
       vslane: appState.vslaneSelected,
@@ -31,7 +32,7 @@ export const addStatsColumn = async function (championId, index) {
     }
     statsView.renderSpinner();
 
-    const statsList = await _getStatsList(championId);
+    const statsList = await _getStatsList(championId, index);
     // Save state
     appState.addStatsList(statsList, championId);
 
