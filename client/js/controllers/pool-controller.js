@@ -90,7 +90,6 @@ export const poolOnHold = async () => {
     index: 0,
     onHold: true,
   });
-  _resetPoolHandlers();
 };
 
 export const clearPool = () => {

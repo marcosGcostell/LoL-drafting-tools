@@ -48,7 +48,7 @@ export const addStatsColumn = async function (championId, index) {
 
 export const updateStatsColumn = async function (championId, index) {
   try {
-    const statsList = await _getStatsList(championId);
+    const statsList = await _getStatsList(championId, index);
 
     // Save state
     if (!appState.updateStatsList(statsList, index))
