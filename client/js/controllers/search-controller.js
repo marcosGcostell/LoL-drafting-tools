@@ -20,7 +20,7 @@ export const toggleSearchPanel = e => {
 };
 
 const handleQuery = e => {
-  const query = e.target.value;
+  const query = e.target.value.toLowerCase();
   if (!query) return searchView._clear();
 
   const { starterQuery, containsQuery } = searchModel.searchChampions(
@@ -29,11 +29,32 @@ const handleQuery = e => {
   );
   // Combine list if it's any containsQuery
   if (containsQuery.length) {
+    // Inserts an empty object to render an <hr> element
     starterQuery.push({}, ...containsQuery);
   }
   searchView.render(starterQuery, {
     length: starterQuery.length,
   });
+};
+
+const handleSubmittedQuery = e => {
+  const query = e.target.value.toLowerCase();
+  if (!query) return;
+  const { starterQuery, containsQuery } = searchModel.searchChampions(
+    query,
+    appData.champions
+  );
+
+  if (
+    starterQuery.length === 1 ||
+    (!starterQuery.length && containsQuery.length === 1)
+  ) {
+    searchView.toggleSearchPanel();
+    appState.popUpOn = searchView.isPanelShowed ? 'search' : '';
+    starterQuery.length
+      ? appState.addChampion(...starterQuery)
+      : appState.addChampion(...containsQuery);
+  }
 };
 
 const getPickedChampion = e => {
@@ -48,5 +69,6 @@ const getPickedChampion = e => {
 export const setHandlers = () => {
   searchView.addHandlerAddChampion(toggleSearchPanel);
   searchView.addHandlerSearchContent(handleQuery);
+  searchView.addHandlerSubmitContent(handleSubmittedQuery);
   searchView.addHandlerPickChampion(getPickedChampion);
 };

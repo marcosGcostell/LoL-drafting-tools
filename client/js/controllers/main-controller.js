@@ -12,7 +12,7 @@ const updateListsOnChange = async ({ tierlist, pool, stats }) => {
     if (stats) await statsController.statsOnHold();
     let index = 0;
     for (const champion of appState.pool) {
-      if (pool) await poolController.updateChampion(champion, index);
+      if (pool) await poolController.getChampion(champion, index);
       if (stats) await statsController.updateStatsColumn(champion.id, index++);
     }
     if (pool) poolController.showAllPool(appState.pool);
@@ -71,8 +71,8 @@ const poolChangedHandler = async e => {
       );
       break;
     case 'remove':
+      statsController.deleteStatsColumn(element);
       break;
-
     default:
       break;
   }
@@ -87,6 +87,7 @@ const resetEventHandler = () => {
     inputsController.changeInputs();
     appState.popUpOn = 'starter';
   }
+  appState.freshInit();
 };
 
 const refreshOnReload = () => {

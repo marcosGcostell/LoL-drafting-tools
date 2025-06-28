@@ -150,11 +150,26 @@ export async function getStatsList({ state, data, tierlist }) {
     }
     const counterList = await getCounterList({ state, data });
 
-    return tierlist.map(champion => {
-      const [match] = counterList.filter(el => el.id === champion.id);
-      return match ? match : { winRatio: 0, delta2: 0 };
+    return tierlist.map(opponent => {
+      const [match] = counterList.filter(el => el.id === opponent.id);
+      if (match) match.score = calcScore(state, match);
+      return match ? match : { score: 0, winRatio: 0, delta2: 0 };
     });
   } catch (error) {
     throw err;
   }
+}
+
+function calcScore(champion, counter) {
+  let score = Math.round(
+    5 +
+      (counter.winRatio - 50) * 0.45 +
+      (counter.winRatio - champion.winRatio) * 0.1 +
+      counter.delta1 * 0.13 +
+      (champion.winRatio - counter.opponentWR) * 0.07 +
+      counter.delta2 * 0.25
+  );
+  score = score > 9 ? 9 : score;
+  score = score < 0 ? 0 : score;
+  return score;
 }

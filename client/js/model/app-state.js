@@ -128,6 +128,7 @@ class AppState extends EventTarget {
   }
 
   addChampion(champion) {
+    if (this.pool.find(el => el.id === champion.id)) return;
     this.pool.push(champion);
     this.#updateChampions('add', champion, true);
   }
@@ -137,14 +138,13 @@ class AppState extends EventTarget {
     this.#updateChampions('stats', champion, fireEvent);
   }
 
-  removeChampion(champion) {
-    const index = this.pool.indexOf(champion);
-    if (index > -1) {
+  removeChampion(index) {
+    if (index < this.pool.length) {
       this.pool.splice(index, 1);
       this.statsLists.splice(index, 1);
       this.fixedStatsLists.splice(index, 1);
       this.statsListsOwner.splice(index, 1);
-      this.#updateChampions('remove', index);
+      this.#updateChampions('remove', index, true);
     }
   }
 
@@ -188,6 +188,11 @@ class AppState extends EventTarget {
     this.#defaultValues();
     this.#save();
     this.dispatchEvent(new CustomEvent('reset'));
+  }
+
+  freshInit() {
+    this.popUpOn = 'starter';
+    this.#save();
   }
 }
 

@@ -3,11 +3,12 @@ import appData from '../model/app-data.js';
 import * as dataModel from '../model/data-model.js';
 import statsView from '../view/stats-view.js';
 
-const _getStatsList = async championId => {
+const _getStatsList = async (championId, index) => {
   return await dataModel.getStatsList({
     state: {
       champion: championId,
-      lane: appState.vslaneSelected,
+      winRatio: appState.pool[index].winRatio,
+      lane: appState.laneSelected,
       rank: appState.rankSelected,
       vslane: appState.vslaneSelected,
       patch: appState.patchSelected ? '' : '7',
@@ -31,7 +32,7 @@ export const addStatsColumn = async function (championId, index) {
     }
     statsView.renderSpinner();
 
-    const statsList = await _getStatsList(championId);
+    const statsList = await _getStatsList(championId, index);
     // Save state
     appState.addStatsList(statsList, championId);
 
@@ -47,13 +48,21 @@ export const addStatsColumn = async function (championId, index) {
 
 export const updateStatsColumn = async function (championId, index) {
   try {
-    const statsList = await _getStatsList(championId);
+    const statsList = await _getStatsList(championId, index);
 
     // Save state
     if (!appState.updateStatsList(statsList, index))
       throw new Error('The stats list does not exists...');
   } catch (error) {
     statsView.renderError();
+  }
+};
+
+export const deleteStatsColumn = index => {
+  statsView.removeColumn(index);
+  // the stat list has been removed from appState when removing the pool
+  for (let i = index + 1; i <= appState.statsLists.length; i++) {
+    statsView.changeIndex(i, i - 1);
   }
 };
 

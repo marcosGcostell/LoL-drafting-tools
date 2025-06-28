@@ -31,6 +31,30 @@ class PoolView extends View {
   }
 
   // handlers for clicking remove champion, move, etc.
+  addHandler(handler, index, target) {
+    const champion = document.querySelector(`#c${index}`);
+    champion
+      .querySelector(`.champion__${target}`)
+      .addEventListener('click', function (e) {
+        e.preventDefault();
+        const updatedIndex = +e.target
+          .closest('.champion')
+          .getAttribute('id')
+          .slice(1);
+        e.stopPropagation();
+        handler(updatedIndex);
+      });
+  }
+
+  removeColumn(index) {
+    const column = document.querySelector(`#c${index}`);
+    column.remove();
+  }
+
+  changeIndex(index, newIndex) {
+    const column = document.querySelector(`#c${index}`);
+    column.setAttribute('id', `c${newIndex}`);
+  }
 
   async _generateMarkup(options) {
     if (!options?.length) return this._message;
@@ -52,8 +76,13 @@ class PoolView extends View {
     let output = this._template.replace(/{%INDEX%}/g, index);
     output = output.replace(/{%IMG_SRC%}/g, IMG_SRC);
     output = output.replace(/{%IMG%}/g, champion.img);
+    output = output.replace(/{%NAME%}/g, champion.name);
     output = output.replace(/{%WR%}/g, champion.winRatio.toFixed(2));
-    output = output.replace(/{%BR%}/g, champion.banRate.toFixed(2));
+    output = output.replace(/{%LANE%}/g, champion.lane);
+    output = output.replace(
+      /{%LANE_RATE%}/g,
+      champion.roleRates[champion.lane].toFixed(2)
+    );
     return output;
   }
 

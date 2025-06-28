@@ -29,8 +29,6 @@ class StatsView extends View {
     // this._panelElement.addEventListener('click', e => e.stopPropagation());
   }
 
-  // TODO handlers for clicking remove champion, move, etc.
-
   checkOptions(options) {
     return (
       Number.isInteger(options?.index) && (options?.addColumn || options.length)
@@ -68,7 +66,7 @@ class StatsView extends View {
     // TODO Score needs to be a computed
     let output = this._templateItem.replace(
       /{%SCORE%}/g,
-      item.winRatio !== 0 ? '5' : '-'
+      item.winRatio !== 0 ? item.score : '-'
     );
     output = output.replace(
       /{%WR%}/g,
@@ -99,8 +97,14 @@ class StatsView extends View {
     return index;
   }
 
-  deleteColumn() {
-    this._rootElement.querySelector(`#${options.index}`).remove();
+  removeColumn(index) {
+    const column = document.querySelector(`#s${index}`);
+    column.remove();
+  }
+
+  changeIndex(index, newIndex) {
+    const column = document.querySelector(`#s${index}`);
+    column.setAttribute('id', `s${newIndex}`);
   }
 
   clearSection() {

@@ -18,58 +18,87 @@ const _hasChanged = (champion, index) => {
   return (
     appState.pool[index].rank !== appState.rankSelected ||
     appState.pool[index].lane !== appState.laneSelected ||
+    appState.pool[index].patch !== appState.patchSelected ||
     appState.pool[index].id !== champion.id
   );
 };
 
+const _deleteChampion = async index => {
+  poolView.removeColumn(index);
+  for (let i = index + 1; i < appState.pool.length; i++) {
+    poolView.changeIndex(i, i - 1);
+  }
+  appState.removeChampion(index);
+};
+
+const _bookmarkChampion = index => {
+  console.log('bookmar pressed for: ', index);
+};
+
+const _resetPoolHandlers = () => {
+  appState.pool.forEach((_, index) => {
+    poolView.addHandler(_deleteChampion, index, 'close');
+    poolView.addHandler(_bookmarkChampion, index, 'bookmark');
+  });
+};
+
+const _showNewChampion = async (champions, index) => {
+  await poolView.render(champions, {
+    length: champions.length,
+    index,
+    noClear: true,
+  });
+  poolView.addHandler(_deleteChampion, index, 'close');
+  poolView.addHandler(_bookmarkChampion, index, 'bookmark');
+};
+
 // Get champion stats if champion is new or it has changed
-// For adding champions it renders it on the pull and fire event
+// For adding champions (updateIndex = null) renders it and fire event
 // For updating a champion, only save state and don't fire event
-export async function getChampion(champion) {
+export async function getChampion(champion, updateIndex = -1) {
   try {
-    const { lane, rank, stats } = await _getChampionStats(champion);
+    if (updateIndex >= 0 && !_hasChanged(champion, updateIndex)) return;
 
-    const completeChampion = { ...champion, lane, rank, ...stats };
-    const index = appState.pool.length - 1;
+    const { lane, rank, patch, stats } = await _getChampionStats(champion);
 
-    // Render the list (needs an array) (only for adding champions)
-    await poolView.render([completeChampion], {
-      length: [completeChampion].length,
-      index,
-      noClear: true,
-    });
+    const completeChampion = {
+      ...champion,
+      lane,
+      rank,
+      patch: patch === '7' ? null : 'version',
+      ...stats,
+    };
+    const index = updateIndex < 0 ? appState.pool.length - 1 : updateIndex;
 
-    appState.completeChampion(completeChampion, index, true);
+    if (updateIndex < 0) {
+      // Render the list (needs an array) (only for adding champions)
+      await _showNewChampion([completeChampion], index);
+    }
+
+    appState.completeChampion(completeChampion, index, updateIndex < 0);
   } catch (error) {
     poolView.renderError();
   }
 }
 
-export async function updateChampion(champion, index) {
-  if (!_hasChanged(champion, index)) return;
-
-  const { lane, rank, stats } = await _getChampionStats(champion);
-  const completeChampion = { ...champion, lane, rank, ...stats };
-  appState.completeChampion(completeChampion, index, false);
-}
+export const clearPool = () => {
+  poolView._clear();
+};
 
 export const showAllPool = async champions => {
   clearPool();
-  poolView.render(champions, {
+  await poolView.render(champions, {
     length: champions.length,
     index: 0,
   });
+  _resetPoolHandlers();
 };
 
 export const poolOnHold = async () => {
   clearPool();
-  poolView.render(appState.pool, {
+  await poolView.render(appState.pool, {
     length: appState.pool.length,
     index: 0,
     onHold: true,
   });
-};
-
-export const clearPool = () => {
-  poolView._clear();
 };

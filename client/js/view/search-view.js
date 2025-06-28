@@ -30,6 +30,13 @@ class SearchView extends View {
     });
   }
 
+  addHandlerSubmitContent(handler) {
+    this._inputElement.addEventListener('change', function (e) {
+      e.preventDefault();
+      handler(e);
+    });
+  }
+
   addHandlerAddChampion(handler) {
     document
       .querySelector('#select-champion')
