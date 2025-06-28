@@ -1,7 +1,6 @@
 import * as dataModel from '../model/data-model.js';
 import poolView from '../view/pool-view.js';
 import appState from '../model/app-state.js';
-import { wait } from '../common/helpers.js';
 
 const _getChampionStats = async champion => {
   return await dataModel.getChampionStats({

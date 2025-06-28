@@ -188,6 +188,11 @@ class AppState extends EventTarget {
     this.#save();
     this.dispatchEvent(new CustomEvent('reset'));
   }
+
+  freshInit() {
+    this.popUpOn = 'starter';
+    this.#save();
+  }
 }
 
 // Singleton instance

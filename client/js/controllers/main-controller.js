@@ -87,6 +87,7 @@ const resetEventHandler = () => {
     inputsController.changeInputs();
     appState.popUpOn = 'starter';
   }
+  appState.freshInit();
 };
 
 const refreshOnReload = () => {

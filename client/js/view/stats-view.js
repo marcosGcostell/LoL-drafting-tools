@@ -29,8 +29,6 @@ class StatsView extends View {
     // this._panelElement.addEventListener('click', e => e.stopPropagation());
   }
 
-  // TODO handlers for clicking remove champion, move, etc.
-
   checkOptions(options) {
     return (
       Number.isInteger(options?.index) && (options?.addColumn || options.length)
