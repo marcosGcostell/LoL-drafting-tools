@@ -99,8 +99,14 @@ class StatsView extends View {
     return index;
   }
 
-  deleteColumn() {
-    this._rootElement.querySelector(`#${options.index}`).remove();
+  removeColumn(index) {
+    const column = document.querySelector(`#s${index}`);
+    column.remove();
+  }
+
+  changeIndex(index, newIndex) {
+    const column = document.querySelector(`#s${index}`);
+    column.setAttribute('id', `s${newIndex}`);
   }
 
   clearSection() {

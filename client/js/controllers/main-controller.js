@@ -71,8 +71,8 @@ const poolChangedHandler = async e => {
       );
       break;
     case 'remove':
+      statsController.deleteStatsColumn(element);
       break;
-
     default:
       break;
   }

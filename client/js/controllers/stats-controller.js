@@ -57,6 +57,14 @@ export const updateStatsColumn = async function (championId, index) {
   }
 };
 
+export const deleteStatsColumn = index => {
+  statsView.removeColumn(index);
+  // the stat list has been removed from appState when removing the pool
+  for (let i = index + 1; i <= appState.statsLists.length; i++) {
+    statsView.changeIndex(i, i - 1);
+  }
+};
+
 export const showAllStats = async statsLists => {
   clearStatsSection();
   for (const list of statsLists) {

@@ -31,6 +31,30 @@ class PoolView extends View {
   }
 
   // handlers for clicking remove champion, move, etc.
+  addHandler(handler, index, target) {
+    const champion = document.querySelector(`#c${index}`);
+    champion
+      .querySelector(`.champion__${target}`)
+      .addEventListener('click', function (e) {
+        e.preventDefault();
+        const updatedIndex = +e.target
+          .closest('.champion')
+          .getAttribute('id')
+          .slice(1);
+        e.stopPropagation();
+        handler(updatedIndex);
+      });
+  }
+
+  removeColumn(index) {
+    const column = document.querySelector(`#c${index}`);
+    column.remove();
+  }
+
+  changeIndex(index, newIndex) {
+    const column = document.querySelector(`#c${index}`);
+    column.setAttribute('id', `c${newIndex}`);
+  }
 
   async _generateMarkup(options) {
     if (!options?.length) return this._message;
