@@ -18,6 +18,7 @@ const _hasChanged = (champion, index) => {
   return (
     appState.pool[index].rank !== appState.rankSelected ||
     appState.pool[index].lane !== appState.laneSelected ||
+    appState.pool[index].patch !== appState.patchSelected ||
     appState.pool[index].id !== champion.id
   );
 };
@@ -46,9 +47,15 @@ const _resetPoolHandlers = () => {
 // For updating a champion, only save state and don't fire event
 export async function getChampion(champion) {
   try {
-    const { lane, rank, stats } = await _getChampionStats(champion);
+    const { lane, rank, patch, stats } = await _getChampionStats(champion);
 
-    const completeChampion = { ...champion, lane, rank, ...stats };
+    const completeChampion = {
+      ...champion,
+      lane,
+      rank,
+      patch: patch === 7 ? null : 'version',
+      ...stats,
+    };
     const index = appState.pool.length - 1;
 
     // Render the list (needs an array) (only for adding champions)
@@ -69,8 +76,14 @@ export async function getChampion(champion) {
 export async function updateChampion(champion, index) {
   if (!_hasChanged(champion, index)) return;
 
-  const { lane, rank, stats } = await _getChampionStats(champion);
-  const completeChampion = { ...champion, lane, rank, ...stats };
+  const { lane, rank, patch, stats } = await _getChampionStats(champion);
+  const completeChampion = {
+    ...champion,
+    lane,
+    rank,
+    patch: patch === 7 ? null : 'version',
+    ...stats,
+  };
   appState.completeChampion(completeChampion, index, false);
 }
 
