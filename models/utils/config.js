@@ -27,6 +27,8 @@ export const USER_AGENTS = [
 // Config parameters
 export const TIME_BEFORE_UPDATE = 24;
 export const DEFAULT_SORT_FIELD = 'pickRate';
+export const ENCRYPT_STRENGTH = 12;
+export const PASSWORD_MIN_LENGTH = 8;
 
 // Riot static data
 export const RIOT_DATA_DRAGON = 'https://ddragon.leagueoflegends.com/';
