@@ -23,7 +23,7 @@ const _verifyToken = token => {
 };
 
 export const signup = catchAsync(async (req, res, next) => {
-  // TODO Check first if user already exists?
+  // TODO Check first if user already exists or Mongo does?
   const data = req.body;
   const newUser = await User.create({
     name: data.name,

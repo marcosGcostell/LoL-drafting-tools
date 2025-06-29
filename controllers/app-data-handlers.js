@@ -3,7 +3,7 @@ import Lolalytics from '../models/api/lolalytics-api.js';
 
 import Version from '../models/riot-version-model.js';
 import Champion from '../models/riot-champion-model.js';
-import { riotRole, riotRank } from '../models/riot-static-model.js';
+import { RiotRole, RiotRank } from '../models/riot-static-model.js';
 import { expirationDate } from '../models/utils/helpers.js';
 import catchAsync from '../models/utils/catch-async.js';
 
@@ -65,8 +65,8 @@ export const getChampions = catchAsync(async (req, res, next) => {
 
   console.log(`${idList.length} Champions read from database ✅`);
 
-  const roles = await riotRole.findAsObject();
-  const ranks = await riotRank.findAsObject();
+  const roles = await RiotRole.findAsObject();
+  const ranks = await RiotRank.findAsObject();
 
   // Send response
   res.status(200).json({

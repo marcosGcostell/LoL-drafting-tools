@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import { riotRole, riotRank } from '../riot-static-model.js';
+import { RiotRole, RiotRank } from '../riot-static-model.js';
 import Version from '../riot-version-model.js';
 import Lolalytics from '../api/lolalytics-api.js';
 import Tierlist from '../tierlist-model.js';
@@ -16,8 +16,8 @@ const log = (icon, message) =>
   console.log(`${icon} - ${isoTimeStamp()}: ${message}`);
 
 const createGroups = async remainingRanks => {
-  const roles = await riotRole.find();
-  const ranks = remainingRanks ? remainingRanks : await riotRank.find();
+  const roles = await RiotRole.find();
+  const ranks = remainingRanks ? remainingRanks : await RiotRank.find();
   const version = await Version.getVersionString();
   const patchs = [version, '7'];
 
@@ -45,7 +45,7 @@ const createGroups = async remainingRanks => {
 };
 
 const getRemainingRanks = async () => {
-  const ranks = await riotRank.find();
+  const ranks = await RiotRank.find();
   const allValidLists = await Tierlist.find({
     createdAt: { $gte: expirationDate(12) },
   });

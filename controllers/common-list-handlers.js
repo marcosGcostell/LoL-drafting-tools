@@ -1,6 +1,6 @@
 import qs from 'qs';
 
-import { riotRole, riotRank } from '../models/riot-static-model.js';
+import { RiotRole, RiotRank } from '../models/riot-static-model.js';
 import Champion from '../models/riot-champion-model.js';
 import Version from '../models/riot-version-model.js';
 import { expirationDate } from '../models/utils/helpers.js';
@@ -23,9 +23,9 @@ export const filterQuery = catchAsync(async (req, res, next) => {
   const queryObj = { ...qs.parse(req.query) };
   const { lane, rank, vslane, patch } = queryObj;
 
-  const checkedLane = await riotRole.isValid(lane);
-  const checkedVsLane = await riotRole.isValid(vslane);
-  const checkedRank = await riotRank.isValid(rank);
+  const checkedLane = await RiotRole.isValid(lane);
+  const checkedVsLane = await RiotRole.isValid(vslane);
+  const checkedRank = await RiotRank.isValid(rank);
 
   // TODO Default lane should be most used lane in that champion
   req.lane = checkedLane ? checkedLane.id : 'top';

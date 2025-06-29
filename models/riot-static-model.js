@@ -40,5 +40,5 @@ riotStaticSchema.statics.isValid = async function (queryStr) {
   });
 };
 
-export const riotRole = mongoose.model('RiotRole', riotStaticSchema);
-export const riotRank = mongoose.model('RiotRank', riotStaticSchema);
+export const RiotRole = mongoose.model('RiotRole', riotStaticSchema);
+export const RiotRank = mongoose.model('RiotRank', riotStaticSchema);

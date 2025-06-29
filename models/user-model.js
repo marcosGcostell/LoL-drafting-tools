@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
 
-import { riotRole, riotRank } from './riot-static-model.js';
+import { RiotRole, RiotRank } from './riot-static-model.js';
 import { ENCRYPT_STRENGTH } from './utils/config';
 import {
   MAX_LIST_ITEMS,
