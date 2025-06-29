@@ -70,7 +70,10 @@ championSchema.statics.replaceFromObject = async function (champions) {
 
 championSchema.statics.isValid = async function (champion) {
   // use RegExp to make comparisons non case sensitive
-  const query = new RegExp(`^${escapeRegex(champion)}$`, 'i');
+  const safeStr = escapeRegex(queryStr);
+  if (!safeStr) return null;
+
+  const query = new RegExp(`^${safeStr}$`, 'i');
   return await this.findOne({
     $or: [{ riotId: query }, { id: query }, { name: query }],
   });

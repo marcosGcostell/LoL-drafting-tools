@@ -35,4 +35,7 @@ export const findAsObject = async function () {
   }, {});
 };
 
-export const escapeRegex = str => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+export function escapeRegex(str) {
+  if (typeof str !== 'string' || !str.trim()) return null;
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}

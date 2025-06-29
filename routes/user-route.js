@@ -14,7 +14,7 @@ router
   .post(userController.createUser);
 
 router
-  .route('/:id')
+  .route('/me')
   .get(authController.protect, userController.getUser)
   .patch(authController.protect, userController.updateUser)
   .delete(authController.protect, userController.deleteUser);

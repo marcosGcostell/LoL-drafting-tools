@@ -34,7 +34,10 @@ riotStaticSchema.statics.findAsObject = findAsObject;
 
 riotStaticSchema.statics.isValid = async function (queryStr) {
   // use RegExp to make comparisons non case sensitive
-  const query = new RegExp(`^${escapeRegex(queryStr)}$`, 'i');
+  const safeStr = escapeRegex(queryStr);
+  if (!safeStr) return null;
+
+  const query = new RegExp(`^${safeStr}$`, 'i');
   return await this.findOne({
     $or: [{ id: query }, { name: query }],
   });
