@@ -3,7 +3,7 @@ import validator from 'validator';
 import bcrypt from 'bcryptjs';
 
 import { RiotRole, RiotRank } from './riot-static-model.js';
-import { ENCRYPT_STRENGTH } from './utils/config';
+import { ENCRYPT_STRENGTH, PASSWORD_MIN_LENGTH } from './utils/config.js';
 import {
   MAX_LIST_ITEMS,
   PICK_RATE_THRESHOLD,
@@ -17,6 +17,7 @@ const userSchema = new mongoose.Schema({
   userName: {
     type: String,
     unique: true,
+    lowercase: true,
     required: [true, 'Please tell us your name!'],
   },
   email: {
@@ -51,8 +52,8 @@ const userSchema = new mongoose.Schema({
     maxListItems: { type: Number, default: MAX_LIST_ITEMS },
   },
   data: {
-    primaryRole: String,
-    secondaryRole: String,
+    primaryRole: { type: String, default: '' },
+    secondaryRole: { type: String, default: '' },
     championPool: {
       top: { type: [String], default: [] },
       jungle: { type: [String], default: [] },

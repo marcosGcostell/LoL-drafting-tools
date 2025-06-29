@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { findAsObjectm, escapeRegex } from './utils/helpers.js';
+import { findAsObject, escapeRegex } from './utils/helpers.js';
 
 // This is for a non schematic model of a collection
 // const riotStaticSchema = new mongoose.Schema({}, { strict: false });

@@ -1,4 +1,4 @@
-import jwt, { verify } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
 import User from '../models/user-model.js';
 import catchAsync from '../models/utils/catch-async.js';
@@ -6,7 +6,7 @@ import AppError from '../models/utils/app-error.js';
 import { isoTimeStamp } from '../models/utils/helpers.js';
 
 const _signToken = id => {
-  jwt.sign({ id }, process.env.JWT_SECRET, {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 };
@@ -23,7 +23,6 @@ const _verifyToken = token => {
 };
 
 export const signup = catchAsync(async (req, res, next) => {
-  // TODO Check first if user already exists or Mongo does?
   const data = req.body;
   const newUser = await User.create({
     name: data.name,

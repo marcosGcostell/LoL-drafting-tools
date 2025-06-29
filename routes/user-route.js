@@ -1,7 +1,7 @@
 import express from 'express';
 
-import userController from '../controllers/user-controller.js';
-import authController from '../controllers/auth-controller.js';
+import * as userController from '../controllers/user-controller.js';
+import * as authController from '../controllers/auth-controller.js';
 
 const router = express.Router();
 
@@ -15,8 +15,8 @@ router
 
 router
   .route('/:id')
-  .get(userController.getUser)
-  .patch(userController.updateUser)
-  .delete(userController.deleteUser);
+  .get(authController.protect, userController.getUser)
+  .patch(authController.protect, userController.updateUser)
+  .delete(authController.protect, userController.deleteUser);
 
 export default router;
