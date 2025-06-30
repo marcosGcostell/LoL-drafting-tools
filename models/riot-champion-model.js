@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { findAsObject } from './utils/helpers.js';
+import { findAsObject, escapeRegex } from './utils/helpers.js';
 
 const championSchema = new mongoose.Schema({
   id: {
@@ -66,6 +66,17 @@ championSchema.statics.replaceFromObject = async function (champions) {
   const data = Object.values(champions);
   await this.deleteMany();
   await this.create(data);
+};
+
+championSchema.statics.isValid = async function (champion) {
+  // use RegExp to make comparisons non case sensitive
+  const safeStr = escapeRegex(champion);
+  if (!safeStr) return null;
+
+  const query = new RegExp(`^${safeStr}$`, 'i');
+  return await this.findOne({
+    $or: [{ riotId: query }, { id: query }, { name: query }],
+  });
 };
 
 export default mongoose.model('Champions', championSchema);

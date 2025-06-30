@@ -1,8 +1,8 @@
-import { riotRole, riotRank } from './riot-static-model.js';
+import { RiotRole, RiotRank } from './riot-static-model.js';
 
 const resetStaticData = async () => {
-  await riotRole.deleteMany();
-  await riotRole.create([
+  await RiotRole.deleteMany();
+  await RiotRole.create([
     {
       index: 1,
       id: 'top',
@@ -34,8 +34,8 @@ const resetStaticData = async () => {
       img: 'support.webp',
     },
   ]);
-  await riotRank.deleteMany();
-  await riotRank.create([
+  await RiotRank.deleteMany();
+  await RiotRank.create([
     {
       index: 0,
       id: 'all',

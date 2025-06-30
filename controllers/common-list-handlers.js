@@ -1,6 +1,6 @@
 import qs from 'qs';
 
-import { riotRole, riotRank } from '../models/riot-static-model.js';
+import { RiotRole, RiotRank } from '../models/riot-static-model.js';
 import Champion from '../models/riot-champion-model.js';
 import Version from '../models/riot-version-model.js';
 import { expirationDate } from '../models/utils/helpers.js';
@@ -9,9 +9,7 @@ import catchAsyncParam from '../models/utils/catch-async-param.js';
 import AppError from '../models/utils/app-error.js';
 
 export const checkId = catchAsyncParam(async (req, res, next, val) => {
-  const champion = await Champion.findOne({
-    $or: [{ riotID: val }, { id: val }, { name: val }],
-  });
+  const champion = await Champion.isValid(val);
   if (!champion) {
     next(new AppError('Champion name not found', 404));
   }
@@ -25,15 +23,9 @@ export const filterQuery = catchAsync(async (req, res, next) => {
   const queryObj = { ...qs.parse(req.query) };
   const { lane, rank, vslane, patch } = queryObj;
 
-  const checkedLane = await riotRole.findOne({
-    $or: [{ id: lane }, { name: lane }],
-  });
-  const checkedVsLane = await riotRole.findOne({
-    $or: [{ id: vslane }, { name: vslane }],
-  });
-  const checkedRank = await riotRank.findOne({
-    $or: [{ id: rank }, { name: rank }],
-  });
+  const checkedLane = await RiotRole.isValid(lane);
+  const checkedVsLane = await RiotRole.isValid(vslane);
+  const checkedRank = await RiotRank.isValid(rank);
 
   // TODO Default lane should be most used lane in that champion
   req.lane = checkedLane ? checkedLane.id : 'top';

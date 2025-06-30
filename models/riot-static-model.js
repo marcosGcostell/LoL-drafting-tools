@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { findAsObject } from './utils/helpers.js';
+import { findAsObject, escapeRegex } from './utils/helpers.js';
 
 // This is for a non schematic model of a collection
 // const riotStaticSchema = new mongoose.Schema({}, { strict: false });
@@ -32,5 +32,16 @@ riotStaticSchema.pre(/^find/, function (next) {
 
 riotStaticSchema.statics.findAsObject = findAsObject;
 
-export const riotRole = mongoose.model('RiotRole', riotStaticSchema);
-export const riotRank = mongoose.model('RiotRank', riotStaticSchema);
+riotStaticSchema.statics.isValid = async function (queryStr) {
+  // use RegExp to make comparisons non case sensitive
+  const safeStr = escapeRegex(queryStr);
+  if (!safeStr) return null;
+
+  const query = new RegExp(`^${safeStr}$`, 'i');
+  return await this.findOne({
+    $or: [{ id: query }, { name: query }],
+  });
+};
+
+export const RiotRole = mongoose.model('RiotRole', riotStaticSchema);
+export const RiotRank = mongoose.model('RiotRank', riotStaticSchema);
