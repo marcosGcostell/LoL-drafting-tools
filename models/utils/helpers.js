@@ -17,7 +17,8 @@ export const waitMs = function (miliseconds) {
   });
 };
 
-export const isoTimeStamp = () => new Date().toISOString();
+export const isoTimeStamp = (preDelay = 0) =>
+  new Date(Date.now() - preDelay).toISOString();
 
 export const getRandomUserAgent = () => {
   return USER_AGENTS[getRandomInt(0, USER_AGENTS.length - 1)];

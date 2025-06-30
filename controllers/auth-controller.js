@@ -5,14 +5,13 @@ import catchAsync from '../models/utils/catch-async.js';
 import AppError from '../models/utils/app-error.js';
 import { isoTimeStamp } from '../models/utils/helpers.js';
 
-const _signToken = id => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+const _signToken = id =>
+  jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
-};
 
-const _verifyToken = token => {
-  return new Promise((res, rej) => {
+const _verifyToken = token =>
+  new Promise((res, rej) => {
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
       if (err) {
         return rej(err);
@@ -20,7 +19,6 @@ const _verifyToken = token => {
       res(decoded);
     });
   });
-};
 
 export const signup = catchAsync(async (req, res, next) => {
   const data = req.body;
@@ -56,7 +54,7 @@ export const login = catchAsync(async (req, res, next) => {
   }
 
   const user = await User.findOne({
-    $or: [{ email }, { userName: userName.toLowerCase() }],
+    $or: [{ email }, { userNameToLower: userName?.toLowerCase() }],
   }).select('+password');
   console.log(user);
   if (!user || !(await user.checkPassword(password, user.password))) {

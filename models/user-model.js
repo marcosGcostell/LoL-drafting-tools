@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
 
-import { RiotRole, RiotRank } from './riot-static-model.js';
+import { isoTimeStamp } from './utils/helpers.js';
 import { ENCRYPT_STRENGTH, PASSWORD_MIN_LENGTH } from './utils/config.js';
 import {
   MAX_LIST_ITEMS,
@@ -16,9 +16,13 @@ const userSchema = new mongoose.Schema({
   },
   userName: {
     type: String,
+    required: [true, 'Please tell us your user name!'],
+  },
+  userNameToLower: {
+    type: String,
     unique: true,
     lowercase: true,
-    required: [true, 'Please tell us your name!'],
+    required: true,
   },
   email: {
     type: String,
@@ -36,7 +40,12 @@ const userSchema = new mongoose.Schema({
   },
   passwordConfirm: {
     type: String,
-    required: [true, 'Please confirm your password'],
+    required: [
+      function () {
+        return this.isNew || this.isModified('password');
+      },
+      'Please confirm your password',
+    ],
     validate: {
       // This only works on CREATE and SAVE!!!
       validator: function (el) {
@@ -64,12 +73,19 @@ const userSchema = new mongoose.Schema({
   },
 });
 
+userSchema.pre('validate', function (next) {
+  if (this.isModified('userName')) {
+    this.userNameToLower = this.userName?.toLowerCase();
+  }
+  next();
+});
+
 userSchema.pre('save', async function (next) {
-  // Only run this function if password is modified
   if (!this.isModified('password')) return next();
 
   this.password = await bcrypt.hash(this.password, ENCRYPT_STRENGTH);
   this.passwordConfirm = undefined;
+  this.passwordChangedAt = isoTimeStamp(1000);
   next();
 });
 
@@ -82,7 +98,6 @@ userSchema.methods.checkPassword = async function (
   candidatePassword,
   userPassword
 ) {
-  console.log(candidatePassword, userPassword);
   return await bcrypt.compare(candidatePassword, userPassword);
 };
 

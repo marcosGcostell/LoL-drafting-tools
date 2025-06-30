@@ -1,45 +1,53 @@
 import User from '../models/user-model.js';
-import { RiotRole } from '../models/riot-static-model.js';
+import { RiotRole, RiotRank } from '../models/riot-static-model.js';
 import Champion from '../models/riot-champion-model.js';
 import catchAsync from '../models/utils/catch-async.js';
 import AppError from '../models/utils/app-error.js';
+import { RESERVED_USER_NAMES } from '../models/utils/config.js';
 
-const _isValidUsername = username => {
-  const reservedUsernames = [
-    'login',
-    'signup',
-    'logout',
-    'admin',
-    'me',
-    'user',
-    'users',
-  ];
-
+const _isValidUserName = userName => {
   const usernameRegex = /^[a-zA-Z][a-zA-Z0-9_]*$/;
 
-  const lowerUsername = username.toLowerCase();
-
-  if (!usernameRegex.test(username)) {
+  if (!usernameRegex.test(userName)) {
     return {
       valid: false,
       message:
-        'Formato inválido: debe empezar por una letra y solo usar letras, números o _',
+        'User name should start with a letter and use only letters, numbers or underscore(_)',
     };
   }
 
-  if (reservedUsernames.includes(lowerUsername)) {
+  if (RESERVED_USER_NAMES.includes(userName.toLowerCase())) {
     return {
       valid: false,
-      message: 'Nombre de usuario reservado',
+      message: 'This user name is reserved',
     };
   }
 
   return { valid: true };
 };
 
-export const validateUsername = catchAsync(async (req, res, next) => {
-  const { username } = req.body;
-  const result = _isValidUsername(username);
+const _isValidRole = async role => {
+  const validRole = await RiotRole.isValid(role);
+  if (!validRole) {
+    throw new AppError(`Invalid role: '${role}'`, 400);
+  }
+  return validRole;
+};
+
+const _isValidRank = async rank => {
+  const validRank = await RiotRank.isValid(rank);
+  if (!validRank) {
+    throw new AppError(`Invalid rank: '${rank}'`, 400);
+  }
+  return validRank;
+};
+
+export const validateUserName = catchAsync(async (req, res, next) => {
+  const { userName } = req.body;
+  // Continue to validate other fields if no data
+  if (!userName) return next();
+
+  const result = _isValidUserName(userName);
 
   if (!result.valid) {
     return next(new AppError(result.message, 400));
@@ -51,21 +59,12 @@ export const validateUsername = catchAsync(async (req, res, next) => {
 export const validateUserData = catchAsync(async (req, res, next) => {
   const { data } = req.body;
   // Continue to update other fields if no data
-  if (!data) next();
+  if (!data) return next();
 
-  if (data?.primaryRole) {
-    const validRole = await RiotRole.isValid(data.primaryRole);
-    if (!validRole) {
-      return next(new AppError(`Invalid role: '${data.primaryRole}'`, 400));
-    }
-  }
+  if (data?.primaryRole) await _isValidRole(data.primaryRole);
+  if (data?.secondaryRole) await _isValidRole(data.secondaryRole);
 
-  if (data?.primaryRank) {
-    const validRank = await RiotRole.isValid(data.primaryRank);
-    if (!validRank) {
-      return next(new AppError(`Invalid rank: '${data.primaryRank}'`, 400));
-    }
-  }
+  if (data?.primaryRank) await _isValidRank(data.primaryRank);
 
   if (data?.championPool && typeof data.championPool === 'object') {
     for (const [role, champions] of Object.entries(data.championPool)) {
@@ -94,19 +93,85 @@ export const validateUserData = catchAsync(async (req, res, next) => {
 
 export const getAllUsers = catchAsync(async (req, res, next) => {
   // Execute the query
-  const user = await User.find();
+  const users = await User.find();
 
   // Send response
   res.status(200).json({
     status: 'success',
-    results: user.length,
+    results: users.length,
+    data: {
+      users,
+    },
+  });
+});
+
+export const createUser = catchAsync(async (req, res, next) => {});
+
+export const getUser = catchAsync(async (req, res, next) => {
+  const user = req.user;
+
+  res.status(200).json({
+    status: 'success',
     data: {
       user,
     },
   });
 });
 
-export const createUser = catchAsync((req, res, next) => {});
-export const getUser = catchAsync((req, res, next) => {});
-export const updateUser = catchAsync((req, res, next) => {});
-export const deleteUser = catchAsync((req, res, next) => {});
+export const updateUser = catchAsync(async (req, res, next) => {
+  const user = req.user;
+
+  ['name', 'userName', 'email'].forEach(field => {
+    if (req.body[field] !== undefined) {
+      user[field] = req.body[field];
+    }
+  });
+
+  if (req.body.config) {
+    Object.entries(req.body.config).forEach(([key, value]) => {
+      if (value !== undefined) {
+        user.config[key] = value;
+      }
+    });
+  }
+
+  if (req.body.data && typeof req.body.data === 'object') {
+    Object.entries(req.body.data).forEach(([key, value]) => {
+      if (typeof value === 'object') {
+        Object.entries(value).forEach(([nestedKey, nestedValue]) => {
+          if (nestedValue !== undefined) {
+            user.data[key][nestedKey] = nestedValue;
+          }
+        });
+      } else {
+        if (value !== undefined) {
+          user.data[key] = value;
+        }
+      }
+    });
+  }
+
+  if (req.body.password) {
+    if (!req.body.passwordConfirm) {
+      return next(new AppError('Please confirm your new password', 400));
+    }
+
+    if (req.body.password !== req.body.passwordConfirm) {
+      return next(new AppError('Passwords do not match', 400));
+    }
+
+    user.password = req.body.password;
+    user.passwordConfirm = req.body.passwordConfirm;
+  }
+
+  await user.save();
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      user,
+    },
+  });
+});
+
+export const deleteUser = catchAsync(async (req, res, next) => {});

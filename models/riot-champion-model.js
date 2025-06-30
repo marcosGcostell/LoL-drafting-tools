@@ -70,7 +70,7 @@ championSchema.statics.replaceFromObject = async function (champions) {
 
 championSchema.statics.isValid = async function (champion) {
   // use RegExp to make comparisons non case sensitive
-  const safeStr = escapeRegex(queryStr);
+  const safeStr = escapeRegex(champion);
   if (!safeStr) return null;
 
   const query = new RegExp(`^${safeStr}$`, 'i');
