@@ -1,7 +1,7 @@
-import appState from '../model/app-state.js';
-import appData from '../model/app-data.js';
-import * as dataModel from '../model/data-model.js';
-import statsView from '../view/stats-view.js';
+import appState from '../../app-state.js';
+import appData from '../../model/app-data.js';
+import * as dataModel from '../../model/data-model.js';
+import statsView from '../../view/counters/stats-view.js';
 
 const _getStatsList = async (championId, index) => {
   return await dataModel.getStatsList({

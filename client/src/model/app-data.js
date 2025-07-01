@@ -3,8 +3,8 @@ import {
   APP_DATA_ROUTE,
   VERSION_ROUTE,
   LS_APP_DATA,
-} from '../common/config.js';
-import { expirationDate } from '../common/helpers.js';
+} from '../utils/config.js';
+import { expirationDate } from '../utils/helpers.js';
 
 ///////////////////////////////////////
 

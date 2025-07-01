@@ -1,6 +1,6 @@
-import appData from '../model/app-data.js';
-import appState from '../model/app-state.js';
-import inputsView from '../view/inputs-view.js';
+import appData from '../../model/app-data.js';
+import appState from '../../app-state.js';
+import inputsView from '../../view/counters/inputs-view.js';
 
 export const toggleSelectors = (e, target) => {
   if (!appState.popUpOn || appState.popUpOn === target) {

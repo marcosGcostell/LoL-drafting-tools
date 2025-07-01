@@ -1,7 +1,7 @@
-import appState from '../model/app-state.js';
-import appData from '../model/app-data.js';
-import searchView from '../view/search-view.js';
-import * as searchModel from '../model/search-model.js';
+import appState from '../../app-state.js';
+import appData from '../../model/app-data.js';
+import searchView from '../../view/counters/search-view.js';
+import * as searchModel from '../../model/search-model.js';
 
 export const toggleSearchButton = e => {
   if (appState.popUpOn === 'search') {

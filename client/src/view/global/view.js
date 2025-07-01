@@ -1,4 +1,4 @@
-import { ICONS } from '../common/config.js';
+import { ICONS } from '../../utils/config.js';
 
 export default class View {
   _data;

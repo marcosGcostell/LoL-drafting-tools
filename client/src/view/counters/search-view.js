@@ -1,5 +1,5 @@
-import { SPRITE_SRC, SEARCH_ITEM_TEMPLATE } from '../common/config.js';
-import View from './view.js';
+import { SPRITE_SRC, SEARCH_ITEM_TEMPLATE } from '../../utils/config.js';
+import View from '../global/view.js';
 
 class SearchView extends View {
   constructor() {

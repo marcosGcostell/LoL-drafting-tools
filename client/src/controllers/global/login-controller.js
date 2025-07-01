@@ -1,5 +1,5 @@
-import appState from '../model/app-state.js';
-import loginView from '../view/login-view.js';
+import appState from '../../app-state.js';
+import loginView from '../../view/global/login-view.js';
 
 export const handleUserBtn = e => {
   // TODO Need to call the profile controller

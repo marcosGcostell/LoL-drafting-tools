@@ -3,8 +3,8 @@ import {
   IMG_SRC,
   CHAMPION_TEMPLATE,
   CHAMPION_ON_HOLD_TEMPLATE,
-} from '../common/config.js';
-import View from './view.js';
+} from '../../utils/config.js';
+import View from '../global/view.js';
 
 class PoolView extends View {
   constructor() {

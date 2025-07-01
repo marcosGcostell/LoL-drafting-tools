@@ -7,7 +7,7 @@ import { ENCRYPT_STRENGTH, PASSWORD_MIN_LENGTH } from './utils/config.js';
 import {
   MAX_LIST_ITEMS,
   PICK_RATE_THRESHOLD,
-} from '../client/js/common/config.js';
+} from '../client/src/utils/config.js';
 
 const userSchema = new mongoose.Schema({
   name: {

@@ -1,10 +1,10 @@
-import appState from '../model/app-state.js';
-import * as loginController from './login-controller.js';
-import * as inputsController from './inputs-controller.js';
-import * as searchController from './search-controller.js';
-import * as tierlistController from './tierlist-controller.js';
-import * as poolController from './pool-controller.js';
-import * as statsController from './stats-controller.js';
+import appState from '../app-state.js';
+import * as loginController from './global/login-controller.js';
+import * as inputsController from './counters/inputs-controller.js';
+import * as searchController from './global/search-controller.js';
+import * as tierlistController from './counters/tierlist-controller.js';
+import * as poolController from './counters/pool-controller.js';
+import * as statsController from './counters/stats-controller.js';
 
 const updateListsOnChange = async ({ tierlist, pool, stats }) => {
   if (tierlist) await tierlistController.getTierlist();

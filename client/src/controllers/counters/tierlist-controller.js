@@ -1,7 +1,7 @@
-import appState from '../model/app-state.js';
-import appData from '../model/app-data.js';
-import tierlistView from '../view/tierlist-view.js';
-import * as dataModel from '../model/data-model.js';
+import appState from '../../app-state.js';
+import appData from '../../model/app-data.js';
+import tierlistView from '../../view/counters/tierlist-view.js';
+import * as dataModel from '../../model/data-model.js';
 
 export const showTierlistFromState = () => {
   tierlistView.render(appState.fixedTierlist, {

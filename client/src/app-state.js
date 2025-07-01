@@ -1,10 +1,10 @@
-import appData from './app-data.js';
-import Patch from './patch-model.js';
+import appData from './model/app-data.js';
+import Patch from './model/patch-model.js';
 import {
   LS_STATE,
   MAX_LIST_ITEMS,
   PICK_RATE_THRESHOLD,
-} from '../common/config.js';
+} from './utils/config.js';
 
 ///////////////////////////////////////
 // App State class

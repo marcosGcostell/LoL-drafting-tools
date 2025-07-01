@@ -1,9 +1,9 @@
-import View from './view.js';
+import View from '../global/view.js';
 import {
   LANE_ITEM_TEMPLATE,
   RANK_ITEM_TEMPLATE,
   LANE_STARTER_TEMPLATE,
-} from '../common/config.js';
+} from '../../utils/config.js';
 
 class InputsView extends View {
   _parentElement;
@@ -127,7 +127,7 @@ class InputsView extends View {
     const text = document.querySelector(`.${target}__input span`);
 
     const folder = target === 'rank' ? 'ranks' : 'lanes';
-    image.setAttribute('src', `img/${folder}/${option.img}`);
+    image.setAttribute('src', `assets/img/${folder}/${option.img}`);
     text.textContent = option.name;
   }
 

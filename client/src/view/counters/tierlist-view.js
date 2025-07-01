@@ -1,5 +1,5 @@
-import { SPRITE_SRC, TIERLIST_ITEM_TEMPLATE } from '../common/config.js';
-import View from './view.js';
+import { SPRITE_SRC, TIERLIST_ITEM_TEMPLATE } from '../../utils/config.js';
+import View from '../global/view.js';
 
 class ListView extends View {
   constructor() {

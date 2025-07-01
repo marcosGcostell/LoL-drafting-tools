@@ -3,7 +3,7 @@ import {
   TIERLIST_ROUTE,
   COUNTERS_ROUTE,
   STATS_ROUTE,
-} from '../common/config.js';
+} from '../utils/config.js';
 
 /////////////
 // TODO: All these formatting tasks should be in a state class ??
