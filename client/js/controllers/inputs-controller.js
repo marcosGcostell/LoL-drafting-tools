@@ -41,14 +41,15 @@ const starterOptionHandler = id => {
   inputsView.changeOption('lane', appData.roles[id]);
   inputsView.changeOption('rank', appData.ranks[appState.rank]);
   inputsView.changeOption('vslane', appData.roles[id]);
+  changeMode();
   appState.setOption('lane', id);
-  inputsView.changeInputs();
 };
 
 const listItemsHandler = value => {
   if (Number.isInteger(+value)) {
     appState.setSetting('maxListItems', +value);
   }
+  // Need to set again the value to display correct format
   inputsView.setMaxItems(appState.maxListItems);
 };
 
@@ -56,6 +57,7 @@ const pickRateHandler = value => {
   if (Number.isFinite(+value)) {
     appState.setSetting('pickRateThreshold', +value);
   }
+  // Need to set again the value to display correct format
   inputsView.setPickRateThreshold(appState.pickRateThreshold);
 };
 
@@ -68,12 +70,12 @@ export function setOptionsFromState() {
   inputsView.setPickRateThreshold(appState.pickRateThreshold);
 }
 
-export function changeInputs() {
-  inputsView.changeInputs();
+export function changeMode(isStarter = null) {
+  inputsView.changeMode(isStarter);
 }
 
 export async function setHandlers() {
-  // Handler for starter options
+  // Handler for clicked starter options
   inputsView.addHandlerSelector(starterOptionHandler, 'starter');
 
   // Handlers to show and hide selectors
@@ -100,5 +102,5 @@ export async function setHandlers() {
 }
 
 export const resetView = () => {
-  inputsView.reset();
+  inputsView.changeMode(true);
 };

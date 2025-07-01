@@ -96,7 +96,7 @@ const refreshOnReload = () => {
     inputsController.setOptionsFromState();
   }
   if (appState.popUpOn !== 'starter') {
-    inputsController.changeInputs();
+    inputsController.changeMode();
     searchController.toggleSearchButton();
     appState.popUpOn = '';
   }

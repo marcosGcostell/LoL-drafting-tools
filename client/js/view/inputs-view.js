@@ -43,55 +43,6 @@ class InputsView extends View {
     this.selectorDisplayed = null;
   }
 
-  async insertSelectors(roles, ranks, patch) {
-    if (!this._laneTemplate || !this._rankTemplate || !this._starterTemplate) {
-      await Promise.all([
-        this._laneTempPromise,
-        this._rankTempPromise,
-        this._starterTempPromise,
-      ]);
-    }
-
-    this._currentTemplate = this._starterTemplate;
-    this._parentElement = this._starterElement;
-    await this.render(roles);
-    this._currentTemplate = this._laneTemplate;
-    this._parentElement = this._laneElement;
-    await this.render(roles);
-    this._parentElement = this._vslaneElement;
-    await this.render(roles);
-    this._currentTemplate = this._rankTemplate;
-    this._parentElement = this._rankElement;
-    await this.render(ranks);
-    this._patchBtn.textContent = patch;
-  }
-
-  changeInputs() {
-    this._starterElement.classList.toggle('hidden');
-    document.querySelector('.welcome').classList.toggle('hidden');
-    document.querySelector('.options').classList.toggle('hidden');
-    document.querySelector('.settings').classList.toggle('hidden');
-  }
-
-  reset() {
-    this.selectorDisplayed = null;
-    this._starterElement.classList.remove('hidden');
-    document.querySelector('.welcome').classList.remove('hidden');
-    document.querySelector('.options').classList.add('hidden');
-    document.querySelector('.settings').classList.add('hidden');
-  }
-
-  async _generateMarkup(options) {
-    return this._data.map(item => this._generateItemMarkup(item)).join('');
-  }
-
-  _generateItemMarkup(item) {
-    let output = this._currentTemplate.replace(/{%ID%}/g, item.id);
-    output = output.replace(/{%NAME%}/g, item.name);
-    output = output.replace(/{%IMG%}/g, item.img);
-    return output;
-  }
-
   addHandlerBtn(handler, target) {
     document
       .querySelector(`.${target}__btn`)
@@ -118,6 +69,51 @@ class InputsView extends View {
         e.preventDefault();
         handler(this.value);
       });
+  }
+
+  async insertSelectors(roles, ranks, patch) {
+    if (!this._laneTemplate || !this._rankTemplate || !this._starterTemplate) {
+      await Promise.all([
+        this._laneTempPromise,
+        this._rankTempPromise,
+        this._starterTempPromise,
+      ]);
+    }
+
+    this._currentTemplate = this._starterTemplate;
+    this._parentElement = this._starterElement;
+    await this.render(roles);
+    this._currentTemplate = this._laneTemplate;
+    this._parentElement = this._laneElement;
+    await this.render(roles);
+    this._parentElement = this._vslaneElement;
+    await this.render(roles);
+    this._currentTemplate = this._rankTemplate;
+    this._parentElement = this._rankElement;
+    await this.render(ranks);
+    this._patchBtn.textContent = patch;
+  }
+
+  changeMode(isStarter) {
+    const [starterToggle, normalToggle] = isStarter
+      ? ['remove', 'add']
+      : ['add', 'remove'];
+    this._starterElement.classList[starterToggle]('hidden');
+    document.querySelector('.welcome').classList[starterToggle]('hidden');
+    document.querySelector('.options').classList[normalToggle]('hidden');
+    document.querySelector('.settings').classList[normalToggle]('hidden');
+    if (isStarter) this.selectorDisplayed = null;
+  }
+
+  async _generateMarkup(_) {
+    return this._data.map(item => this._generateItemMarkup(item)).join('');
+  }
+
+  _generateItemMarkup(item) {
+    let output = this._currentTemplate.replace(/{%ID%}/g, item.id);
+    output = output.replace(/{%NAME%}/g, item.name);
+    output = output.replace(/{%IMG%}/g, item.img);
+    return output;
   }
 
   toggleSelector(target = this.selectorDisplayed) {
