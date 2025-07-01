@@ -75,6 +75,14 @@ class InputsView extends View {
     document.querySelector('.settings').classList.toggle('hidden');
   }
 
+  reset() {
+    this.selectorDisplayed = null;
+    this._starterElement.classList.remove('hidden');
+    document.querySelector('.welcome').classList.remove('hidden');
+    document.querySelector('.options').classList.add('hidden');
+    document.querySelector('.settings').classList.add('hidden');
+  }
+
   async _generateMarkup(options) {
     return this._data.map(item => this._generateItemMarkup(item)).join('');
   }

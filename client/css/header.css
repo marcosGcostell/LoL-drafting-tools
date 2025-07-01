@@ -43,7 +43,7 @@ header {
   margin-left: 2rem;
 }
 
-.header__login {
+.header__users {
   justify-content: flex-end;
   width: 2.6rem;
   height: 2.6rem;

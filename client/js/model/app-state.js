@@ -45,6 +45,8 @@ class AppState extends EventTarget {
     this.statsLists = [];
     this.fixedStatsLists = [];
     this.statsListsOwner = [];
+    this.userName = null;
+    this.token = null;
   }
 
   // set options property, save to session and notify

@@ -93,6 +93,12 @@ class SearchView extends View {
   toggleSearchBtn() {
     document.querySelector('#select-champion').classList.toggle('hidden');
   }
+
+  reset() {
+    this.isPanelShowed = false;
+    this._panelElement.classList.add('hidden');
+    document.querySelector('#select-champion').classList.add('hidden');
+  }
 }
 
 export default new SearchView();

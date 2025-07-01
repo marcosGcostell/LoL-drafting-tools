@@ -93,3 +93,7 @@ export async function setHandlers() {
   inputsView.addHandlerInput(listItemsHandler, 'max-items');
   inputsView.addHandlerInput(pickRateHandler, 'min-pr');
 }
+
+export const resetView = () => {
+  inputsView.reset();
+};

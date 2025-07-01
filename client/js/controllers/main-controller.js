@@ -1,4 +1,5 @@
 import appState from '../model/app-state.js';
+import * as loginController from './login-controller.js';
 import * as inputsController from './inputs-controller.js';
 import * as searchController from './search-controller.js';
 import * as tierlistController from './tierlist-controller.js';
@@ -82,16 +83,15 @@ const resetEventHandler = () => {
   poolController.clearPool();
   statsController.clearStatsSection();
   tierlistController.clearTierlist();
-  if (appState.popUpOn !== 'starter') {
-    searchController.toggleSearchButton();
-    inputsController.changeInputs();
-    appState.popUpOn = 'starter';
-  }
+  loginController.resetView();
+  searchController.resetView();
+  inputsController.resetView();
   appState.freshInit();
 };
 
 const refreshOnReload = () => {
   // Refresh and update form saved state
+  loginController.resetView();
   if (appState.laneSelected) {
     inputsController.setOptionsFromState();
   }
@@ -122,6 +122,8 @@ const hidePopUps = e => {
     case 'search':
       searchController.toggleSearchPanel(e);
       break;
+    case 'login':
+      loginController.handleUserBtn(e);
     default:
       inputsController.toggleSelectors(e, appState.popUpOn);
       break;
@@ -130,6 +132,7 @@ const hidePopUps = e => {
 
 export async function init() {
   // Set the options inputs handlers
+  loginController.setHandlers();
   await inputsController.setHandlers();
   // Set add champion and searching handlers
   searchController.setHandlers();
