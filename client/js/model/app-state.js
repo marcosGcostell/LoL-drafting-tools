@@ -32,10 +32,10 @@ class AppState extends EventTarget {
   }
 
   #defaultValues() {
-    this.laneSelected = null;
-    this.rankSelected = 'all';
-    this.vslaneSelected = null;
-    this.patchSelected = 'version';
+    this.lane = null;
+    this.rank = 'all';
+    this.vslane = null;
+    this.patch = 'version';
     this.maxListItems = MAX_LIST_ITEMS;
     this.pickRateThreshold = PICK_RATE_THRESHOLD;
     this.tierlist = [];
@@ -45,30 +45,10 @@ class AppState extends EventTarget {
     this.statsLists = [];
     this.fixedStatsLists = [];
     this.statsListsOwner = [];
-    this.userName = null;
-    this.token = null;
-  }
-
-  // set options property, save to session and notify
-  #updateOptions(target, value) {
-    this[target] = value;
-    this.#save();
-    this.dispatchEvent(
-      new CustomEvent('options', {
-        detail: { target, value },
-      })
-    );
-  }
-
-  // set settings property, save to session and notify
-  #updateSettings(target, value) {
-    this[target] = value;
-    this.#save();
-    this.dispatchEvent(
-      new CustomEvent('settings', {
-        detail: { target, value },
-      })
-    );
+    this.user = {
+      name: null,
+      token: null,
+    };
   }
 
   // save after adding/removing champions to session and notify
@@ -89,34 +69,32 @@ class AppState extends EventTarget {
   }
 
   // Publics setters
-  setLane(lane, vslane = undefined) {
-    this.vslaneSelected = vslane ? vslane : lane;
-    this.#updateOptions('laneSelected', lane);
+  setOption(target, value) {
+    this[target] = value;
+    if (target === 'lane') {
+      this.vslane = value;
+    }
+    this.#save();
+    this.dispatchEvent(
+      new CustomEvent('options', {
+        detail: { target, value },
+      })
+    );
   }
 
-  setRank(rank) {
-    this.#updateOptions('rankSelected', rank);
-  }
-
-  setVslane(vslane) {
-    this.#updateOptions('vslaneSelected', vslane);
-  }
-
-  setPatch(patch) {
-    this.#updateOptions('patchSelected', patch);
-  }
-
-  setMaxItems(value) {
-    this.#updateSettings('maxListItems', value);
-  }
-
-  setPickRate(value) {
-    this.#updateSettings('pickRateThreshold', value);
+  setSetting(target, value) {
+    this[target] = value;
+    this.#save();
+    this.dispatchEvent(
+      new CustomEvent('settings', {
+        detail: { target, value },
+      })
+    );
   }
 
   addTierlist(tierlist) {
     this.tierlist = tierlist;
-    this.tierlistLane = this.vslaneSelected;
+    this.tierlistLane = this.vslane;
     this.fixTierlist();
     this.#save();
   }

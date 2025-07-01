@@ -5,10 +5,10 @@ import appState from '../model/app-state.js';
 const _getChampionStats = async champion => {
   return await dataModel.getChampionStats({
     state: {
-      lane: appState.laneSelected,
-      rank: appState.rankSelected,
-      vslane: appState.vslaneSelected,
-      patch: appState.patchSelected ? '' : '7',
+      lane: appState.lane,
+      rank: appState.rank,
+      vslane: appState.vslane,
+      patch: appState.patch ? '' : '7',
       champion: champion.id,
     },
   });
@@ -16,9 +16,9 @@ const _getChampionStats = async champion => {
 
 const _hasChanged = (champion, index) => {
   return (
-    appState.pool[index].rank !== appState.rankSelected ||
-    appState.pool[index].lane !== appState.laneSelected ||
-    appState.pool[index].patch !== appState.patchSelected ||
+    appState.pool[index].rank !== appState.rank ||
+    appState.pool[index].lane !== appState.lane ||
+    appState.pool[index].patch !== appState.patch ||
     appState.pool[index].id !== champion.id
   );
 };

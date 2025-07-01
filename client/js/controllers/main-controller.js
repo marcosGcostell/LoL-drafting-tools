@@ -28,23 +28,23 @@ const optionsChangedHandler = async e => {
     appState.popUpOn = '';
   }
   switch (target) {
-    case 'laneSelected':
+    case 'lane':
       if (appState.pool.length) {
         appState.resetPool();
         poolController.clearPool();
         statsController.clearStatsSection();
       }
-      if (appState.tierlistLane !== appState.vslaneSelected) {
+      if (appState.tierlistLane !== appState.vslane) {
         tierlistController.getTierlist();
       }
       break;
-    case 'rankSelected':
+    case 'rank':
       await updateListsOnChange({ tierlist: true, pool: true, stats: true });
       break;
-    case 'vslaneSelected':
+    case 'vslane':
       await updateListsOnChange({ tierlist: true, stats: true });
       break;
-    case 'patchSelected':
+    case 'patch':
       await updateListsOnChange({ tierlist: true, pool: true, stats: true });
       break;
   }
@@ -92,7 +92,7 @@ const resetEventHandler = () => {
 const refreshOnReload = () => {
   // Refresh and update form saved state
   loginController.resetView();
-  if (appState.laneSelected) {
+  if (appState.lane) {
     inputsController.setOptionsFromState();
   }
   if (appState.popUpOn !== 'starter') {
