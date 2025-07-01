@@ -18,7 +18,7 @@ export const getTierlist = async function () {
       state: {
         lane: appState.vslane,
         rank: appState.rank,
-        patch: appState.patch ? '' : '7',
+        patch: appState.patch.toApi(),
         sortedBy: 'pickRate',
       },
       data: appData,

@@ -11,7 +11,7 @@ const _getStatsList = async (championId, index) => {
       lane: appState.lane,
       rank: appState.rank,
       vslane: appState.vslane,
-      patch: appState.patch ? '' : '7',
+      patch: appState.patch.toApi(),
       sortedBy: 'pickRate',
     },
     data: appData,

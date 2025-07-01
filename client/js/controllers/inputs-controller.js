@@ -4,15 +4,19 @@ import inputsView from '../view/inputs-view.js';
 
 export const toggleSelectors = (e, target) => {
   if (!appState.popUpOn || appState.popUpOn === target) {
-    if (target === 'patch') {
-      appState.setOption(target, inputsView.switchPatch(appData.version));
-    } else {
-      inputsView.toggleSelector(target);
-      appState.popUpOn = inputsView.selectorDisplayed
-        ? inputsView.selectorDisplayed
-        : '';
-    }
+    inputsView.toggleSelector(target);
+    appState.popUpOn = inputsView.selectorDisplayed
+      ? inputsView.selectorDisplayed
+      : '';
+
     e.stopPropagation();
+  }
+};
+
+export const togglePatch = (_, target) => {
+  if (!appState.popUpOn) {
+    inputsView.setPatch(appState.patch.toggle().toView());
+    appState.setOption('patch', appState.patch.toState());
   }
 };
 
@@ -59,7 +63,7 @@ export function setOptionsFromState() {
   inputsView.changeOption('lane', appData.roles[appState.lane]);
   inputsView.changeOption('rank', appData.ranks[appState.rank]);
   inputsView.changeOption('vslane', appData.roles[appState.vslane]);
-  inputsView.setPatch(appState.patch ? appData.version : null);
+  inputsView.setPatch(appState.patch.toView());
   inputsView.setMaxItems(appState.maxListItems);
   inputsView.setPickRateThreshold(appState.pickRateThreshold);
 }
@@ -73,15 +77,16 @@ export async function setHandlers() {
   inputsView.addHandlerSelector(starterOptionHandler, 'starter');
 
   // Handlers to show and hide selectors
-  ['lane', 'vslane', 'rank', 'patch'].forEach(el =>
+  ['lane', 'vslane', 'rank'].forEach(el =>
     inputsView.addHandlerBtn(toggleSelectors, el)
   );
+  inputsView.addHandlerBtn(togglePatch, 'patch');
 
   // Insert pop-ups in HTML
   await inputsView.insertSelectors(
     appData.toSortedArray('roles'),
     appData.toSortedArray('ranks'),
-    appState.patch ? appData.version : null
+    appState.patch.toView()
   );
 
   // Handlers to manage options selection

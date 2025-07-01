@@ -1,3 +1,5 @@
+import appData from './app-data.js';
+import Patch from './patch-model.js';
 import {
   LS_STATE,
   MAX_LIST_ITEMS,
@@ -21,6 +23,10 @@ class AppState extends EventTarget {
       try {
         const parsed = JSON.parse(localData);
         Object.assign(this, parsed);
+        // Patch is saved as object literal. Need to rebuild the class
+        const patchSelected = parsed.patch._patchState;
+        this.patch = new Patch(appData.version);
+        this.patch.setState(patchSelected);
         // On reload hide any pop-ups
         if (this.popUpOn !== 'starter') {
           this.popUpOn = '';
@@ -35,7 +41,7 @@ class AppState extends EventTarget {
     this.lane = null;
     this.rank = 'all';
     this.vslane = null;
-    this.patch = 'version';
+    this.patch = new Patch(appData.version);
     this.maxListItems = MAX_LIST_ITEMS;
     this.pickRateThreshold = PICK_RATE_THRESHOLD;
     this.tierlist = [];
@@ -70,7 +76,9 @@ class AppState extends EventTarget {
 
   // Publics setters
   setOption(target, value) {
-    this[target] = value;
+    if (target !== 'patch') {
+      this[target] = value;
+    }
     if (target === 'lane') {
       this.vslane = value;
     }
@@ -92,21 +100,6 @@ class AppState extends EventTarget {
     );
   }
 
-  addTierlist(tierlist) {
-    this.tierlist = tierlist;
-    this.tierlistLane = this.vslane;
-    this.fixTierlist();
-    this.#save();
-  }
-
-  fixTierlist() {
-    this.fixedTierlist = this.tierlist.slice(0, this.maxListItems);
-    const matchingItemsCount = this.fixedTierlist.findIndex(
-      el => el.pickRate < this.pickRateThreshold
-    );
-    this.fixedTierlist.splice(matchingItemsCount);
-  }
-
   addChampion(champion) {
     if (this.pool.find(el => el.id === champion.id)) return;
     this.pool.push(champion);
@@ -126,6 +119,21 @@ class AppState extends EventTarget {
       this.statsListsOwner.splice(index, 1);
       this.#updateChampions('remove', index, true);
     }
+  }
+
+  addTierlist(tierlist) {
+    this.tierlist = tierlist;
+    this.tierlistLane = this.vslane;
+    this.fixTierlist();
+    this.#save();
+  }
+
+  fixTierlist() {
+    this.fixedTierlist = this.tierlist.slice(0, this.maxListItems);
+    const matchingItemsCount = this.fixedTierlist.findIndex(
+      el => el.pickRate < this.pickRateThreshold
+    );
+    this.fixedTierlist.splice(matchingItemsCount);
   }
 
   addStatsList(statsList, owner, index) {
