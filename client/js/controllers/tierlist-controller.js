@@ -5,22 +5,20 @@ import * as dataModel from '../model/data-model.js';
 
 export const showTierlistFromState = () => {
   tierlistView.render(appState.fixedTierlist, {
-    lane: appData.roles[appState.vslaneSelected],
+    lane: appData.roles[appState.vslane],
   });
 };
 
 export const getTierlist = async function () {
   try {
     tierlistView.renderSpinner();
-    console.log(
-      `Getting tier list: ${appState.vslaneSelected} ${appState.rankSelected}`
-    );
+    console.log(`Getting tier list: ${appState.vslane} ${appState.rank}`);
 
     const tierlist = await dataModel.getTierlist({
       state: {
-        lane: appState.vslaneSelected,
-        rank: appState.rankSelected,
-        patch: appState.patchSelected ? '' : '7',
+        lane: appState.vslane,
+        rank: appState.rank,
+        patch: appState.patch.toApi(),
         sortedBy: 'pickRate',
       },
       data: appData,

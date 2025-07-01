@@ -1,3 +1,5 @@
+import appData from './app-data.js';
+import Patch from './patch-model.js';
 import {
   LS_STATE,
   MAX_LIST_ITEMS,
@@ -21,6 +23,10 @@ class AppState extends EventTarget {
       try {
         const parsed = JSON.parse(localData);
         Object.assign(this, parsed);
+        // Patch is saved as object literal. Need to rebuild the class
+        const patchSelected = parsed.patch._patchState;
+        this.patch = new Patch(appData.version);
+        this.patch.setState(patchSelected);
         // On reload hide any pop-ups
         if (this.popUpOn !== 'starter') {
           this.popUpOn = '';
@@ -32,10 +38,10 @@ class AppState extends EventTarget {
   }
 
   #defaultValues() {
-    this.laneSelected = null;
-    this.rankSelected = 'all';
-    this.vslaneSelected = null;
-    this.patchSelected = 'version';
+    this.lane = null;
+    this.rank = 'all';
+    this.vslane = null;
+    this.patch = new Patch(appData.version);
     this.maxListItems = MAX_LIST_ITEMS;
     this.pickRateThreshold = PICK_RATE_THRESHOLD;
     this.tierlist = [];
@@ -45,28 +51,10 @@ class AppState extends EventTarget {
     this.statsLists = [];
     this.fixedStatsLists = [];
     this.statsListsOwner = [];
-  }
-
-  // set options property, save to session and notify
-  #updateOptions(target, value) {
-    this[target] = value;
-    this.#save();
-    this.dispatchEvent(
-      new CustomEvent('options', {
-        detail: { target, value },
-      })
-    );
-  }
-
-  // set settings property, save to session and notify
-  #updateSettings(target, value) {
-    this[target] = value;
-    this.#save();
-    this.dispatchEvent(
-      new CustomEvent('settings', {
-        detail: { target, value },
-      })
-    );
+    this.user = {
+      name: null,
+      token: null,
+    };
   }
 
   // save after adding/removing champions to session and notify
@@ -87,44 +75,29 @@ class AppState extends EventTarget {
   }
 
   // Publics setters
-  setLane(lane, vslane = undefined) {
-    this.vslaneSelected = vslane ? vslane : lane;
-    this.#updateOptions('laneSelected', lane);
-  }
-
-  setRank(rank) {
-    this.#updateOptions('rankSelected', rank);
-  }
-
-  setVslane(vslane) {
-    this.#updateOptions('vslaneSelected', vslane);
-  }
-
-  setPatch(patch) {
-    this.#updateOptions('patchSelected', patch);
-  }
-
-  setMaxItems(value) {
-    this.#updateSettings('maxListItems', value);
-  }
-
-  setPickRate(value) {
-    this.#updateSettings('pickRateThreshold', value);
-  }
-
-  addTierlist(tierlist) {
-    this.tierlist = tierlist;
-    this.tierlistLane = this.vslaneSelected;
-    this.fixTierlist();
+  setOption(target, value) {
+    if (target !== 'patch') {
+      this[target] = value;
+    }
+    if (target === 'lane') {
+      this.vslane = value;
+    }
     this.#save();
+    this.dispatchEvent(
+      new CustomEvent('options', {
+        detail: { target, value },
+      })
+    );
   }
 
-  fixTierlist() {
-    this.fixedTierlist = this.tierlist.slice(0, this.maxListItems);
-    const matchingItemsCount = this.fixedTierlist.findIndex(
-      el => el.pickRate < this.pickRateThreshold
+  setSetting(target, value) {
+    this[target] = value;
+    this.#save();
+    this.dispatchEvent(
+      new CustomEvent('settings', {
+        detail: { target, value },
+      })
     );
-    this.fixedTierlist.splice(matchingItemsCount);
   }
 
   addChampion(champion) {
@@ -146,6 +119,21 @@ class AppState extends EventTarget {
       this.statsListsOwner.splice(index, 1);
       this.#updateChampions('remove', index, true);
     }
+  }
+
+  addTierlist(tierlist) {
+    this.tierlist = tierlist;
+    this.tierlistLane = this.vslane;
+    this.fixTierlist();
+    this.#save();
+  }
+
+  fixTierlist() {
+    this.fixedTierlist = this.tierlist.slice(0, this.maxListItems);
+    const matchingItemsCount = this.fixedTierlist.findIndex(
+      el => el.pickRate < this.pickRateThreshold
+    );
+    this.fixedTierlist.splice(matchingItemsCount);
   }
 
   addStatsList(statsList, owner, index) {

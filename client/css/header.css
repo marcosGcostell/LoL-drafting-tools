@@ -14,9 +14,12 @@ header {
 }
 
 .header__logo {
-  /* flex: 0 0 25%; */
   width: 20rem;
   margin-right: 1.8rem;
+}
+
+.logo {
+  max-height: 2.2rem;
 }
 
 .header__central {
@@ -24,34 +27,30 @@ header {
   justify-content: flex-end;
 }
 
-.header__login {
-  /* flex: 0 0 15%; */
-  width: 9rem;
-  justify-content: flex-end;
-  margin-left: 2rem;
-}
-
-.logo {
-  max-height: 2.2rem;
-}
-
-.login__btn,
-.lang__btn {
+.btn {
   border-radius: 1.1rem;
   height: 2.2rem;
   font-size: 1.1rem;
+  padding: 0 0.8rem;
 }
 
-.lang__btn {
-  width: 2.8rem;
+.header__username {
+  flex: 0 0 auto;
+  justify-content: flex-end;
+  padding: 0 1rem;
+  font-size: 1.2rem;
+  color: var(--color-grey-light-5);
+  margin-left: 2rem;
 }
 
-.login__btn {
-  width: 6rem;
+.header__users {
+  justify-content: flex-end;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 2rem;
+  background-color: var(--color-grey-dark-2);
 }
 
 .user__icon {
-  display: flex;
-  max-height: 2.2rem;
-  max-width: 3rem;
+  height: 2.2rem;
 }

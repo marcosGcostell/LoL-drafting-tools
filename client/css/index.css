@@ -3,6 +3,7 @@
 
 /* Import all css files */
 @import url('main.css');
+@import url('modal.css');
 @import url('components.css');
 @import url('header.css');
 @import url('inputs.css');

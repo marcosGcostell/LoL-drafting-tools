@@ -10,9 +10,6 @@ class InputsView extends View {
 
   constructor() {
     super();
-    this._laneTemplate = '';
-    this._rankTemplate = '';
-    this._currentTemplate = '';
     this._laneElement = document.querySelector('.lane__selector');
     this._rankElement = document.querySelector('.rank__selector');
     this._vslaneElement = document.querySelector('.vslane__selector');
@@ -23,6 +20,7 @@ class InputsView extends View {
     this._laneTemplate = null;
     this._rankTemplate = null;
     this._starterTemplate = null;
+    this._currentTemplate = '';
     this._laneTempPromise = fetch(`${LANE_ITEM_TEMPLATE}`)
       .then(response => response.text())
       .then(data => {
@@ -45,7 +43,7 @@ class InputsView extends View {
     this.selectorDisplayed = null;
   }
 
-  async insertSelectors(roles, ranks, version) {
+  async insertSelectors(roles, ranks, patch) {
     if (!this._laneTemplate || !this._rankTemplate || !this._starterTemplate) {
       await Promise.all([
         this._laneTempPromise,
@@ -65,7 +63,7 @@ class InputsView extends View {
     this._currentTemplate = this._rankTemplate;
     this._parentElement = this._rankElement;
     await this.render(ranks);
-    this.setPatch(version);
+    this._patchBtn.textContent = patch;
   }
 
   changeInputs() {
@@ -73,6 +71,14 @@ class InputsView extends View {
     document.querySelector('.welcome').classList.toggle('hidden');
     document.querySelector('.options').classList.toggle('hidden');
     document.querySelector('.settings').classList.toggle('hidden');
+  }
+
+  reset() {
+    this.selectorDisplayed = null;
+    this._starterElement.classList.remove('hidden');
+    document.querySelector('.welcome').classList.remove('hidden');
+    document.querySelector('.options').classList.add('hidden');
+    document.querySelector('.settings').classList.add('hidden');
   }
 
   async _generateMarkup(options) {
@@ -129,14 +135,8 @@ class InputsView extends View {
     text.textContent = option.name;
   }
 
-  setPatch(version) {
-    this._patchBtn.textContent = version ? version : 'Last 7 days';
-  }
-
-  switchPatch(version) {
-    const mode = this._patchBtn.textContent === version ? null : 'version';
-    this.setPatch(mode ? version : null);
-    return mode;
+  setPatch(patchStr) {
+    this._patchBtn.textContent = patchStr;
   }
 
   setMaxItems(value) {

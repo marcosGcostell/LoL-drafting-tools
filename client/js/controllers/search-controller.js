@@ -72,3 +72,7 @@ export const setHandlers = () => {
   searchView.addHandlerSubmitContent(handleSubmittedQuery);
   searchView.addHandlerPickChampion(getPickedChampion);
 };
+
+export const resetView = () => {
+  searchView.reset();
+};

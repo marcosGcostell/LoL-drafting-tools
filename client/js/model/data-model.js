@@ -71,7 +71,7 @@ const fetchListFromAPI = async (route, query) => {
 };
 
 // Arguments = {
-//   state: {lane: vslaneSelected, rank, sortedBy: property},
+//   state: {lane: vslane, rank, sortedBy: property},
 //   data: appData,
 // }
 export async function getTierlist({ state, data }) {
