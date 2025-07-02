@@ -1,10 +1,10 @@
-import appState from '../app-state.js';
-import * as loginController from './global/login-controller.js';
-import * as inputsController from './counters/inputs-controller.js';
-import * as searchController from './global/search-controller.js';
-import * as tierlistController from './counters/tierlist-controller.js';
-import * as poolController from './counters/pool-controller.js';
-import * as statsController from './counters/stats-controller.js';
+import appState from '../appState.js';
+import * as loginController from './global/loginController.js';
+import * as inputsController from './counters/inputsController.js';
+import * as searchController from './global/searchController.js';
+import * as tierlistController from './counters/tierlistController.js';
+import * as poolController from './counters/poolController.js';
+import * as statsController from './counters/statsController.js';
 
 const updateListsOnChange = async ({ tierlist, pool, stats }) => {
   if (tierlist) await tierlistController.getTierlist();
@@ -23,10 +23,7 @@ const updateListsOnChange = async ({ tierlist, pool, stats }) => {
 
 const optionsChangedHandler = async e => {
   const { target, value } = e.detail;
-  if (appState.popUpOn === 'starter') {
-    searchController.toggleSearchButton();
-    appState.popUpOn = '';
-  }
+
   switch (target) {
     case 'lane':
       if (appState.pool.length) {
@@ -89,26 +86,6 @@ const resetEventHandler = () => {
   appState.freshInit();
 };
 
-const refreshOnReload = () => {
-  // Refresh and update form saved state
-  loginController.resetView();
-  if (appState.lane) {
-    inputsController.setOptionsFromState();
-  }
-  if (appState.popUpOn !== 'starter') {
-    inputsController.changeMode();
-    searchController.toggleSearchButton();
-    appState.popUpOn = '';
-  }
-  if (appState.tierlist.length) {
-    tierlistController.showTierlistFromState();
-  }
-  if (appState.pool.length) {
-    poolController.showAllPool(appState.pool);
-    statsController.showAllStats(appState.fixedStatsLists);
-  }
-};
-
 const resetApp = () => {
   appState.resetAll();
 };
@@ -117,39 +94,35 @@ const hidePopUps = e => {
   console.log('Main hide popups');
   e.preventDefault();
   switch (appState.popUpOn) {
-    case ('', 'starter'):
+    case '':
       break;
     case 'search':
       searchController.toggleSearchPanel(e);
       break;
     case 'login':
       loginController.handleUserBtn(e);
-    default:
+    case ('lane', 'rank', 'vslane'):
       inputsController.toggleSelectors(e, appState.popUpOn);
       break;
   }
 };
 
 export async function init() {
-  // Set the options inputs handlers
+  // Set the login button handler
   loginController.setHandlers();
-  await inputsController.setHandlers();
-  // Set add champion and searching handlers
-  searchController.setHandlers();
+  // FIXME This is a reset button for development on the logo
+  document.querySelector('.header__logo').addEventListener('click', resetApp);
+
   // Handlers for appState changes
+  // FIXME These should go on each controller
   appState.addEventListener('options', optionsChangedHandler);
   appState.addEventListener('settings', settingsChangedHandler);
   appState.addEventListener('pool', poolChangedHandler);
   appState.addEventListener('reset', resetEventHandler);
-
-  // FIXME This is a reset button for development on the logo
-  document.querySelector('.header__logo').addEventListener('click', resetApp);
 
   // Hide popups if clicking outside them or press ESC
   document.addEventListener('click', hidePopUps);
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') hidePopUps(e);
   });
-
-  refreshOnReload();
 }

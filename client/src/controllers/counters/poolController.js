@@ -1,6 +1,8 @@
-import * as dataModel from '../../model/data-model.js';
-import poolView from '../../view/counters/pool-view.js';
-import appState from '../../app-state.js';
+import * as dataModel from '../../model/dataModel.js';
+import PoolView from '../../view/counters/poolView.js';
+import appState from '../../appState.js';
+
+let poolView;
 
 const _getChampionStats = async champion => {
   return await dataModel.getChampionStats({
@@ -81,8 +83,9 @@ export async function getChampion(champion, updateIndex = -1) {
   }
 }
 
-export const clearPool = () => {
-  poolView._clear();
+export const initView = () => {
+  poolView = new PoolView();
+  poolView.init();
 };
 
 export const showAllPool = async champions => {
@@ -101,4 +104,8 @@ export const poolOnHold = async () => {
     index: 0,
     onHold: true,
   });
+};
+
+export const clearPool = () => {
+  poolView._clear();
 };

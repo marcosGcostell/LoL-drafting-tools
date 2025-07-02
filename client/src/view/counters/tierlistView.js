@@ -1,10 +1,9 @@
 import { SPRITE_SRC, TIERLIST_ITEM_TEMPLATE } from '../../utils/config.js';
 import View from '../global/view.js';
 
-class ListView extends View {
+export default class ListView extends View {
   constructor() {
     super();
-    this._parentElement = document.querySelector('.tierlist');
     this._errorMessage = 'No champion data recieved!';
     this._message = '';
     this._itemTemplate = null;
@@ -14,6 +13,10 @@ class ListView extends View {
         this._itemTemplate = data;
         return data;
       });
+  }
+
+  init() {
+    this._parentElement = document.querySelector('.tierlist');
   }
 
   // FIXME this handler has no purpose anymore
@@ -57,4 +60,4 @@ class ListView extends View {
   }
 }
 
-export default new ListView();
+new ListView();

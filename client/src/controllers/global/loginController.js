@@ -1,5 +1,7 @@
-import appState from '../../app-state.js';
-import loginView from '../../view/global/login-view.js';
+import appState from '../../appState.js';
+import LoginView from '../../view/global/loginView.js';
+
+let loginView;
 
 export const handleUserBtn = e => {
   // TODO Need to call the profile controller
@@ -17,6 +19,8 @@ export const handleUserBtn = e => {
 };
 
 export const setHandlers = () => {
+  loginView = new LoginView();
+  loginView.init();
   loginView.addHandlerUserBtn(handleUserBtn);
 };
 

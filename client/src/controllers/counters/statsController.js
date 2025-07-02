@@ -1,7 +1,9 @@
-import appState from '../../app-state.js';
-import appData from '../../model/app-data.js';
-import * as dataModel from '../../model/data-model.js';
-import statsView from '../../view/counters/stats-view.js';
+import appState from '../../appState.js';
+import appData from '../../model/appData.js';
+import * as dataModel from '../../model/dataModel.js';
+import StatsView from '../../view/counters/statsView.js';
+
+let statsView;
 
 const _getStatsList = async (championId, index) => {
   return await dataModel.getStatsList({
@@ -17,6 +19,11 @@ const _getStatsList = async (championId, index) => {
     data: appData,
     tierlist: appState.tierlist,
   });
+};
+
+export const initView = () => {
+  statsView = new StatsView();
+  statsView.init();
 };
 
 export const renderStatsList = async (statsList, options) => {

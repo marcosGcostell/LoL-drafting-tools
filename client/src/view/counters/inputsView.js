@@ -5,21 +5,15 @@ import {
   LANE_STARTER_TEMPLATE,
 } from '../../utils/config.js';
 
-class InputsView extends View {
+export default class InputsView extends View {
   _parentElement;
 
   constructor() {
     super();
-    this._laneElement = document.querySelector('.lane__selector');
-    this._rankElement = document.querySelector('.rank__selector');
-    this._vslaneElement = document.querySelector('.vslane__selector');
-    this._patchBtn = document.querySelector('.patch__btn');
-    this._starterElement = document.querySelector('.starter-options');
     this._errorMessage = 'Can not read champions';
     this._message = '';
     this._laneTemplate = null;
     this._rankTemplate = null;
-    this._starterTemplate = null;
     this._currentTemplate = '';
     this._laneTempPromise = fetch(`${LANE_ITEM_TEMPLATE}`)
       .then(response => response.text())
@@ -33,14 +27,15 @@ class InputsView extends View {
         this._rankTemplate = data;
         return data;
       });
-    this._starterTempPromise = fetch(`${LANE_STARTER_TEMPLATE}`)
-      .then(response => response.text())
-      .then(data => {
-        this._starterTemplate = data;
-        return data;
-      });
 
     this.selectorDisplayed = null;
+  }
+
+  init() {
+    this._laneElement = document.querySelector('.lane__selector');
+    this._rankElement = document.querySelector('.rank__selector');
+    this._vslaneElement = document.querySelector('.vslane__selector');
+    this._patchBtn = document.querySelector('.patch__btn');
   }
 
   addHandlerBtn(handler, target) {
@@ -72,17 +67,10 @@ class InputsView extends View {
   }
 
   async insertSelectors(roles, ranks, patch) {
-    if (!this._laneTemplate || !this._rankTemplate || !this._starterTemplate) {
-      await Promise.all([
-        this._laneTempPromise,
-        this._rankTempPromise,
-        this._starterTempPromise,
-      ]);
+    if (!this._laneTemplate || !this._rankTemplate) {
+      await Promise.all([this._laneTempPromise, this._rankTempPromise]);
     }
 
-    this._currentTemplate = this._starterTemplate;
-    this._parentElement = this._starterElement;
-    await this.render(roles);
     this._currentTemplate = this._laneTemplate;
     this._parentElement = this._laneElement;
     await this.render(roles);
@@ -92,17 +80,6 @@ class InputsView extends View {
     this._parentElement = this._rankElement;
     await this.render(ranks);
     this._patchBtn.textContent = patch;
-  }
-
-  changeMode(isStarter) {
-    const [starterToggle, normalToggle] = isStarter
-      ? ['remove', 'add']
-      : ['add', 'remove'];
-    this._starterElement.classList[starterToggle]('hidden');
-    document.querySelector('.welcome').classList[starterToggle]('hidden');
-    document.querySelector('.options').classList[normalToggle]('hidden');
-    document.querySelector('.settings').classList[normalToggle]('hidden');
-    if (isStarter) this.selectorDisplayed = null;
   }
 
   async _generateMarkup(_) {
@@ -147,5 +124,3 @@ class InputsView extends View {
     pickRateElement.blur();
   }
 }
-
-export default new InputsView();

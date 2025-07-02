@@ -1,12 +1,9 @@
 import { SPRITE_SRC, SEARCH_ITEM_TEMPLATE } from '../../utils/config.js';
-import View from '../global/view.js';
+import View from './view.js';
 
-class SearchView extends View {
+export default class SearchView extends View {
   constructor() {
     super();
-    this._panelElement = document.querySelector('.search__popup');
-    this._inputElement = document.querySelector('#search');
-    this._parentElement = document.querySelector('.search__results');
     this._errorMessage = 'No champion match that name...';
     this._message = 'Please, enter a champion name...';
     this._template = null;
@@ -16,8 +13,13 @@ class SearchView extends View {
         this._template = data;
         return data;
       });
-
     this.isPanelShowed = false;
+  }
+
+  init() {
+    this._panelElement = document.querySelector('.search__popup');
+    this._inputElement = document.querySelector('#search');
+    this._parentElement = document.querySelector('.search__results');
 
     // prevent propagation for clicking inside a displayed popup
     this._panelElement.addEventListener('click', e => e.stopPropagation());
@@ -90,15 +92,8 @@ class SearchView extends View {
     }
   }
 
-  toggleSearchBtn() {
-    document.querySelector('#select-champion').classList.toggle('hidden');
-  }
-
   reset() {
     this.isPanelShowed = false;
     this._panelElement.classList.add('hidden');
-    document.querySelector('#select-champion').classList.add('hidden');
   }
 }
-
-export default new SearchView();

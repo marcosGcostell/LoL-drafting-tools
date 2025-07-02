@@ -1,6 +1,8 @@
-import appData from '../../model/app-data.js';
-import appState from '../../app-state.js';
-import inputsView from '../../view/counters/inputs-view.js';
+import appData from '../../model/appData.js';
+import appState from '../../appState.js';
+import InputsView from '../../view/counters/inputsView.js';
+
+let inputsView;
 
 export const toggleSelectors = (e, target) => {
   if (!appState.popUpOn || appState.popUpOn === target) {
@@ -13,10 +15,10 @@ export const toggleSelectors = (e, target) => {
   }
 };
 
-export const togglePatch = (_, target) => {
+export const togglePatch = (_, __) => {
   if (!appState.popUpOn) {
     inputsView.setPatch(appState.patch.toggle().toView());
-    appState.setOption('patch', appState.patch.toState());
+    appState.setOption('patch', appState.patch.state);
   }
 };
 
@@ -35,14 +37,6 @@ const setOptionHandler = id => {
   appState.popUpOn = '';
 
   appState.setOption(target, id);
-};
-
-const starterOptionHandler = id => {
-  inputsView.changeOption('lane', appData.roles[id]);
-  inputsView.changeOption('rank', appData.ranks[appState.rank]);
-  inputsView.changeOption('vslane', appData.roles[id]);
-  changeMode();
-  appState.setOption('lane', id);
 };
 
 const listItemsHandler = value => {
@@ -70,15 +64,11 @@ export function setOptionsFromState() {
   inputsView.setPickRateThreshold(appState.pickRateThreshold);
 }
 
-export function changeMode(isStarter = null) {
-  inputsView.changeMode(isStarter);
-}
-
 export async function setHandlers() {
-  // Handler for clicked starter options
-  inputsView.addHandlerSelector(starterOptionHandler, 'starter');
+  inputsView = new InputsView();
+  inputsView.init();
 
-  // Handlers to show and hide selectors
+  // Handlers for buttons to show and hide selectors and patch button
   ['lane', 'vslane', 'rank'].forEach(el =>
     inputsView.addHandlerBtn(toggleSelectors, el)
   );
@@ -100,7 +90,3 @@ export async function setHandlers() {
   inputsView.addHandlerInput(listItemsHandler, 'max-items');
   inputsView.addHandlerInput(pickRateHandler, 'min-pr');
 }
-
-export const resetView = () => {
-  inputsView.changeMode(true);
-};

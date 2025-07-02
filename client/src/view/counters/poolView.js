@@ -6,10 +6,9 @@ import {
 } from '../../utils/config.js';
 import View from '../global/view.js';
 
-class PoolView extends View {
+export default class PoolView extends View {
   constructor() {
     super();
-    this._parentElement = document.querySelector('.pool-section');
     this._errorMessage = 'No champion match that name...';
     this._message = 'Please, enter a champion name...';
     this._template = null;
@@ -26,8 +25,10 @@ class PoolView extends View {
         this._templateOnHold = data;
         return data;
       });
-    // prevent propagation for clicking inside a displayed popup
-    // this._panelElement.addEventListener('click', e => e.stopPropagation());
+  }
+
+  init() {
+    this._parentElement = document.querySelector('.pool-section');
   }
 
   // handlers for clicking remove champion, move, etc.
@@ -92,5 +93,3 @@ class PoolView extends View {
     return output;
   }
 }
-
-export default new PoolView();

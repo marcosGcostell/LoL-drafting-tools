@@ -1,12 +1,18 @@
 import View from './view.js';
 
-class LoginView extends View {
+export default class LoginView extends View {
   constructor() {
     super();
     this._parentElement = document.querySelector('.login__msg');
     this.userInput = document.querySelector('#user__logname');
     this.passwordInput = document.querySelector('#user__password');
     this.isModalShowed = false;
+  }
+
+  init() {
+    this._parentElement = document.querySelector('.login__msg');
+    this.userInput = document.querySelector('#user__logname');
+    this.passwordInput = document.querySelector('#user__password');
   }
 
   addHandlerUserBtn(handler) {
@@ -35,5 +41,3 @@ class LoginView extends View {
     document.querySelector('#login-modal').classList.add('hidden');
   }
 }
-
-export default new LoginView();

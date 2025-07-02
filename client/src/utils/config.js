@@ -5,10 +5,14 @@ export const VERSION_ROUTE = 'app-data/version';
 export const TIERLIST_ROUTE = 'tierlist';
 export const COUNTERS_ROUTE = 'counters';
 export const STATS_ROUTE = 'stats';
+export const USER_ROUTE = 'users/me';
+export const LOGIN_ROUTE = 'users/login';
+export const SIGNUP_ROUTE = 'users/signup';
 
 // Keys for local storage
 export const LS_APP_DATA = 'draftKingAppData';
 export const LS_STATE = 'draftKingState';
+export const LS_USER = 'draftKingUser';
 
 // Paths of resources (relative from index.html)
 export const ICONS = './assets/img/icons/icons.svg';
@@ -20,6 +24,12 @@ export const LANE_ICONS = './assets/img/lanes/';
 export const RANK_ICONS = './assets/img/ranks/';
 
 // HTML templates (relative from index.html)
+// For main pages
+export const STARTER_PAGE_TEMPLATE = './templates/global/page-starter.html';
+export const COUNTER_PAGE_TEMPLATE = './templates/global/page-counters.html';
+export const PROFILE_PAGE_TEMPLATE = './templates/global/page-profile.html';
+export const SIGNUP_PAGE_TEMPLATE = './templates/global/page-signup.html';
+// For components
 export const LANE_ITEM_TEMPLATE =
   './templates/counters/lane-selector-item.html';
 export const RANK_ITEM_TEMPLATE =

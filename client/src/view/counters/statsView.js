@@ -4,11 +4,9 @@ import {
 } from '../../utils/config.js';
 import View from '../global/view.js';
 
-class StatsView extends View {
+export default class StatsView extends View {
   constructor() {
     super();
-    this._rootElement = document.querySelector('.stats-container');
-    this._parentElement = this._rootElement;
     this._errorMessage = 'Cannot load the stats...';
     this._message = 'Please, select champion...';
     this._templateColumn = null;
@@ -25,24 +23,27 @@ class StatsView extends View {
         this._templateItem = data;
         return data;
       });
-    // prevent propagation for clicking inside a displayed popup
-    // this._panelElement.addEventListener('click', e => e.stopPropagation());
   }
 
-  checkOptions(options) {
+  init() {
+    this._rootElement = document.querySelector('.stats-container');
+    this._parentElement = this._rootElement;
+  }
+
+  _checkOptions(options) {
     return (
       Number.isInteger(options?.index) && (options?.addColumn || options.length)
     );
   }
 
-  selectListContainerElement(index) {
+  _selectListContainerElement(index) {
     this._parentElement = this._rootElement.querySelector(`#s${index} ul`);
     return this._parentElement;
   }
 
   // options = { addColumn: true/false, length: list.length, index: column }
   async _generateMarkup(options) {
-    if (!this.checkOptions(options)) return this._message;
+    if (!this._checkOptions(options)) return this._message;
 
     if (!this._templateColumn || !this._templateItem) {
       await Promise.all([this._tempColumnPromise, this._tempItemPromise]);
@@ -53,7 +54,7 @@ class StatsView extends View {
       return this._generateSectionMarkup(options.index);
     }
 
-    if (!this.selectListContainerElement(options.index)) return this._message;
+    if (!this._selectListContainerElement(options.index)) return this._message;
 
     return this._data
       .map(item => {
@@ -63,7 +64,6 @@ class StatsView extends View {
   }
 
   _generateItemMarkup(item) {
-    // TODO Score needs to be a computed
     let output = this._templateItem.replace(
       /{%SCORE%}/g,
       item.winRatio !== 0 ? item.score : '-'
@@ -93,7 +93,7 @@ class StatsView extends View {
     const index = this._rootElement.children.length;
     await this.render(['no data'], { addColumn: true, noClear: true, index });
     // Leave the _parentElement selected to the list container
-    this.selectListContainerElement(index);
+    this._selectListContainerElement(index);
     return index;
   }
 
@@ -111,5 +111,3 @@ class StatsView extends View {
     this._rootElement.innerHTML = '';
   }
 }
-
-export default new StatsView();

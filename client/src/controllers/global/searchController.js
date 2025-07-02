@@ -1,15 +1,9 @@
-import appState from '../../app-state.js';
-import appData from '../../model/app-data.js';
-import searchView from '../../view/counters/search-view.js';
-import * as searchModel from '../../model/search-model.js';
+import appState from '../../appState.js';
+import appData from '../../model/appData.js';
+import SearchView from '../../view/global/searchView.js';
+import * as searchModel from '../../model/searchModel.js';
 
-export const toggleSearchButton = e => {
-  if (appState.popUpOn === 'search') {
-    searchView.toggleSearchPanel();
-    appState.popUpOn = searchView.isPanelShowed ? 'search' : '';
-  }
-  searchView.toggleSearchBtn();
-};
+let searchView;
 
 export const toggleSearchPanel = e => {
   if (!appState.popUpOn || appState.popUpOn === 'search') {
@@ -67,6 +61,9 @@ const getPickedChampion = e => {
 };
 
 export const setHandlers = () => {
+  searchView = new SearchView();
+  searchView.init();
+
   searchView.addHandlerAddChampion(toggleSearchPanel);
   searchView.addHandlerSearchContent(handleQuery);
   searchView.addHandlerSubmitContent(handleSubmittedQuery);

@@ -1,6 +1,6 @@
 ///////////////////////////////////////
 // LOL Drafting tool
 
-import { init } from './controllers/main-controller.js';
+import { init } from './controllers/mainController.js';
 
 await init();

@@ -1,5 +1,7 @@
-import appData from './model/app-data.js';
-import Patch from './model/patch-model.js';
+import appData from './model/appData.js';
+import User from './model/userModel.js';
+import Patch from './model/patchModel.js';
+import { reviver } from './services/session.js';
 import {
   LS_STATE,
   MAX_LIST_ITEMS,
@@ -15,29 +17,36 @@ class AppState extends EventTarget {
 
     // Default values
     this.#defaultValues();
-    this.popUpOn = 'starter';
+    // this.popUpOn = 'starter';
 
     // Load values from session
     const localData = sessionStorage.getItem(LS_STATE);
     if (localData) {
       try {
-        const parsed = JSON.parse(localData);
+        // Need a reviver to restore class instances
+        const parsed = JSON.parse(localData, reviver);
         Object.assign(this, parsed);
-        // Patch is saved as object literal. Need to rebuild the class
-        const patchSelected = parsed.patch._patchState;
-        this.patch = new Patch(appData.version);
-        this.patch.setState(patchSelected);
+
         // On reload hide any pop-ups
-        if (this.popUpOn !== 'starter') {
-          this.popUpOn = '';
-        }
+        // if (this.popUpOn !== 'starter') {
+        //   this.popUpOn = '';
+        // }
       } catch (err) {
         throw err;
       }
     }
+
+    // Events redirected from User events
+    this.user.addEventListener('login', () =>
+      this.dispatchEvent(new Event('user:login'))
+    );
+    this.user.addEventListener('logout', () =>
+      this.dispatchEvent(new Event('user:logout'))
+    );
   }
 
   #defaultValues() {
+    this.appMode = 'counters';
     this.lane = null;
     this.rank = 'all';
     this.vslane = null;
@@ -51,10 +60,8 @@ class AppState extends EventTarget {
     this.statsLists = [];
     this.fixedStatsLists = [];
     this.statsListsOwner = [];
-    this.user = {
-      name: null,
-      token: null,
-    };
+    this.user = User;
+    this.popUpOn = '';
   }
 
   // save after adding/removing champions to session and notify
@@ -174,14 +181,14 @@ class AppState extends EventTarget {
 
   resetAll() {
     this.#defaultValues();
-    this.#save();
+    sessionStorage.removeItem(LS_STATE);
     this.dispatchEvent(new CustomEvent('reset'));
   }
 
-  freshInit() {
-    this.popUpOn = 'starter';
-    this.#save();
-  }
+  // freshInit() {
+  //   this.popUpOn = 'starter';
+  //   this.#save();
+  // }
 }
 
 // Singleton instance
