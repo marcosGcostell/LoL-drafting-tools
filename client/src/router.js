@@ -2,8 +2,9 @@ import User from './model/userModel.js';
 import * as mainController from './controllers/mainController.js';
 import * as starterController from './controllers/starterController.js';
 import * as countersController from './controllers/countersController.js';
-// import profileController from './controllers/profileController.js';
-// import signupController from './controllers/signupController.js';
+// import * as profileController from './controllers/profileController.js';
+// import * as signupController from './controllers/signupController.js';
+import { LS_STATE } from './utils/config.js';
 
 export const navigate = path => {
   history.pushState({}, '', path);

@@ -30,19 +30,17 @@ export const COUNTER_PAGE_TEMPLATE = './templates/global/page-counters.html';
 export const PROFILE_PAGE_TEMPLATE = './templates/global/page-profile.html';
 export const SIGNUP_PAGE_TEMPLATE = './templates/global/page-signup.html';
 // For components
-export const LANE_ITEM_TEMPLATE =
-  './templates/counters/lane-selector-item.html';
-export const RANK_ITEM_TEMPLATE =
-  './templates/counters/rank-selector-item.html';
+export const LANE_ITEM_TEMPLATE = './templates/counters/lane-selector-item.tpl';
+export const RANK_ITEM_TEMPLATE = './templates/counters/rank-selector-item.tpl';
 export const LANE_STARTER_TEMPLATE =
-  './templates/counters/lane-starter-item.html';
-export const TIERLIST_ITEM_TEMPLATE = './templates/counters/tierlist-item.html';
-export const SEARCH_ITEM_TEMPLATE = './templates/counters/search-item.html';
-export const CHAMPION_TEMPLATE = './templates/counters/champion-item.html';
+  './templates/counters/lane-starter-item.tpl';
+export const TIERLIST_ITEM_TEMPLATE = './templates/counters/tierlist-item.tpl';
+export const SEARCH_ITEM_TEMPLATE = './templates/counters/search-item.tpl';
+export const CHAMPION_TEMPLATE = './templates/counters/champion-item.tpl';
 export const CHAMPION_ON_HOLD_TEMPLATE =
-  './templates/counters/champion-on-hold.html';
-export const STATS_COLUMN_TEMPLATE = './templates/counters/stats-column.html';
-export const STATS_ITEM_TEMPLATE = './templates/counters/stats-item.html';
+  './templates/counters/champion-on-hold.tpl';
+export const STATS_COLUMN_TEMPLATE = './templates/counters/stats-column.tpl';
+export const STATS_ITEM_TEMPLATE = './templates/counters/stats-item.tpl';
 
 // Config parameters
 export const PICK_RATE_THRESHOLD = 1.0;

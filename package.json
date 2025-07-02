@@ -7,7 +7,7 @@
   "scripts": {
     "start": "nodemon server.js --ignore client/",
     "start:prod": "set NODE_ENV=production&&nodemon server.js",
-    "client": "live-server ./client",
+    "client": "vite --config vite.config.js",
     "fullstack": "concurrently \"npm run start\" \"npm run client\"",
     "worker": "node ./worker.js *> ./worker.log",
     "worker:noreset": "node ./worker.js --noreset >> ./worker.log 2>>&1"
@@ -28,6 +28,7 @@
     "validator": "^13.15.15"
   },
   "devDependencies": {
-    "concurrently": "^9.1.2"
+    "concurrently": "^9.1.2",
+    "vite": "^7.0.0"
   }
 }

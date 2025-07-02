@@ -10,7 +10,7 @@
     <div
       class="champ__sprite"
       style="background-image: url('{%SPRITE_SRC%}{%FILE%}');
-    background-position: -{%X%}px -{%Y%}px;"
+      background-position: -{%X%}px -{%Y%}px;"
     ></div>
   </div>
   <span class="data name">{%NAME%}</span>

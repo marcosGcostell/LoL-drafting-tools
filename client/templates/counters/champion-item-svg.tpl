@@ -3,12 +3,12 @@
     <img src="{%IMG_SRC%}{%IMG%}" alt="{%NAME%}" class="champion__img" />
     <div class="champion__bookmark" id="c{%INDEX%}_bookmark">
       <svg class="champion__icon selector__clickable">
-        <use href="assets/img/icons/icons.svg#icon-bookmark"></use>
+        <use href="{%ICONS%}#icon-bookmark"></use>
       </svg>
     </div>
     <div class="champion__close" id="c{%INDEX%}_close">
       <svg class="champion__icon selector__clickable">
-        <use href="assets/img/icons/icons.svg#icon-minus-circle"></use>
+        <use href="{%ICONS%}#icon-minus-circle"></use>
       </svg>
     </div>
   </div>

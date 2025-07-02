@@ -7,11 +7,7 @@ export const handleUserBtn = e => {
   // TODO Need to call the profile controller
   if (appState.userName) return;
 
-  if (
-    !appState.popUpOn ||
-    appState.popUpOn === 'login' ||
-    appState.popUpOn === 'starter'
-  ) {
+  if (!appState.popUpOn || appState.popUpOn === 'login') {
     loginView.toggleModal();
     appState.popUpOn = loginView.isPanelShowed ? 'login' : '';
     e.stopPropagation();

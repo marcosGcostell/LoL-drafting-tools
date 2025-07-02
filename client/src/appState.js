@@ -82,6 +82,14 @@ class AppState extends EventTarget {
   }
 
   // Publics setters
+  freshStart(lane) {
+    if (!lane) return -1;
+
+    this.lane = lane;
+    this.vslane = lane;
+    this.#save();
+  }
+
   setOption(target, value) {
     if (target !== 'patch') {
       this[target] = value;
