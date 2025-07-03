@@ -91,15 +91,24 @@ class AppState extends EventTarget {
   }
 
   setOption(target, value) {
-    if (target !== 'patch') {
-      this[target] = value;
-    }
-    if (target === 'lane') {
+    let eventTarget = target;
+    this[target] = value;
+    if (target === 'lane' && (this.vslane !== value || !this.tierlist.length)) {
       this.vslane = value;
+      eventTarget = 'bothLanes';
     }
     this.#save();
     this.dispatchEvent(
-      new CustomEvent('options', {
+      new CustomEvent(`change:${eventTarget}`, {
+        detail: { target, value },
+      })
+    );
+
+    // TODO Here goes the fetch model function for data
+
+    // Event to update views
+    this.dispatchEvent(
+      new CustomEvent(`updated:${eventTarget}`, {
         detail: { target, value },
       })
     );
@@ -108,6 +117,7 @@ class AppState extends EventTarget {
   setSetting(target, value) {
     this[target] = value;
     this.#save();
+    this.fixAllLists();
     this.dispatchEvent(
       new CustomEvent('settings', {
         detail: { target, value },
@@ -177,6 +187,11 @@ class AppState extends EventTarget {
       0,
       this.fixedTierlist.length
     );
+  }
+
+  fixAllLists() {
+    this.fixTierlist();
+    this.pool.forEach((_, index) => this.fixStatsList(index));
   }
 
   resetPool() {

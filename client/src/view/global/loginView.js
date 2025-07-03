@@ -13,6 +13,7 @@ export default class LoginView extends View {
     this._parentElement = document.querySelector('.login__msg');
     this.userInput = document.querySelector('#user__logname');
     this.passwordInput = document.querySelector('#user__password');
+    document.querySelector('#login-modal').classList.add('hidden');
   }
 
   addHandlerUserBtn(handler) {
@@ -36,8 +37,8 @@ export default class LoginView extends View {
     }
   }
 
-  reset() {
-    this.isModalShowed = false;
-    document.querySelector('#login-modal').classList.add('hidden');
-  }
+  // reset() {
+  //   this.isModalShowed = false;
+  //   document.querySelector('#login-modal').classList.add('hidden');
+  // }
 }

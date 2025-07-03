@@ -4,7 +4,6 @@ import * as searchController from './global/searchController.js';
 import * as tierlistController from './counters/tierlistController.js';
 import * as poolController from './counters/poolController.js';
 import * as statsController from './counters/statsController.js';
-import * as loginController from './global/loginController.js';
 import { COUNTER_PAGE_TEMPLATE } from '../utils/config.js';
 
 export const init = async () => {
@@ -24,7 +23,6 @@ export const init = async () => {
     statsController.initView();
 
     // Refresh on init or reload
-    loginController.resetView();
     inputsController.setOptionsFromState();
     if (appState.tierlist.length) {
       tierlistController.showTierlistFromState();

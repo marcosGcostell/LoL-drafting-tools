@@ -8,6 +8,21 @@ let tierlistView;
 export const initView = () => {
   tierlistView = new TierlistView();
   tierlistView.init();
+
+  ['change:bothLanes', 'change:vslane', 'change:rank', 'change:patch'].forEach(
+    target => {
+      appState.addEventListener(target, tierlistView.renderSpinner());
+    }
+  );
+  [
+    'updated:bothLanes',
+    'updated:vslane',
+    'updated:rank',
+    'updated:patch',
+    'settings',
+  ].forEach(target => {
+    appState.addEventListener(target, showTierlistFromState());
+  });
 };
 
 export const showTierlistFromState = () => {
