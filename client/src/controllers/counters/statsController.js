@@ -1,5 +1,4 @@
 import appState from '../../appState.js';
-import appData from '../../model/appData.js';
 import StatsView from '../../view/counters/statsView.js';
 
 let statsView;
@@ -37,7 +36,7 @@ export const initView = () => {
 
 export const renderStatsList = async e => {
   const { index, stats } = e.detail;
-  await statsView.render(statsList, { length: stats.length, index });
+  await statsView.render(stats, { length: stats.length, index });
 };
 
 export const addStatsColumn = async e => {
@@ -58,26 +57,27 @@ export const showStatsList = async index => {
   });
 };
 
-export const deleteStatsColumn = index => {
+export const deleteStatsColumn = e => {
+  const { index } = e.detail;
   statsView.removeColumn(index);
   // the stat list has been removed from appState when removing the pool
-  for (let i = index + 1; i <= appState.statsLists.length; i++) {
+  for (let i = index + 1; i <= appState.fixedStatsLists.length; i++) {
     statsView.changeIndex(i, i - 1);
   }
 };
 
 export const showAllStatsFromState = async () => {
   clearStatsSection();
-  if (!appData.fixedStatsLists.length) return;
-  for (const list of appData.fixedStatsLists) {
+  if (!appState.fixedStatsLists.length) return;
+  for (const list of appState.fixedStatsLists) {
     const index = await statsView.addNewColumn();
-    await renderStatsList(list, { length: list.length, index });
+    await statsView.render(list, { length: list.length, index });
   }
 };
 
 export const statsOnHold = async () => {
   clearStatsSection();
-  if (!appData.fixedStatsLists.length) return;
+  if (!appState.fixedStatsLists.length) return;
   for (const col of appState.fixedStatsLists) {
     await statsView.addNewColumn();
     statsView.renderSpinner();

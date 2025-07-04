@@ -16,7 +16,7 @@ export default async (route, queryData) => {
     const query = `?lane=${queryData.lane}&rank=${queryData.rank}${
       queryData.vslane ? `&vslane=${queryData.vslane}` : ''
     }${queryData.patch.toApi()}${
-      state.sortedBy ? `&sort=${state.sortedBy}` : ''
+      queryData.sortedBy ? `&sort=${queryData.sortedBy}` : ''
     }`;
 
     const response = await fetch(`${LOCAL_API}${route}${query}`);

@@ -7,13 +7,14 @@ import {
 } from '../utils/config.js';
 
 class User extends EventTarget {
-  constructor() {
+  constructor(userName = '', token = null) {
     super();
-    this._userName = '';
-    this._token = null;
+    this._userName = userName;
+    this._token = token;
     this.__type = 'User';
 
     this.#load();
+    this.#save();
   }
 
   get userName() {
@@ -75,7 +76,7 @@ class User extends EventTarget {
     const localData = sessionStorage.getItem(LS_USER);
     if (!localData) return;
     try {
-      const parsed = JSON.parse(raw);
+      const parsed = JSON.parse(localData);
       if (parsed.token && parsed.userName) {
         this._userName = parsed.userName;
         this._token = parsed.token;
@@ -84,6 +85,11 @@ class User extends EventTarget {
     } catch (err) {
       throw err;
     }
+  }
+
+  static fromJSON(obj) {
+    const user = new User(obj.userName, obj.token);
+    return user;
   }
 }
 

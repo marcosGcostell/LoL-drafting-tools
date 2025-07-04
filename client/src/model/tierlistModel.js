@@ -20,7 +20,7 @@ export async function getTierlist({ vslane, rank, patch }) {
     newList.completeListData();
     newList.addIndexes();
     return newList.data;
-  } catch (error) {
-    tierlistView.renderError();
+  } catch (err) {
+    throw err;
   }
 }

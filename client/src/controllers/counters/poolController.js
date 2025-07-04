@@ -3,12 +3,12 @@ import appState from '../../appState.js';
 
 let poolView;
 
-const _deletePoolItem = async index => {
+const _deletePoolItem = async (index, fireEvent = true) => {
   poolView.removeColumn(index);
   for (let i = index + 1; i < appState.pool.length; i++) {
     poolView.changeIndex(i, i - 1);
   }
-  appState.removeFromPool(index);
+  if (fireEvent) appState.removeFromPool(index);
 };
 
 const _bookmarkChampion = index => {
@@ -34,7 +34,7 @@ const addPoolItem = async e => {
 
 export const showChampion = async e => {
   const { index, champion } = e.detail;
-  _deletePoolItem(index);
+  _deletePoolItem(index, false);
   await poolView.render([champion], {
     length: 1,
     index,

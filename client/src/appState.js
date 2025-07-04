@@ -40,10 +40,10 @@ class AppState extends EventTarget {
     }
 
     // Events redirected from User events
-    this.user.addEventListener('login', () =>
+    User.addEventListener('login', () =>
       this.dispatchEvent(new Event('user:login'))
     );
-    this.user.addEventListener('logout', () =>
+    User.addEventListener('logout', () =>
       this.dispatchEvent(new Event('user:logout'))
     );
   }
@@ -101,7 +101,9 @@ class AppState extends EventTarget {
     this.#save();
   }
 
-  initFromCounters() {
+  async initFromCounters() {
+    if (!this.vslane) this.initFromStarter('top');
+    await dataModel.getNewTierlist();
     this.dispatchEvent(new CustomEvent('reload'));
   }
 
@@ -123,15 +125,7 @@ class AppState extends EventTarget {
       new CustomEvent(`change:${eventTarget}`, { detail: { target, value } })
     );
 
-    const { tierlist, pool, stats } = await dataModel.updateData(target);
-
-    if (pool) {
-      this.pool = pool;
-    }
-    if (stats) {
-      stats.forEach((list, index) => this.updateStatsList(list, index));
-    }
-    this.#save();
+    await dataModel.updateData(target);
 
     // Event to update views
     this.dispatchEvent(

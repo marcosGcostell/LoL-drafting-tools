@@ -23,7 +23,7 @@ export const init = async () => {
     poolController.initView();
     statsController.initView();
 
-    appState.initFromCounters();
+    await appState.initFromCounters();
     // // Refresh on init or reload
     // inputsController.setOptionsFromState();
     // if (appState.tierlist.length) {

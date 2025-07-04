@@ -5,7 +5,7 @@ let loginView;
 
 export const handleUserBtn = e => {
   // TODO Need to call the profile controller
-  if (appState.userName) return;
+  if (appState.user?.userName) return;
 
   if (!appState.popUpOn || appState.popUpOn === 'login') {
     loginView.toggleModal();
