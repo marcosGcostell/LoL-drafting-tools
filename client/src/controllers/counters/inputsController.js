@@ -15,7 +15,7 @@ export const toggleSelectors = (e, target) => {
   }
 };
 
-export const togglePatch = (_, __) => {
+const togglePatch = (_, __) => {
   if (!appState.popUpOn) {
     inputsView.setPatch(appState.patch.toggle().toView());
     appState.setOption('patch', appState.patch.state);
@@ -30,9 +30,8 @@ const setOptionHandler = id => {
 
   const option = target === 'rank' ? appData.ranks[id] : appData.roles[id];
   inputsView.changeOption(target, option);
-  if (target === 'lane') {
-    inputsView.changeOption('vslane', option);
-  }
+  if (target === 'lane') inputsView.changeOption('vslane', option);
+
   inputsView.toggleSelector();
   appState.popUpOn = '';
 
@@ -55,16 +54,16 @@ const pickRateHandler = value => {
   inputsView.setPickRateThreshold(appState.pickRateThreshold);
 };
 
-export function setOptionsFromState() {
+const setOptionsFromState = () => {
   inputsView.changeOption('lane', appData.roles[appState.lane]);
   inputsView.changeOption('rank', appData.ranks[appState.rank]);
   inputsView.changeOption('vslane', appData.roles[appState.vslane]);
   inputsView.setPatch(appState.patch.toView());
   inputsView.setMaxItems(appState.maxListItems);
   inputsView.setPickRateThreshold(appState.pickRateThreshold);
-}
+};
 
-export async function setHandlers() {
+export const setHandlers = async () => {
   inputsView = new InputsView();
   inputsView.init();
 
@@ -91,4 +90,4 @@ export async function setHandlers() {
   inputsView.addHandlerInput(pickRateHandler, 'min-pr');
 
   appState.addEventListener('reload', setOptionsFromState);
-}
+};

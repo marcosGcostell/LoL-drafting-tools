@@ -122,14 +122,18 @@ class AppState extends EventTarget {
     this.#save();
     // Event to display waiters
     this.dispatchEvent(
-      new CustomEvent(`change:${eventTarget}`, { detail: { target, value } })
+      new CustomEvent(`change:${eventTarget}`, {
+        detail: { target: eventTarget, value },
+      })
     );
 
-    await dataModel.updateData(target);
+    await dataModel.updateData(eventTarget);
 
     // Event to update views
     this.dispatchEvent(
-      new CustomEvent(`updated:${eventTarget}`, { detail: { target, value } })
+      new CustomEvent(`updated:${eventTarget}`, {
+        detail: { target: eventTarget, value },
+      })
     );
   }
 
@@ -240,11 +244,6 @@ class AppState extends EventTarget {
     this.#fixAllStatsLists();
     this.#save();
   }
-
-  // freshInit() {
-  //   this.popUpOn = 'starter';
-  //   this.#save();
-  // }
 }
 
 // Singleton instance

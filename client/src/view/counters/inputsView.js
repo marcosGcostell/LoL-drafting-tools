@@ -1,9 +1,5 @@
 import View from '../global/view.js';
-import {
-  LANE_ITEM_TEMPLATE,
-  RANK_ITEM_TEMPLATE,
-  LANE_STARTER_TEMPLATE,
-} from '../../utils/config.js';
+import { LANE_ITEM_TEMPLATE, RANK_ITEM_TEMPLATE } from '../../utils/config.js';
 
 export default class InputsView extends View {
   _parentElement;

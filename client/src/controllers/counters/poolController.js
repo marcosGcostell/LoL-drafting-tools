@@ -11,6 +11,10 @@ const _deletePoolItem = async (index, fireEvent = true) => {
   if (fireEvent) appState.removeFromPool(index);
 };
 
+const _clearPool = () => {
+  poolView._clear();
+};
+
 const _bookmarkChampion = index => {
   console.log('bookmar pressed for: ', index);
 };
@@ -32,7 +36,7 @@ const addPoolItem = async e => {
   });
 };
 
-export const showChampion = async e => {
+const showChampion = async e => {
   const { index, champion } = e.detail;
   _deletePoolItem(index, false);
   await poolView.render([champion], {
@@ -44,13 +48,35 @@ export const showChampion = async e => {
   poolView.addHandler(_bookmarkChampion, index, 'bookmark');
 };
 
+const showAllPoolFromState = async () => {
+  _clearPool();
+  if (!appState.pool.length) return;
+
+  await poolView.render(appState.pool, {
+    length: appState.pool.length,
+    index: 0,
+  });
+  _resetPoolHandlers();
+};
+
+const poolOnHold = async () => {
+  _clearPool();
+  if (!appState.pool.length) return;
+
+  await poolView.render(appState.pool, {
+    length: appState.pool.length,
+    index: 0,
+    onHold: true,
+  });
+};
+
 export const initView = () => {
   poolView = new PoolView();
   poolView.init();
 
   appState.addEventListener('pool:add', addPoolItem);
   appState.addEventListener('pool:added', showChampion);
-  appState.addEventListener('pool:reset', clearPool);
+  appState.addEventListener('pool:reset', _clearPool);
   ['change:lane', 'change:bothLanes', 'change:rank', 'change:patch'].forEach(
     target => {
       appState.addEventListener(target, poolOnHold);
@@ -65,31 +91,5 @@ export const initView = () => {
   ].forEach(target => {
     appState.addEventListener(target, showAllPoolFromState);
   });
-  appState.addEventListener('reset', clearPool);
-};
-
-export const showAllPoolFromState = async () => {
-  clearPool();
-  if (!appState.pool.length) return;
-
-  await poolView.render(appState.pool, {
-    length: appState.pool.length,
-    index: 0,
-  });
-  _resetPoolHandlers();
-};
-
-export const poolOnHold = async () => {
-  clearPool();
-  if (!appState.pool.length) return;
-
-  await poolView.render(appState.pool, {
-    length: appState.pool.length,
-    index: 0,
-    onHold: true,
-  });
-};
-
-export const clearPool = () => {
-  poolView._clear();
+  appState.addEventListener('reset', _clearPool);
 };

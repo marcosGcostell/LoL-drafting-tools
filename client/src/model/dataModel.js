@@ -44,7 +44,7 @@ export async function updateData(target) {
         stats.push(statsList);
       }
 
-      appState.updateAllChampions(pool);
+      if (pool.length) appState.updateAllChampions(pool);
       appState.updateAllStatsLists(stats);
     }
   } catch (err) {

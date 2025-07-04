@@ -7,11 +7,6 @@ import { STARTER_PAGE_TEMPLATE } from '../utils/config.js';
 const chooseOptionHandler = id => {
   appState.initFromStarter(id);
   navigate(`/${appState.appMode}`);
-  // starterView.changeOption('lane', appData.roles[id]);
-  // starterView.changeOption('rank', appData.ranks[appState.rank]);
-  // starterView.changeOption('vslane', appData.roles[id]);
-  // changeMode();
-  // appState.setOption('lane', id);
 };
 
 export const init = async () => {

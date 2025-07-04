@@ -19,16 +19,6 @@ export default class ListView extends View {
     this._parentElement = document.querySelector('.tierlist');
   }
 
-  // FIXME this handler has no purpose anymore
-  addHandlerTierlist(handler) {
-    document
-      .querySelector('.btn__tierlist')
-      .addEventListener('click', function (e) {
-        e.preventDefault();
-        handler();
-      });
-  }
-
   async _generateMarkup(options) {
     if (!options?.lane) return -1;
 

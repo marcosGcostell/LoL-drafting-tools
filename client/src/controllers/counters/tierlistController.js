@@ -4,6 +4,22 @@ import TierlistView from '../../view/counters/tierlistView.js';
 
 let tierlistView;
 
+const showTierlistFromState = () => {
+  if (!appState.fixedTierlist.length) return;
+  tierlistView.render(appState.fixedTierlist, {
+    lane: appData.roles[appState.vslane],
+  });
+};
+
+const tierlistOnHold = () => {
+  tierlistView.renderSpinner();
+};
+
+const clearTierlist = () => {
+  tierlistView._clear();
+  appState.fixedTierlist = [];
+};
+
 export const initView = () => {
   tierlistView = new TierlistView();
   tierlistView.init();
@@ -25,20 +41,4 @@ export const initView = () => {
     appState.addEventListener(target, showTierlistFromState);
   });
   appState.addEventListener('reset', clearTierlist);
-};
-
-export const showTierlistFromState = () => {
-  if (!appState.fixedTierlist.length) return;
-  tierlistView.render(appState.fixedTierlist, {
-    lane: appData.roles[appState.vslane],
-  });
-};
-
-const tierlistOnHold = () => {
-  tierlistView.renderSpinner();
-};
-
-export const clearTierlist = () => {
-  tierlistView._clear();
-  appState.fixedTierlist = [];
 };

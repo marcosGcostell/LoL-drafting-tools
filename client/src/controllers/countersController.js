@@ -24,15 +24,6 @@ export const init = async () => {
     statsController.initView();
 
     await appState.initFromCounters();
-    // // Refresh on init or reload
-    // inputsController.setOptionsFromState();
-    // if (appState.tierlist.length) {
-    //   tierlistController.showTierlistFromState();
-    // }
-    // if (appState.pool.length) {
-    //   poolController.showAllPoolFromState();
-    //   statsController.showAllStatsFromState();
-    // }
   } catch (err) {
     // TODO should handle error here
     throw err;
