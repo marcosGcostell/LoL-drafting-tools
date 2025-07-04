@@ -12,20 +12,28 @@
         <label for="user__password">User name or email:</label>
         <input
           id="user__logname"
+          name="username"
           type="text"
           placeholder="User name or email"
         />
         <label for="user__password">Password:</label>
-        <input id="user__password" type="password" placeholder="Password" />
+        <input
+          id="user__password"
+          name="password"
+          type="password"
+          placeholder="Password"
+        />
       </fieldset>
       <div class="log__buttons">
         <ul class="login__msg">
           <!-- Place for messages -->
         </ul>
-        <button class="btn__login btn__clickable">Log In</button>
+        <button type="submit" class="btn__login btn__clickable">Log In</button>
         <span>¿Don't have an acount...?</span>
         <a href="signup.html"
-          ><button class="btn__signup btn__clickable">Sign up</button></a
+          ><button type="button" class="btn__signup btn__clickable">
+            Sign up
+          </button></a
         >
       </div>
     </form>

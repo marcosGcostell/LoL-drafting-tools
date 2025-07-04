@@ -1,5 +1,7 @@
+import User from '../../model/userModel.js';
 import appState from '../../appState.js';
 import LoginView from '../../view/global/loginView.js';
+import { validateAuthForm } from '../../services/auth.js';
 
 let loginView;
 
@@ -14,7 +16,25 @@ export const handleUserBtn = e => {
   }
 };
 
-const btnLoginHandler = e => {};
+const loginHandler = e => {
+  const form = e.target;
+  const formData = new FormData(form);
+  const userName = formData.get('username')?.trim();
+  const password = formData.get('password');
+
+  const errorMessage = validateAuthForm({ userName, password });
+  if (errorMessage) {
+    loginView.errorMessage = errorMessage;
+    loginView.renderError();
+    return;
+  }
+
+  if (!User.login(userName, password)) {
+    loginView.errorMessage = User.response;
+    loginView.renderError();
+  }
+};
+
 const btnSignupHandler = e => {};
 
 export const setHandlers = () => {
@@ -22,11 +42,7 @@ export const setHandlers = () => {
   loginView.init();
   loginView.addHandlerUserBtn(handleUserBtn);
   loginView.addHandlerModalBtns('close', handleUserBtn);
-  loginView.addHandlerModalBtns('login', btnLoginHandler);
   loginView.addHandlerModalBtns('signup', btnSignupHandler);
+  loginView.addHandlerForm(loginHandler);
   loginView.addHandlerModalBackground();
-};
-
-export const resetView = () => {
-  loginView.reset();
 };

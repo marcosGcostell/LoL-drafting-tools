@@ -12,6 +12,7 @@ class User extends EventTarget {
     this._userName = userName;
     this._token = token;
     this.__type = 'User';
+    this.response = '';
 
     this.#load();
     this.#save();
@@ -30,7 +31,10 @@ class User extends EventTarget {
   }
 
   async login(userName, password) {
-    if (!this._userName) return null;
+    if (!userName || !password) {
+      this.response = 'Please, provide an username or email and a password.';
+      return null;
+    }
     try {
       const response = await fetch(`${LOCAL_API}${LOGIN_ROUTE}`, {
         method: 'POST',
@@ -38,20 +42,20 @@ class User extends EventTarget {
         body: JSON.stringify({ userName, password }),
       });
 
-      const { token } = await response.json();
+      const { token, message } = await response.json();
       if (token) {
+        this._userName = userName;
         this._token = token;
         this.#save();
         this.dispatchEvent(new Event('login'));
         return token;
       } else {
-        this.logout();
+        this.response = message;
         return null;
       }
     } catch (err) {
-      // TODO Need to handle the error here?
-      this.logout();
-      throw err;
+      this.response = err.message;
+      return null;
     }
   }
 

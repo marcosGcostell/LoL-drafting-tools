@@ -4,6 +4,11 @@ export default class LoginView extends View {
   constructor() {
     super();
     this.isModalShowed = false;
+    this._errorMessage = '';
+  }
+
+  set errorMessage(message) {
+    this._errorMessage = message;
   }
 
   init() {
@@ -12,6 +17,13 @@ export default class LoginView extends View {
     this.userInput = document.querySelector('#user__logname');
     this.passwordInput = document.querySelector('#user__password');
     this._modalElement.classList.add('hidden');
+
+    // Reset error message when focus on inputs
+    [this.userInput, this.passwordInput].forEach(el =>
+      el.addEventListener('focus', e => {
+        this._clear();
+      })
+    );
   }
 
   addHandlerUserBtn(handler) {
@@ -27,6 +39,15 @@ export default class LoginView extends View {
     document
       .querySelector(`.btn__${target}`)
       .addEventListener('click', function (e) {
+        e.preventDefault();
+        handler(e);
+      });
+  }
+
+  addHandlerForm(handler) {
+    this._modalElement
+      .querySelector('form')
+      .addEventListener('submit', function (e) {
         e.preventDefault();
         handler(e);
       });
@@ -49,9 +70,4 @@ export default class LoginView extends View {
       this.userInput.focus();
     }
   }
-
-  // reset() {
-  //   this.isModalShowed = false;
-  //   document.querySelector('#login-modal').classList.add('hidden');
-  // }
 }
