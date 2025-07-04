@@ -31,38 +31,19 @@ export const renderStatsList = async (statsList, options) => {
 };
 
 export const addStatsColumn = async function (championId, index) {
-  try {
-    // Add the new column
-    const newIndex = await statsView.addNewColumn();
-    if (newIndex !== index) {
-      throw new Error('Pool items does not match the stats columns...');
-    }
-    statsView.renderSpinner();
-
-    const statsList = await _getStatsList(championId, index);
-    // Save state
-    appState.addStatsList(statsList, championId);
-
-    // Render the list
-    await renderStatsList(appState.fixedStatsLists[index], {
-      length: appState.fixedStatsLists[index].length,
-      index,
-    });
-  } catch (error) {
-    statsView.renderError();
+  // Add the new column
+  const newIndex = await statsView.addNewColumn();
+  if (newIndex !== index) {
+    throw new Error('Pool items does not match the stats columns...');
   }
+  statsView.renderSpinner();
 };
 
-export const updateStatsColumn = async function (championId, index) {
-  try {
-    const statsList = await _getStatsList(championId, index);
-
-    // Save state
-    if (!appState.updateStatsList(statsList, index))
-      throw new Error('The stats list does not exists...');
-  } catch (error) {
-    statsView.renderError();
-  }
+export const showStatsList = async index => {
+  await renderStatsList(appState.fixedStatsLists[index], {
+    length: appState.fixedStatsLists[index].length,
+    index,
+  });
 };
 
 export const deleteStatsColumn = index => {

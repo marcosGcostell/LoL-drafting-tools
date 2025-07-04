@@ -1,6 +1,7 @@
 import appData from './model/appData.js';
 import User from './model/userModel.js';
 import Patch from './model/patchModel.js';
+import * as dataModel from './model/dataModel.js';
 import { reviver } from './services/session.js';
 import {
   LS_STATE,
@@ -81,7 +82,27 @@ class AppState extends EventTarget {
     sessionStorage.setItem(LS_STATE, JSON.stringify(data));
   }
 
-  // Publics setters
+  #fixTierlist() {
+    this.fixedTierlist = this.tierlist.slice(0, this.maxListItems);
+    const matchingItemsCount = this.fixedTierlist.findIndex(
+      el => el.pickRate < this.pickRateThreshold
+    );
+    this.fixedTierlist.splice(matchingItemsCount);
+  }
+
+  #fixStatsList(index) {
+    this.fixedStatsLists[index] = this.statsLists[index].slice(
+      0,
+      this.fixedTierlist.length
+    );
+  }
+
+  #fixAllStatsLists() {
+    this.pool.forEach((_, index) => this.#fixStatsList(index));
+  }
+
+  //////////////////////////////////////////
+  // Publics setters to react from controllers
   freshStart(lane) {
     if (!lane) return -1;
 
@@ -90,7 +111,8 @@ class AppState extends EventTarget {
     this.#save();
   }
 
-  setOption(target, value) {
+  // Change and update events: 'lane', 'bothLanes', 'rank', 'vslane', 'patch'
+  async setOption(target, value) {
     let eventTarget = target;
     this[target] = value;
     if (target === 'lane' && (this.vslane !== value || !this.tierlist.length)) {
@@ -98,13 +120,22 @@ class AppState extends EventTarget {
       eventTarget = 'bothLanes';
     }
     this.#save();
+    // Event to display waiters
     this.dispatchEvent(
       new CustomEvent(`change:${eventTarget}`, {
         detail: { target, value },
       })
     );
 
-    // TODO Here goes the fetch model function for data
+    const { tierlist, pool, stats } = await dataModel.updateData(target);
+
+    if (pool) {
+      this.pool = pool;
+    }
+    if (stats) {
+      stats.forEach((list, index) => this.updateStatsList(list, index));
+    }
+    this.#save();
 
     // Event to update views
     this.dispatchEvent(
@@ -116,8 +147,9 @@ class AppState extends EventTarget {
 
   setSetting(target, value) {
     this[target] = value;
+    this.#fixTierlist();
+    this.#fixAllStatsLists();
     this.#save();
-    this.fixAllLists();
     this.dispatchEvent(
       new CustomEvent('settings', {
         detail: { target, value },
@@ -125,73 +157,99 @@ class AppState extends EventTarget {
     );
   }
 
-  addChampion(champion) {
+  async addToPool(champion) {
     if (this.pool.find(el => el.id === champion.id)) return;
-    this.pool.push(champion);
-    this.#updateChampions('add', champion, true);
+
+    this.dispatchEvent(
+      new CustomEvent('pool:add', {
+        detail: { index: this.pool.length, element: champion },
+      })
+    );
+
+    await dataModel.getNewData(champion);
+
+    const index = this.pool.length - 1;
+    this.dispatchEvent(
+      new CustomEvent('pool:updated', {
+        detail: {
+          index,
+          pool: this.pool[index],
+          stats: this.fixedStatsLists[index],
+        },
+      })
+    );
   }
 
-  completeChampion(champion, index, fireEvent) {
-    this.pool[index] = champion;
-    this.#updateChampions('stats', champion, fireEvent);
-  }
-
-  removeChampion(index) {
+  removeFromPool(index) {
     if (index < this.pool.length) {
       this.pool.splice(index, 1);
       this.statsLists.splice(index, 1);
       this.fixedStatsLists.splice(index, 1);
       this.statsListsOwner.splice(index, 1);
-      this.#updateChampions('remove', index, true);
+      this.#save();
+      this.dispatchEvent(
+        new CustomEvent('pool:remove', {
+          detail: {
+            index,
+          },
+        })
+      );
     }
   }
 
+  resetAll() {
+    this.#defaultValues();
+    sessionStorage.removeItem(LS_STATE);
+    this.dispatchEvent(new CustomEvent('reset'));
+  }
+
+  //////////////////////////////////////////
+  // Publics setters for saving data from models
   addTierlist(tierlist) {
     this.tierlist = tierlist;
     this.tierlistLane = this.vslane;
-    this.fixTierlist();
+    this.#fixTierlist();
     this.#save();
   }
 
-  fixTierlist() {
-    this.fixedTierlist = this.tierlist.slice(0, this.maxListItems);
-    const matchingItemsCount = this.fixedTierlist.findIndex(
-      el => el.pickRate < this.pickRateThreshold
-    );
-    this.fixedTierlist.splice(matchingItemsCount);
+  saveNewChampion(champion) {
+    this.pool.push(champion);
+    this.#save();
   }
 
-  addStatsList(statsList, owner, index) {
-    if (index < this.statsLists.length) {
-      this.statsLists[index] = statsList;
-    } else {
-      index = this.statsLists.length;
-      this.statsLists.push(statsList);
-      this.fixedStatsLists.push([]);
-      this.statsListsOwner.push(owner);
-    }
-    this.fixStatsList(index);
+  updateChampion(champion, index) {
+    if (index >= this.pool.length) return false;
+    this.pool[index] = champion;
+    this.#save();
+    return true;
+  }
+
+  updateAllChampions(pool) {
+    this.pool = pool;
+    this.#save();
+  }
+
+  addStatsList(statsList, owner) {
+    this.statsLists.push(statsList);
+    this.statsListsOwner.push(owner);
+    this.#fixStatsList(this.statsLists.length - 1);
     this.#save();
   }
 
   updateStatsList(statsList, index) {
     if (index >= this.statsLists.length) return false;
     this.statsLists[index] = statsList;
-    this.fixStatsList(index);
+    this.statsListsOwner[index] = this.pool[index].id;
+    this.#fixStatsList(index);
     this.#save();
     return true;
   }
 
-  fixStatsList(index) {
-    this.fixedStatsLists[index] = this.statsLists[index].slice(
-      0,
-      this.fixedTierlist.length
-    );
-  }
-
-  fixAllLists() {
-    this.fixTierlist();
-    this.pool.forEach((_, index) => this.fixStatsList(index));
+  updateAllStatsLists(statsLists) {
+    this.statsLists = statsLists;
+    this.pool.forEach((el, index) => (this.statsListsOwner[index] = el.id));
+    this.#fixAllStatsLists();
+    this.#save();
   }
 
   resetPool() {
@@ -200,12 +258,6 @@ class AppState extends EventTarget {
     this.fixedStatsLists = [];
     this.statsListsOwner = [];
     this.#save();
-  }
-
-  resetAll() {
-    this.#defaultValues();
-    sessionStorage.removeItem(LS_STATE);
-    this.dispatchEvent(new CustomEvent('reset'));
   }
 
   // freshInit() {

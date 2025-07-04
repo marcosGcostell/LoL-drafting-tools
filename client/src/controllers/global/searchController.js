@@ -46,8 +46,8 @@ const handleSubmittedQuery = e => {
     searchView.toggleSearchPanel();
     appState.popUpOn = searchView.isPanelShowed ? 'search' : '';
     starterQuery.length
-      ? appState.addChampion(...starterQuery)
-      : appState.addChampion(...containsQuery);
+      ? appState.addToPool(...starterQuery)
+      : appState.addToPool(...containsQuery);
   }
 };
 
@@ -56,7 +56,7 @@ const getPickedChampion = e => {
   searchView.toggleSearchPanel();
   appState.popUpOn = searchView.isPanelShowed ? 'search' : '';
   if (id) {
-    appState.addChampion(appData.champions[id]);
+    appState.addToPool(appData.champions[id]);
   }
 };
 
