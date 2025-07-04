@@ -7,10 +7,11 @@ export default class LoginView extends View {
   }
 
   init() {
+    this._modalElement = document.querySelector('#login-modal');
     this._parentElement = document.querySelector('.login__msg');
     this.userInput = document.querySelector('#user__logname');
     this.passwordInput = document.querySelector('#user__password');
-    document.querySelector('#login-modal').classList.add('hidden');
+    this._modalElement.classList.add('hidden');
   }
 
   addHandlerUserBtn(handler) {
@@ -22,15 +23,30 @@ export default class LoginView extends View {
       });
   }
 
+  addHandlerModalBtns(target, handler) {
+    document
+      .querySelector(`.btn__${target}`)
+      .addEventListener('click', function (e) {
+        e.preventDefault();
+        handler(e);
+      });
+  }
+
+  addHandlerModalBackground() {
+    this._modalElement.addEventListener('click', function (e) {
+      e.stopImmediatePropagation();
+    });
+  }
+
   toggleModal() {
     this._clear();
     this.userInput.value = '';
     this.passwordInput.value = '';
-    document.querySelector('#login-modal').classList.toggle('hidden');
+    this._modalElement.classList.toggle('hidden');
 
     this.isModalShowed = !this.isModalShowed;
-    if (this.isPanelShowed) {
-      this._userInput.focus();
+    if (this.isModalShowed) {
+      this.userInput.focus();
     }
   }
 

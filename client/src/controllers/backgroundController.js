@@ -12,17 +12,17 @@ const resetApp = () => {
 const hidePopUps = e => {
   console.log('Main hide popups');
   e.preventDefault();
-  switch (appState.popUpOn) {
-    case '':
-      break;
-    case 'search':
-      searchController.toggleSearchPanel(e);
-      break;
-    case 'login':
-      loginController.handleUserBtn(e);
-    case ('lane', 'rank', 'vslane'):
-      inputsController.toggleSelectors(e, appState.popUpOn);
-      break;
+  if (appState.popUpOn === '') return;
+  if (appState.popUpOn === 'search') {
+    searchController.toggleSearchPanel(e);
+  } else if (appState.popUpOn === 'login') {
+    loginController.handleUserBtn(e);
+  } else if (
+    appState.popUpOn === 'lane' ||
+    appState.popUpOn === 'rank' ||
+    appState.popUpOn === 'vslane'
+  ) {
+    inputsController.toggleSelectors(e, appState.popUpOn);
   }
 };
 

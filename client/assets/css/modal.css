@@ -34,7 +34,7 @@
   justify-self: flex-start;
 }
 
-.login__close {
+.btn__close {
   justify-self: flex-end;
   display: flex;
   justify-content: center;
@@ -46,7 +46,7 @@
   background-color: var(--color-grey-light-5);
 }
 
-.login__close img {
+.btn__close img {
   width: 100%;
 }
 
@@ -91,7 +91,8 @@
   padding: 0 0.8rem;
 }
 
-.btn__login {
+.btn__login,
+.btn__signup {
   height: 2rem;
   font-size: 1.1rem;
   padding: 0 1rem;
