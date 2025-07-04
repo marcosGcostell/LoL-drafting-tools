@@ -3,9 +3,6 @@ import View from './view.js';
 export default class LoginView extends View {
   constructor() {
     super();
-    this._parentElement = document.querySelector('.login__msg');
-    this.userInput = document.querySelector('#user__logname');
-    this.passwordInput = document.querySelector('#user__password');
     this.isModalShowed = false;
   }
 

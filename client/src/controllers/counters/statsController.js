@@ -1,36 +1,48 @@
 import appState from '../../appState.js';
 import appData from '../../model/appData.js';
-import * as dataModel from '../../model/dataModel.js';
 import StatsView from '../../view/counters/statsView.js';
 
 let statsView;
 
-const _getStatsList = async (championId, index) => {
-  return await dataModel.getStatsList({
-    state: {
-      champion: championId,
-      winRatio: appState.pool[index].winRatio,
-      lane: appState.lane,
-      rank: appState.rank,
-      vslane: appState.vslane,
-      patch: appState.patch.toApi(),
-      sortedBy: 'pickRate',
-    },
-    data: appData,
-    tierlist: appState.tierlist,
-  });
-};
-
 export const initView = () => {
   statsView = new StatsView();
   statsView.init();
+
+  appState.addEventListener('pool:add', addStatsColumn);
+  appState.addEventListener('pool:added', renderStatsList);
+  appState.addEventListener('pool:remove', deleteStatsColumn);
+  appState.addEventListener('pool:reset', clearStatsSection);
+  [
+    'change:lane',
+    'change:bothLanes',
+    'change:vslane',
+    'change:rank',
+    'change:patch',
+  ].forEach(target => {
+    appState.addEventListener(target, statsOnHold);
+  });
+  [
+    'updated:lane',
+    'updated:bothLanes',
+    'updated:vslane',
+    'updated:rank',
+    'updated:patch',
+    'settings',
+    'reload',
+  ].forEach(target => {
+    appState.addEventListener(target, showAllStatsFromState);
+  });
+  appState.addEventListener('reset', clearStatsSection);
 };
 
-export const renderStatsList = async (statsList, options) => {
-  await statsView.render(statsList, options);
+export const renderStatsList = async e => {
+  const { index, stats } = e.detail;
+  await statsView.render(statsList, { length: stats.length, index });
 };
 
-export const addStatsColumn = async function (championId, index) {
+export const addStatsColumn = async e => {
+  const { index } = e.detail;
+
   // Add the new column
   const newIndex = await statsView.addNewColumn();
   if (newIndex !== index) {
@@ -54,9 +66,10 @@ export const deleteStatsColumn = index => {
   }
 };
 
-export const showAllStats = async statsLists => {
+export const showAllStatsFromState = async () => {
   clearStatsSection();
-  for (const list of statsLists) {
+  if (!appData.fixedStatsLists.length) return;
+  for (const list of appData.fixedStatsLists) {
     const index = await statsView.addNewColumn();
     await renderStatsList(list, { length: list.length, index });
   }
@@ -64,7 +77,8 @@ export const showAllStats = async statsLists => {
 
 export const statsOnHold = async () => {
   clearStatsSection();
-  for (const col of appState.pool) {
+  if (!appData.fixedStatsLists.length) return;
+  for (const col of appState.fixedStatsLists) {
     await statsView.addNewColumn();
     statsView.renderSpinner();
   }

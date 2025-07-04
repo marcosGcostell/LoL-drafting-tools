@@ -23,8 +23,8 @@ const _resetPoolHandlers = () => {
 };
 
 const addPoolItem = async e => {
-  const { index, element } = e.detail;
-  await poolView.render([element], {
+  const { index, champion } = e.detail;
+  await poolView.render([champion], {
     length: 1,
     index,
     onHold: true,
@@ -32,7 +32,8 @@ const addPoolItem = async e => {
   });
 };
 
-export const showChampion = async (champion, index) => {
+export const showChampion = async e => {
+  const { index, champion } = e.detail;
   _deletePoolItem(index);
   await poolView.render([champion], {
     length: 1,
@@ -48,12 +49,31 @@ export const initView = () => {
   poolView.init();
 
   appState.addEventListener('pool:add', addPoolItem);
+  appState.addEventListener('pool:added', showChampion);
+  appState.addEventListener('pool:reset', clearPool);
+  ['change:lane', 'change:bothLanes', 'change:rank', 'change:patch'].forEach(
+    target => {
+      appState.addEventListener(target, poolOnHold);
+    }
+  );
+  [
+    'updated:lane',
+    'updated:bothLanes',
+    'updated:rank',
+    'updated:patch',
+    'reload',
+  ].forEach(target => {
+    appState.addEventListener(target, showAllPoolFromState);
+  });
+  appState.addEventListener('reset', clearPool);
 };
 
-export const showAllPool = async champions => {
+export const showAllPoolFromState = async () => {
   clearPool();
-  await poolView.render(champions, {
-    length: champions.length,
+  if (!appState.pool.length) return;
+
+  await poolView.render(appState.pool, {
+    length: appState.pool.length,
     index: 0,
   });
   _resetPoolHandlers();
@@ -61,6 +81,8 @@ export const showAllPool = async champions => {
 
 export const poolOnHold = async () => {
   clearPool();
+  if (!appState.pool.length) return;
+
   await poolView.render(appState.pool, {
     length: appState.pool.length,
     index: 0,

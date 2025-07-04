@@ -10,7 +10,7 @@ const _checkQuery = ({ lane, rank, vslane = true }) => {
   }
 };
 
-export default fetchListFromAPI = async (route, queryData) => {
+export default async (route, queryData) => {
   try {
     _checkQuery(queryData);
     const query = `?lane=${queryData.lane}&rank=${queryData.rank}${

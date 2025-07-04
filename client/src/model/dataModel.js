@@ -3,12 +3,6 @@ import * as tierlistModel from './tierlistModel.js';
 import * as poolModel from './poolModel.js';
 import * as statsModel from './statsModel.js';
 
-const sortList = (list, property) => {
-  list.sort((a, b) => b[property] - a[property]);
-};
-
-// Get a list from API
-
 export async function getNewData(champion) {
   try {
     const pool = await poolModel.getChampion(champion, appState);

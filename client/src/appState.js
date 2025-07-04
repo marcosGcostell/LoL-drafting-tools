@@ -28,6 +28,8 @@ class AppState extends EventTarget {
         const parsed = JSON.parse(localData, reviver);
         Object.assign(this, parsed);
 
+        // this.dispatchEvent(new CustomEvent('reload'));
+
         // On reload hide any pop-ups
         // if (this.popUpOn !== 'starter') {
         //   this.popUpOn = '';
@@ -65,18 +67,6 @@ class AppState extends EventTarget {
     this.popUpOn = '';
   }
 
-  // save after adding/removing champions to session and notify
-  #updateChampions(action, element, fireEvent) {
-    this.#save();
-    if (fireEvent) {
-      this.dispatchEvent(
-        new CustomEvent('pool', {
-          detail: { action, element },
-        })
-      );
-    }
-  }
-
   #save() {
     const data = { ...this };
     sessionStorage.setItem(LS_STATE, JSON.stringify(data));
@@ -103,7 +93,7 @@ class AppState extends EventTarget {
 
   //////////////////////////////////////////
   // Publics setters to react from controllers
-  freshStart(lane) {
+  initFromStarter(lane) {
     if (!lane) return -1;
 
     this.lane = lane;
@@ -111,20 +101,26 @@ class AppState extends EventTarget {
     this.#save();
   }
 
+  initFromCounters() {
+    this.dispatchEvent(new CustomEvent('reload'));
+  }
+
   // Change and update events: 'lane', 'bothLanes', 'rank', 'vslane', 'patch'
   async setOption(target, value) {
     let eventTarget = target;
     this[target] = value;
-    if (target === 'lane' && (this.vslane !== value || !this.tierlist.length)) {
-      this.vslane = value;
-      eventTarget = 'bothLanes';
+    if (target === 'lane') {
+      if (!this.tierlist.length || this.tierlistLane !== value) {
+        this.vslane = value;
+        eventTarget = 'bothLanes';
+      }
+      this.resetPool();
     }
+
     this.#save();
     // Event to display waiters
     this.dispatchEvent(
-      new CustomEvent(`change:${eventTarget}`, {
-        detail: { target, value },
-      })
+      new CustomEvent(`change:${eventTarget}`, { detail: { target, value } })
     );
 
     const { tierlist, pool, stats } = await dataModel.updateData(target);
@@ -139,9 +135,7 @@ class AppState extends EventTarget {
 
     // Event to update views
     this.dispatchEvent(
-      new CustomEvent(`updated:${eventTarget}`, {
-        detail: { target, value },
-      })
+      new CustomEvent(`updated:${eventTarget}`, { detail: { target, value } })
     );
   }
 
@@ -151,9 +145,7 @@ class AppState extends EventTarget {
     this.#fixAllStatsLists();
     this.#save();
     this.dispatchEvent(
-      new CustomEvent('settings', {
-        detail: { target, value },
-      })
+      new CustomEvent('settings', { detail: { target, value } })
     );
   }
 
@@ -162,7 +154,7 @@ class AppState extends EventTarget {
 
     this.dispatchEvent(
       new CustomEvent('pool:add', {
-        detail: { index: this.pool.length, element: champion },
+        detail: { index: this.pool.length, champion },
       })
     );
 
@@ -170,10 +162,10 @@ class AppState extends EventTarget {
 
     const index = this.pool.length - 1;
     this.dispatchEvent(
-      new CustomEvent('pool:updated', {
+      new CustomEvent('pool:added', {
         detail: {
           index,
-          pool: this.pool[index],
+          champion: this.pool[index],
           stats: this.fixedStatsLists[index],
         },
       })
@@ -187,14 +179,17 @@ class AppState extends EventTarget {
       this.fixedStatsLists.splice(index, 1);
       this.statsListsOwner.splice(index, 1);
       this.#save();
-      this.dispatchEvent(
-        new CustomEvent('pool:remove', {
-          detail: {
-            index,
-          },
-        })
-      );
+      this.dispatchEvent(new CustomEvent('pool:remove', { detail: { index } }));
     }
+  }
+
+  resetPool() {
+    this.pool = [];
+    this.statsLists = [];
+    this.fixedStatsLists = [];
+    this.statsListsOwner = [];
+    this.#save();
+    this.dispatchEvent(new CustomEvent('pool:reset'));
   }
 
   resetAll() {
@@ -249,14 +244,6 @@ class AppState extends EventTarget {
     this.statsLists = statsLists;
     this.pool.forEach((el, index) => (this.statsListsOwner[index] = el.id));
     this.#fixAllStatsLists();
-    this.#save();
-  }
-
-  resetPool() {
-    this.pool = [];
-    this.statsLists = [];
-    this.fixedStatsLists = [];
-    this.statsListsOwner = [];
     this.#save();
   }
 

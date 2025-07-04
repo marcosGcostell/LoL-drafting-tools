@@ -5,7 +5,7 @@ import { navigate } from '../router.js';
 import { STARTER_PAGE_TEMPLATE } from '../utils/config.js';
 
 const chooseOptionHandler = id => {
-  appState.freshStart(id);
+  appState.initFromStarter(id);
   navigate(`/${appState.appMode}`);
   // starterView.changeOption('lane', appData.roles[id]);
   // starterView.changeOption('rank', appData.ranks[appState.rank]);

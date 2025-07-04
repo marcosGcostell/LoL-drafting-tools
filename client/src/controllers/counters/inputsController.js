@@ -89,4 +89,6 @@ export async function setHandlers() {
   // Handlers to manage inputs values
   inputsView.addHandlerInput(listItemsHandler, 'max-items');
   inputsView.addHandlerInput(pickRateHandler, 'min-pr');
+
+  appState.addEventListener('reload', setOptionsFromState);
 }

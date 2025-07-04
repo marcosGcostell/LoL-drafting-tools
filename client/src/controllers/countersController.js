@@ -18,19 +18,21 @@ export const init = async () => {
     // Set the options inputs and search handlers
     await inputsController.setHandlers();
     searchController.setHandlers();
+    // Init the data views
     tierlistController.initView();
     poolController.initView();
     statsController.initView();
 
-    // Refresh on init or reload
-    inputsController.setOptionsFromState();
-    if (appState.tierlist.length) {
-      tierlistController.showTierlistFromState();
-    }
-    if (appState.pool.length) {
-      poolController.showAllPool(appState.pool);
-      statsController.showAllStats(appState.fixedStatsLists);
-    }
+    appState.initFromCounters();
+    // // Refresh on init or reload
+    // inputsController.setOptionsFromState();
+    // if (appState.tierlist.length) {
+    //   tierlistController.showTierlistFromState();
+    // }
+    // if (appState.pool.length) {
+    //   poolController.showAllPoolFromState();
+    //   statsController.showAllStatsFromState();
+    // }
   } catch (err) {
     // TODO should handle error here
     throw err;

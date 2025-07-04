@@ -11,7 +11,7 @@ export const initView = () => {
   // Add appState events handlers
   ['change:bothLanes', 'change:vslane', 'change:rank', 'change:patch'].forEach(
     target => {
-      appState.addEventListener(target, tierlistView.renderSpinner());
+      appState.addEventListener(target, tierlistView.renderSpinner);
     }
   );
   [
@@ -20,12 +20,15 @@ export const initView = () => {
     'updated:rank',
     'updated:patch',
     'settings',
+    'reload',
   ].forEach(target => {
-    appState.addEventListener(target, showTierlistFromState());
+    appState.addEventListener(target, showTierlistFromState);
   });
+  appState.addEventListener('reset', clearTierlist);
 };
 
 export const showTierlistFromState = () => {
+  if (!appState.tierlist.length) return;
   tierlistView.render(appState.fixedTierlist, {
     lane: appData.roles[appState.vslane],
   });
