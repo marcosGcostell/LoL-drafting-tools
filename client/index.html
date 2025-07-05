@@ -10,11 +10,11 @@
     />
     <link
       rel="shortcut icon"
-      href="img/icons/favicon.png"
+      href="assets/img/icons/favicon.png"
       type="image/x-icon"
     />
-    <link rel="stylesheet" href="./css/index.css" />
-    <script defer src="js/index.js" type="module"></script>
+    <link rel="stylesheet" href="./assets/css/index.css" />
+    <script defer src="src/router.js" type="module"></script>
     <title>draftKing - League of Legends – Drafting Tool</title>
   </head>
 
@@ -23,7 +23,7 @@
       <!-- HEADER -->
       <header>
         <div class="header header__logo">
-          <img src="img/icons/logo.png" class="logo" alt="draftKing" />
+          <img src="assets/img/icons/logo.png" class="logo" alt="draftKing" />
         </div>
         <div class="header header__central">
           <button class="btn lang__btn">EN</button>
@@ -33,180 +33,13 @@
         </div>
         <div class="header header__users input__clickable">
           <svg class="user__icon">
-            <use href="img/icons/icons.svg#icon-user"></use>
+            <use href="assets/img/icons/icons.svg#icon-user"></use>
           </svg>
         </div>
       </header>
       <!-- MAIN -->
-      <main>
-        <!-- LOGIN MODAL -->
-        <div id="login-modal" class="modal hidden">
-          <div class="modal__content">
-            <div class="login__title">
-              <h2>Log in</h2>
-              <div class="login__close btn__clickable">
-                <img src="img/icons/close.png" />
-              </div>
-            </div>
-            <form class="user__login">
-              <fieldset>
-                <label for="user__password">User name or email:</label>
-                <input
-                  id="user__logname"
-                  type="text"
-                  placeholder="User name or email"
-                />
-                <label for="user__password">Password:</label>
-                <input
-                  id="user__password"
-                  type="password"
-                  placeholder="Password"
-                />
-              </fieldset>
-              <div class="log__buttons">
-                <ul class="login__msg">
-                  <!-- Place for messages -->
-                </ul>
-                <button class="btn__login btn__clickable">Log In</button>
-                <span>¿Don't have an acount...?</span>
-                <a href="signup.html"
-                  ><button class="btn__login btn__clickable">Sign up</button></a
-                >
-              </div>
-            </form>
-          </div>
-        </div>
-        <!-- TOP SECTION -->
-        <section class="top-section">
-          <!-- START SECTION -->
-          <div class="start-section hidden"></div>
-          <!-- INPUT SECTION -->
-          <div class="input-section">
-            <!-- Starter Inputs -->
-            <div class="starter-options starter__selector">
-              <!-- Place to insert starter lane selector -->
-            </div>
-            <!-- Standard Inputs -->
-            <div class="options hidden">
-              <div class="main__input lane__input selector">
-                <img
-                  src="img/lanes/all.webp"
-                  class="lane__btn input__clickable"
-                  alt="Lanes"
-                />
-                <span>Lane</span>
-                <div class="popup lane__selector hidden">
-                  <!-- Place to insert lane selector -->
-                </div>
-              </div>
-              <div class="main__input rank__input selector">
-                <img
-                  src="img/ranks/all.webp"
-                  class="rank__btn input__clickable"
-                  alt="Ranks"
-                />
-                <span>All</span>
-                <div class="popup rank__selector hidden">
-                  <!-- Place to insert rank selector -->
-                </div>
-              </div>
-              <div class="small__inputs">
-                <div class="small__input vslane__input selector">
-                  <img
-                    src="img/lanes/all.webp"
-                    class="vslane__btn input__clickable"
-                    alt="Lanes"
-                  />
-                  <div class="vslane__label">
-                    <div class="label">vs</div>
-                    <span>Lane</span>
-                  </div>
-                  <div class="popup vslane__selector hidden">
-                    <!-- Place to insert vslane selector -->
-                  </div>
-                </div>
-                <div class="small__input patch__input">
-                  <button class="patch__btn input__clickable">PATCH</button>
-                </div>
-              </div>
-            </div>
-            <div class="config">
-              <!-- Starter -->
-              <span class="welcome">Select a lane to start...</span>
-              <!-- Standard -->
-              <div class="settings hidden">
-                <hr />
-                <span>List max items</span>
-                <input
-                  id="max-items"
-                  type="text"
-                  class="settings__input"
-                  value="35"
-                />
-                <span>% Pick Rate > </span>
-                <input
-                  id="min-pr"
-                  type="text"
-                  class="settings__input"
-                  value="1.0"
-                />
-              </div>
-            </div>
-          </div>
-          <!-- POOL SECTION -->
-          <div class="pool-section">
-            <!-- Place to insert champions selected -->
-          </div>
-          <div class="search-section">
-            <div class="champion input__clickable hidden" id="select-champion">
-              <svg class="add__champion">
-                <use href="img/icons/icons.svg#icon-plus-circle"></use>
-              </svg>
-              <span class="champion__text">Add</span>
-              <span class="champion__text">Champion</span>
-            </div>
-            <div class="popup__container">
-              <div class="popup search__popup hidden">
-                <div class="search">
-                  <input
-                    id="search"
-                    type="text"
-                    class="input"
-                    placeholder="Champion..."
-                  />
-                  <span>
-                    <svg class="search__icon">
-                      <use href="img/icons/icons.svg#icon-search"></use>
-                    </svg>
-                  </span>
-                </div>
-                <ul class="search__results">
-                  <!-- Place to insert search resutlts -->
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-        <!-- DATA SECTION -->
-        <section class="data-section">
-          <!-- TIERLIST SECTION -->
-          <div class="list-container">
-            <ul class="tierlist">
-              <li class="first-row">
-                <span class="fr__void"></span>
-                <span class="data">WR</span>
-                <span class="data">pick</span>
-                <span class="data fr__name">Champion</span>
-              </li>
-              <hr />
-              <!-- Place to insert tierlist -->
-            </ul>
-          </div>
-          <!-- STATS SECTION -->
-          <div class="stats-container">
-            <!-- Place to insert a new stats column -->
-          </div>
-        </section>
+      <main id="app-page">
+        <!-- APP SECTION -->
       </main>
       <!-- FOOTER -->
       <footer>
