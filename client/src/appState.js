@@ -103,7 +103,9 @@ class AppState extends EventTarget {
 
   async initFromCounters() {
     if (!this.vslane) this.initFromStarter('top');
-    await dataModel.getNewTierlist();
+    if (this.vslane !== this.tierlistLane) {
+      await dataModel.getNewTierlist();
+    }
     this.dispatchEvent(new CustomEvent('reload'));
   }
 

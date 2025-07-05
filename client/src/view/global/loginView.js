@@ -70,4 +70,13 @@ export default class LoginView extends View {
       this.userInput.focus();
     }
   }
+
+  closeModal() {
+    this._clear();
+    this.userInput.value = '';
+    this.passwordInput.value = '';
+    this._modalElement.classList.add('hidden');
+
+    this.isModalShowed = false;
+  }
 }

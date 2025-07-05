@@ -33,6 +33,8 @@ const loginHandler = e => {
     loginView.errorMessage = User.response;
     loginView.renderError();
   }
+  loginView.closeModal();
+  appState.popUpOn = '';
 };
 
 const btnSignupHandler = e => {};

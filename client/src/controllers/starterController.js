@@ -10,7 +10,11 @@ const chooseOptionHandler = id => {
 };
 
 export const init = async () => {
-  if (appState.lane) navigate(`/${appState.appMode}`);
+  if (appState.lane) {
+    navigate(`/${appState.appMode}`);
+    // Need to skip the rest of router calls if it goes to other page
+    return false;
+  }
 
   try {
     // Insert the HTML page
@@ -23,6 +27,7 @@ export const init = async () => {
     // Render selector and set handler for starter lane selection
     await starterView.insertSelector(appData.toSortedArray('roles'));
     starterView.addHandlerSelector(chooseOptionHandler);
+    return true;
   } catch (err) {
     // TODO should handle error here
     throw err;

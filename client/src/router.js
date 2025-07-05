@@ -17,8 +17,8 @@ const handleRoute = async () => {
   const isLoggedIn = User.isLoggedIn();
 
   if (path === '/' || path === '/starter') {
-    await starterController.init();
-    await backgroundController.init();
+    const starter = await starterController.init();
+    if (starter) await backgroundController.init();
   } else if (path === '/counters') {
     const localData = JSON.parse(sessionStorage.getItem(LS_STATE));
     if (!localData?.lane) return navigate('/');
