@@ -132,9 +132,10 @@ class User extends EventTarget {
     this.dispatchEvent(new Event('logout'));
   }
 
-  static fromJSON(obj) {
-    const user = new User(obj.userName, obj.token);
-    return user;
+  fromJSON(obj) {
+    // const user = new User(obj.userName, obj.token);
+    // return user;
+    return this;
   }
 }
 

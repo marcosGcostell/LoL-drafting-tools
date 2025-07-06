@@ -15,6 +15,6 @@ export default class HeaderView extends View {
   }
 
   showUserName(userName) {
-    document.querySelector('header__username span').textContent = userName;
+    document.querySelector('.header__username span').textContent = userName;
   }
 }

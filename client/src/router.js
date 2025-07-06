@@ -17,19 +17,19 @@ const loadCommonControllers = async () => {
   await backgroundController.init();
 };
 
-const handleRoute = async () => {
+const handleRoute = async e => {
   const path = window.location.pathname;
-
+  const isDOMReloaded = !(e instanceof PopStateEvent);
   const isLoggedIn = User.isLoggedIn();
 
   if (path === '/' || path === '/starter') {
     const starter = await starterController.init();
-    if (starter) await loadCommonControllers();
+    if (starter && isDOMReloaded) await loadCommonControllers();
   } else if (path === '/counters') {
     const localData = JSON.parse(sessionStorage.getItem(LS_STATE));
     if (!localData?.lane) return navigate('/');
     await countersController.init();
-    await loadCommonControllers();
+    if (isDOMReloaded) await loadCommonControllers();
     // } else if (path === '/profile') {
     //   if (!isLoggedIn) return navigate('/');
     //   await profileController.init();

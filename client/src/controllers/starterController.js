@@ -1,6 +1,7 @@
 import appData from '../model/appData.js';
 import appState from '../appState.js';
 import starterView from '../view/starter/starterView.js';
+import * as loginController from './global/loginController.js';
 import { navigate } from '../router.js';
 import { STARTER_PAGE_TEMPLATE } from '../utils/config.js';
 
@@ -25,6 +26,8 @@ export const init = async () => {
     document.querySelector('main').innerHTML = template;
     appState.setCurrentPage('starter');
 
+    // Set the login modal handlers
+    loginController.setHandlers();
     // Render selector and set handler for starter lane selection
     await starterView.insertSelector(appData.toSortedArray('roles'));
     starterView.addHandlerSelector(chooseOptionHandler);

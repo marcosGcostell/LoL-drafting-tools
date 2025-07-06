@@ -1,4 +1,5 @@
 import appState from '../appState.js';
+import * as loginController from './global/loginController.js';
 import * as inputsController from './counters/inputsController.js';
 import * as searchController from './global/searchController.js';
 import * as tierlistController from './counters/tierlistController.js';
@@ -17,6 +18,8 @@ export const init = async () => {
 
     appState.setCurrentPage('counters');
 
+    // Set the login modal handlers
+    loginController.setHandlers();
     // Set the options inputs and search handlers
     await inputsController.setHandlers();
     searchController.setHandlers();

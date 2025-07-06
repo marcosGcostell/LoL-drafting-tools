@@ -18,7 +18,6 @@ class AppState extends EventTarget {
 
     // Default values
     this.#defaultValues();
-    // this.popUpOn = 'starter';
 
     // Load values from session
     const localData = sessionStorage.getItem(LS_STATE);
@@ -27,13 +26,6 @@ class AppState extends EventTarget {
         // Need a reviver to restore class instances
         const parsed = JSON.parse(localData, reviver);
         Object.assign(this, parsed);
-
-        // this.dispatchEvent(new CustomEvent('reload'));
-
-        // On reload hide any pop-ups
-        // if (this.popUpOn !== 'starter') {
-        //   this.popUpOn = '';
-        // }
       } catch (err) {
         throw err;
       }

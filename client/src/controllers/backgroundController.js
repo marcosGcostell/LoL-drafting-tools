@@ -21,9 +21,6 @@ const hidePopUps = e => {
 };
 
 export async function init() {
-  // Set the login modal handlers
-  loginController.setHandlers();
-
   // Hide popups if clicking outside them or press ESC
   document.addEventListener('click', hidePopUps);
   document.addEventListener('keydown', e => {
