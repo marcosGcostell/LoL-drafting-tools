@@ -66,7 +66,6 @@ class AppState extends EventTarget {
   }
 
   async #setUserDefaults() {
-    console.log('Reading state from user...');
     this.lane = User.data.primaryRole || this.lane;
     this.vslane = this.lane;
     this.rank = User.data.rank;
@@ -83,13 +82,11 @@ class AppState extends EventTarget {
   }
 
   async #loginUser() {
-    console.log('login event catch...');
     if (this.currentPage !== 'counters') {
       this.silentMode = true;
     }
     await this.#setUserDefaults();
     this.silentMode = false;
-    console.log('Dispatching state login event...');
     this.#save();
     this.dispatchEvent(new Event('user:login'));
   }
@@ -138,6 +135,10 @@ class AppState extends EventTarget {
 
   setAppMode(appMode) {
     this.appMode = appMode;
+  }
+
+  triggerPopUp(target) {
+    this.dispatchEvent(new CustomEvent(`popup:${target}`));
   }
 
   setCurrentPage(currentPage) {

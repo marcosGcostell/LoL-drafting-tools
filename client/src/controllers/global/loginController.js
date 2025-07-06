@@ -1,18 +1,13 @@
-import User from '../../model/userModel.js';
 import appState from '../../appState.js';
 import LoginView from '../../view/global/loginView.js';
 import { validateAuthForm } from '../../services/auth.js';
 
 let loginView;
 
-export const handleUserBtn = e => {
-  // TODO Need to call the profile controller
-  if (appState.user?.userName) return;
-
+export const toggleModal = e => {
   if (!appState.popUpOn || appState.popUpOn === 'login') {
     loginView.toggleModal();
     appState.popUpOn = loginView.isModalShowed ? 'login' : '';
-    e.stopPropagation();
   }
 };
 
@@ -30,11 +25,9 @@ const loginHandler = async e => {
     return;
   }
 
-  console.log('Sending data to log in...');
-  const result = await User.login(userName, password);
-  console.log('Login completed!');
+  const result = await appState.user.login(userName, password);
   if (!result) {
-    loginView.errorMessage = User.response;
+    loginView.errorMessage = appState.user.response;
     loginView.renderError();
   } else {
     loginView.closeModal();
@@ -47,9 +40,10 @@ const btnSignupHandler = e => {};
 export const setHandlers = () => {
   loginView = new LoginView();
   loginView.init();
-  loginView.addHandlerUserBtn(handleUserBtn);
-  loginView.addHandlerModalBtns('close', handleUserBtn);
+  loginView.addHandlerModalBtns('close', toggleModal);
   loginView.addHandlerModalBtns('signup', btnSignupHandler);
   loginView.addHandlerForm(loginHandler);
   loginView.addHandlerModalBackground();
+
+  appState.addEventListener('popup:login', toggleModal);
 };

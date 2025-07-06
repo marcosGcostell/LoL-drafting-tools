@@ -1,5 +1,6 @@
 import User from './model/userModel.js';
 import * as backgroundController from './controllers/backgroundController.js';
+import * as headerController from './controllers/global/headerController.js';
 import * as starterController from './controllers/starterController.js';
 import * as countersController from './controllers/countersController.js';
 // import * as profileController from './controllers/profileController.js';
@@ -11,28 +12,32 @@ export const navigate = path => {
   window.dispatchEvent(new PopStateEvent('popstate'));
 };
 
+const loadCommonControllers = async () => {
+  await headerController.init();
+  await backgroundController.init();
+};
+
 const handleRoute = async () => {
   const path = window.location.pathname;
 
   const isLoggedIn = User.isLoggedIn();
 
   if (path === '/' || path === '/starter') {
-    // if (isLoggedIn) return navigate('/counters');
     const starter = await starterController.init();
-    if (starter) await backgroundController.init();
+    if (starter) await loadCommonControllers();
   } else if (path === '/counters') {
     const localData = JSON.parse(sessionStorage.getItem(LS_STATE));
     if (!localData?.lane) return navigate('/');
     await countersController.init();
-    await backgroundController.init();
+    await loadCommonControllers();
     // } else if (path === '/profile') {
     //   if (!isLoggedIn) return navigate('/');
     //   await profileController.init();
-    //   await backgroundController.init();
+    //   await loadCommonControllers();
     // } else if (path === '/signup') {
     //   if (isLoggedIn) return navigate('/counters');
     //   await signupController.init();
-    //   await backgroundController.init();
+    //   await loadCommonControllers();
   } else {
     document.querySelector('main').innerHTML =
       '<h1>404 - Página no encontrada</h1>';
