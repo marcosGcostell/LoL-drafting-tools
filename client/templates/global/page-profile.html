@@ -1,0 +1,82 @@
+<!-- PROFILE HEADER -->
+<section class="profile-header">
+  <div class="profile__save">
+    <button type="button" class="btn__profile btn__clickable">Save</button>
+    <button type="button" class="btn__profile btn__clickable">
+      Discard changes
+    </button>
+  </div>
+  <div class="profile__logout">
+    <button type="button" class="btn__profile btn__clickable">Log out</button>
+  </div>
+</section>
+<!-- DATA SECTION -->
+<section class="data-section">
+  <!-- PROFILE DATA -->
+  <div class="profile-data">
+    <form class="user__profile">
+      <label for="user__name">Name:</label>
+      <input id="user__name" name="name" type="text" />
+
+      <label for="user__username">Username:</label>
+      <div class="inline__input">
+        <input id="user__username" name="username" type="text" />
+        <button class="selector__clickable">Check</button>
+      </div>
+      <div class="separator"></div>
+      <label for="user__email">email:</label>
+      <div class="inline__input">
+        <input id="user__email" name="email" type="email" />
+        <button class="selector__clickable">Check</button>
+      </div>
+      <div class="profile__msg">
+        <span class="user__msg"
+          >Check your username or email before saving the data</span
+        >
+      </div>
+      <hr />
+      <label for="user__password">Change your password</label>
+      <div class="inline__input">
+        <label>Current password:</label>
+        <input
+          id="user__current__password"
+          name="current__password"
+          type="password"
+        />
+      </div>
+      <div class="inline__input">
+        <label>New password:</label>
+        <input id="user__new__password" name="new__password" type="password" />
+      </div>
+      <div class="inline__input">
+        <label>Confirm password:</label>
+        <input
+          id="user__confirm__password"
+          name="confirm__password"
+          type="password"
+        />
+        <button class="selector__clickable">Save</button>
+      </div>
+      <div class="profile__msg">
+        <span class="user__msg"
+          >This will log out the user. Need to confirm the password to
+          login</span
+        >
+      </div>
+      <hr />
+      <label for="user__email">Settigs:</label>
+      <div class="profile__settings">
+        <div class="inline__input">
+          <label>Default maximum lists items:</label>
+          <input id="max-items" type="text" />
+        </div>
+        <div class="inline__input">
+          <label>Default % Pick Rate Threshold > </label>
+          <input id="min-pr" type="text" />
+        </div>
+      </div>
+    </form>
+  </div>
+  <!-- CHAMPION POOL -->
+  <div class="profile-pool"></div>
+</section>

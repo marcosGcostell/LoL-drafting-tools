@@ -13,13 +13,13 @@ export default class PoolView extends View {
     this._message = 'Please, enter a champion name...';
     this._template = null;
     this._templateOnHold = null;
-    this._templatePromise = fetch(`${CHAMPION_TEMPLATE}`)
+    this._templatePromise = fetch(CHAMPION_TEMPLATE)
       .then(response => response.text())
       .then(data => {
         this._template = data;
         return data;
       });
-    this._templateOnHoldPromise = fetch(`${CHAMPION_ON_HOLD_TEMPLATE}`)
+    this._templateOnHoldPromise = fetch(CHAMPION_ON_HOLD_TEMPLATE)
       .then(response => response.text())
       .then(data => {
         this._templateOnHold = data;

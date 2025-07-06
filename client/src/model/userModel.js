@@ -26,7 +26,7 @@ class User extends EventTarget {
   }
 
   #defaultValues() {
-    this.__type = 'User';
+    this.__type = 'user';
     this._token = null;
     this._userName = '';
     this.name = '';

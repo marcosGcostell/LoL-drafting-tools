@@ -48,7 +48,6 @@ main {
 .top-section {
   display: flex;
   border-bottom: var(--color-grey-dark-4) solid 2px;
-  border-top: var(--color-grey-dark-4) solid 2px;
   height: 9rem;
   align-items: center;
   background-color: var(--color-grey-dark-2);
@@ -57,8 +56,6 @@ main {
 .data-section {
   width: 100%;
   max-width: 70rem;
-  /* min-height: 46rem; */
   display: flex;
   flex: 1;
-  border-bottom: var(--color-grey-dark-4) solid 2px;
 }

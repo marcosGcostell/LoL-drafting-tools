@@ -1,9 +1,9 @@
-import User from './model/userModel.js';
+import user from './model/userModel.js';
 import * as backgroundController from './controllers/backgroundController.js';
 import * as headerController from './controllers/global/headerController.js';
 import * as starterController from './controllers/starterController.js';
 import * as countersController from './controllers/countersController.js';
-// import * as profileController from './controllers/profileController.js';
+import * as profileController from './controllers/profileController.js';
 // import * as signupController from './controllers/signupController.js';
 import { LS_STATE } from './utils/config.js';
 
@@ -20,7 +20,7 @@ const loadCommonControllers = async () => {
 const handleRoute = async e => {
   const path = window.location.pathname;
   const isDOMReloaded = !(e instanceof PopStateEvent);
-  const isLoggedIn = User.isLoggedIn();
+  const isLoggedIn = user.isLoggedIn();
 
   if (path === '/' || path === '/starter') {
     const starter = await starterController.init();
@@ -30,10 +30,10 @@ const handleRoute = async e => {
     if (!localData?.lane) return navigate('/');
     await countersController.init();
     if (isDOMReloaded) await loadCommonControllers();
-    // } else if (path === '/profile') {
-    //   if (!isLoggedIn) return navigate('/');
-    //   await profileController.init();
-    //   await loadCommonControllers();
+  } else if (path === '/profile') {
+    if (!isLoggedIn) return navigate('/');
+    await profileController.init();
+    if (isDOMReloaded) await loadCommonControllers();
     // } else if (path === '/signup') {
     //   if (isLoggedIn) return navigate('/counters');
     //   await signupController.init();

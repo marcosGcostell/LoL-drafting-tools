@@ -11,6 +11,7 @@ const resetApp = () => {
 
 const handleUserBtn = e => {
   if (appState.user.isLoggedIn()) {
+    appState.setCurrentPage('profile');
     navigate('/profile');
   } else {
     appState.triggerPopUp('login');

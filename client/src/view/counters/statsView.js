@@ -11,13 +11,13 @@ export default class StatsView extends View {
     this._message = 'Please, select champion...';
     this._templateColumn = null;
     this._templateItem = null;
-    this._tempColumnPromise = fetch(`${STATS_COLUMN_TEMPLATE}`)
+    this._tempColumnPromise = fetch(STATS_COLUMN_TEMPLATE)
       .then(response => response.text())
       .then(data => {
         this._templateColumn = data;
         return data;
       });
-    this._tempItemPromise = fetch(`${STATS_ITEM_TEMPLATE}`)
+    this._tempItemPromise = fetch(STATS_ITEM_TEMPLATE)
       .then(response => response.text())
       .then(data => {
         this._templateItem = data;

@@ -7,7 +7,7 @@ export default class SearchView extends View {
     this._errorMessage = 'No champion match that name...';
     this._message = 'Please, enter a champion name...';
     this._template = null;
-    this._templatePromise = fetch(`${SEARCH_ITEM_TEMPLATE}`)
+    this._templatePromise = fetch(SEARCH_ITEM_TEMPLATE)
       .then(response => response.text())
       .then(data => {
         this._template = data;

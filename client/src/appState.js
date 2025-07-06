@@ -1,5 +1,5 @@
 import appData from './model/appData.js';
-import User from './model/userModel.js';
+import user from './model/userModel.js';
 import Patch from './model/patchModel.js';
 import * as dataModel from './model/dataModel.js';
 import { reviver } from './services/session.js';
@@ -31,9 +31,9 @@ class AppState extends EventTarget {
       }
     }
 
-    // Events redirected from User events
-    User.addEventListener('login', this.#loginUser.bind(this));
-    User.addEventListener('logout', this.resetAll.bind(this));
+    // Events redirected from user events
+    user.addEventListener('login', this.#loginUser.bind(this));
+    user.addEventListener('logout', this.resetAll.bind(this));
   }
 
   #defaultValues() {
@@ -53,19 +53,19 @@ class AppState extends EventTarget {
     this.statsLists = [];
     this.fixedStatsLists = [];
     this.statsListsOwner = [];
-    this.user = User;
+    this.user = user;
     this.popUpOn = '';
   }
 
   async #setUserDefaults() {
-    this.lane = User.data.primaryRole || this.lane;
+    this.lane = user.data.primaryRole || this.lane;
     this.vslane = this.lane;
-    this.rank = User.data.rank;
-    User.data.patch ? this.patch.setTimeMode() : this.patch.setVersionMode();
-    this.maxListItems = User.config.maxListItems;
-    this.pickRateThreshold = User.config.pickRateThreshold;
+    this.rank = user.data.rank;
+    user.data.patch ? this.patch.setTimeMode() : this.patch.setVersionMode();
+    this.maxListItems = user.config.maxListItems;
+    this.pickRateThreshold = user.config.pickRateThreshold;
     await this.setOption('lane', this.lane);
-    const pool = User.data.championPool[this.lane];
+    const pool = user.data.championPool[this.lane];
     if (pool?.length) {
       for (const champion of pool) {
         await this.addToPool(appData.getChampionByName(champion));
@@ -127,6 +127,7 @@ class AppState extends EventTarget {
 
   setAppMode(appMode) {
     this.appMode = appMode;
+    this.#save();
   }
 
   triggerPopUp(target) {
@@ -135,6 +136,7 @@ class AppState extends EventTarget {
 
   setCurrentPage(currentPage) {
     this.currentPage = currentPage;
+    this.#save();
   }
 
   // Change and update events: 'lane', 'bothLanes', 'rank', 'vslane', 'patch'

@@ -6,8 +6,6 @@
   height: 100%;
   background-color: var(--color-grey-dark-2);
   display: flex;
-  border-top: var(--color-grey-dark-4) solid 2px;
-  border-bottom: var(--color-grey-dark-4) solid 2px;
   z-index: 2000;
 }
 

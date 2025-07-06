@@ -1,7 +1,7 @@
 import View from '../global/view.js';
-import { LANE_STARTER_TEMPLATE } from '../../utils/config.js';
+import { PROFILE_PAGE_TEMPLATE } from '../../utils/config.js';
 
-class StarterView extends View {
+class ProfileView extends View {
   _parentElement;
 
   constructor() {
@@ -9,7 +9,7 @@ class StarterView extends View {
     this._errorMessage = 'Can not load the data';
     this._message = '';
     this._template = null;
-    this._templatePromise = fetch(LANE_STARTER_TEMPLATE)
+    this._templatePromise = fetch(PROFILE_PAGE_TEMPLATE)
       .then(response => response.text())
       .then(data => {
         this._template = data;
@@ -48,4 +48,4 @@ class StarterView extends View {
   }
 }
 
-export default new StarterView();
+export default new ProfileView();
