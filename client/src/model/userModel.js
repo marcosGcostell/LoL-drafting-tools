@@ -88,6 +88,10 @@ class User extends EventTarget {
     }
   }
 
+  getUpdated() {
+    return this;
+  }
+
   isLoggedIn() {
     return Boolean(this._token);
   }
@@ -127,7 +131,7 @@ class User extends EventTarget {
   }
 
   logout({ fireEvent = true } = {}) {
-    this.#defaultValues;
+    this.#defaultValues();
     sessionStorage.removeItem(LS_USER);
     if (fireEvent) this.dispatchEvent(new Event('logout'));
   }

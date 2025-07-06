@@ -1,7 +1,6 @@
 import appState from '../../appState.js';
 import HeaderView from '../../view/global/headerView.js';
 import { navigate } from '../../router.js';
-import { get } from 'mongoose';
 
 let headerView;
 
