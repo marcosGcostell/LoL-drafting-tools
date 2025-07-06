@@ -9,10 +9,9 @@ import {
 class User extends EventTarget {
   constructor(userName = '', token = null) {
     super();
+    this.#defaultValues();
     this._userName = userName;
     this._token = token;
-    this.__type = 'User';
-    this.response = '';
 
     this.#load();
     this.#save();
@@ -24,6 +23,73 @@ class User extends EventTarget {
 
   get token() {
     return this._token;
+  }
+
+  #defaultValues() {
+    this.__type = 'User';
+    this._token = null;
+    this._userName = '';
+    this.name = '';
+    this.email = '';
+    this.config = {};
+    this.data = {};
+    this.response = '';
+  }
+
+  #load() {
+    const localData = sessionStorage.getItem(LS_USER);
+    if (!localData) return;
+    try {
+      const parsed = JSON.parse(localData);
+      if (parsed.token && parsed.userName) {
+        this._userName = parsed.userName;
+        this._token = parsed.token;
+        this.dispatchEvent(new Event('login'));
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  #save() {
+    sessionStorage.setItem(
+      LS_USER,
+      JSON.stringify({
+        userName: this._userName,
+        token: this._token,
+      })
+    );
+  }
+
+  async getData() {
+    if (!this._token) return null;
+
+    try {
+      const response = await fetch(`${LOCAL_API}${USER_ROUTE}`, {
+        // method: 'GET',
+        headers: { Authorization: `Bearer ${this._token}` },
+      });
+
+      const { data } = await response.json();
+
+      if (!data?.user) {
+        this.response = 'Could not get the user data from the database.';
+        return null;
+      }
+      this.name = data.user.name;
+      this._userName = data.user.userName;
+      this.email = data.user.email;
+      this.config = data.user.config;
+      this.data = data.user.data;
+      return this;
+    } catch (err) {
+      this.response = err.message;
+      return null;
+    }
+  }
+
+  getUpdated() {
+    return this;
   }
 
   isLoggedIn() {
@@ -46,9 +112,14 @@ class User extends EventTarget {
       if (token) {
         this._userName = userName;
         this._token = token;
+
+        const data = await this.getData();
+        if (!data) return null;
+
         this.#save();
+        console.log('Logged from user. Dispatching event...');
         this.dispatchEvent(new Event('login'));
-        return token;
+        return data;
       } else {
         this.response = message;
         return null;
@@ -59,41 +130,16 @@ class User extends EventTarget {
     }
   }
 
-  logout() {
-    this._userName = '';
-    this._token = null;
+  logout({ fireEvent = true } = {}) {
+    this.#defaultValues();
     sessionStorage.removeItem(LS_USER);
-    this.dispatchEvent(new Event('logout'));
+    if (fireEvent) this.dispatchEvent(new Event('logout'));
   }
 
-  #save() {
-    sessionStorage.setItem(
-      LS_USER,
-      JSON.stringify({
-        userName: this._userName,
-        token: this._token,
-      })
-    );
-  }
-
-  #load() {
-    const localData = sessionStorage.getItem(LS_USER);
-    if (!localData) return;
-    try {
-      const parsed = JSON.parse(localData);
-      if (parsed.token && parsed.userName) {
-        this._userName = parsed.userName;
-        this._token = parsed.token;
-        this.dispatchEvent(new Event('login'));
-      }
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  static fromJSON(obj) {
-    const user = new User(obj.userName, obj.token);
-    return user;
+  fromJSON(obj) {
+    // const user = new User(obj.userName, obj.token);
+    // return user;
+    return this;
   }
 }
 

@@ -63,6 +63,8 @@ const userSchema = new mongoose.Schema({
   data: {
     primaryRole: { type: String, default: '' },
     secondaryRole: { type: String, default: '' },
+    rank: { type: String, default: 'all' },
+    patch: { type: String, default: '' },
     championPool: {
       top: { type: [String], default: [] },
       jungle: { type: [String], default: [] },

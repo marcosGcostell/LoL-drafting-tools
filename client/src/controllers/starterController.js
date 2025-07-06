@@ -1,6 +1,7 @@
 import appData from '../model/appData.js';
 import appState from '../appState.js';
 import starterView from '../view/starter/starterView.js';
+import * as loginController from './global/loginController.js';
 import { navigate } from '../router.js';
 import { STARTER_PAGE_TEMPLATE } from '../utils/config.js';
 
@@ -23,10 +24,18 @@ export const init = async () => {
     if (!template) throw new Error('HTML template is not found');
 
     document.querySelector('main').innerHTML = template;
+    appState.setCurrentPage('starter');
 
+    // Set the login modal handlers
+    loginController.setHandlers();
     // Render selector and set handler for starter lane selection
     await starterView.insertSelector(appData.toSortedArray('roles'));
     starterView.addHandlerSelector(chooseOptionHandler);
+
+    appState.addEventListener('user:login', e => {
+      e.stopImmediatePropagation();
+      navigate(`/${appState.appMode}`);
+    });
     return true;
   } catch (err) {
     // TODO should handle error here
