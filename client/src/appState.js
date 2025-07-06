@@ -140,7 +140,7 @@ class AppState extends EventTarget {
   // Change and update events: 'lane', 'bothLanes', 'rank', 'vslane', 'patch'
   async setOption(target, value) {
     let eventTarget = target;
-    this[target] = value;
+    if (target !== 'patch') this[target] = value;
     if (target === 'lane') {
       if (!this.tierlist.length || this.tierlistLane !== value) {
         this.vslane = value;

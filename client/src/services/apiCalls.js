@@ -15,7 +15,7 @@ export default async (route, queryData) => {
     _checkQuery(queryData);
     const query = `?lane=${queryData.lane}&rank=${queryData.rank}${
       queryData.vslane ? `&vslane=${queryData.vslane}` : ''
-    }${queryData.patch.toApi()}${
+    }${`&patch=${queryData.patch.mode}`}${
       queryData.sortedBy ? `&sort=${queryData.sortedBy}` : ''
     }`;
 

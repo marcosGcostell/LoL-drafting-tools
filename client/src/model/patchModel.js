@@ -1,44 +1,44 @@
 export default class Patch {
   constructor(version) {
     this._riotVersion = version;
-    this._patchState = 'version';
+    this._patchMode = '';
     this.__type = 'Patch';
   }
 
-  get state() {
-    return this._patchState;
+  get mode() {
+    return this._patchMode;
   }
 
-  set state(patchState) {
-    this._patchState = patchState;
+  set mode(patchMode) {
+    this._patchMode = patchMode;
   }
 
   setVersionMode() {
-    this._patchState = 'version';
+    this._patchMode = '';
     return this;
   }
 
   setTimeMode() {
-    this._patchState = null;
+    this._patchMode = '7';
     return this;
   }
 
   toggle() {
-    this._patchState = this._patchState ? null : 'version';
+    this._patchMode = this._patchMode ? '' : '7';
     return this;
   }
 
   toView() {
-    return this._patchState ? this._riotVersion : 'Last 7 days';
+    return this._patchMode ? 'Last 7 days' : this._riotVersion;
   }
 
-  toApi() {
-    return this._patchState ? '' : '7';
+  toProfile() {
+    return this._patchMode ? 'Last 7 days' : 'Active patch version';
   }
 
   static fromJSON(obj) {
     const patch = new Patch(obj._riotVersion);
-    patch.state = obj._patchState;
+    patch.mode = obj._patchMode;
     return patch;
   }
 }
