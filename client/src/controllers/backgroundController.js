@@ -5,7 +5,7 @@ import * as inputsController from './counters/inputsController.js';
 import * as searchController from './global/searchController.js';
 
 const resetApp = () => {
-  appState.resetAll();
+  appState.user.isLoggedIn() ? appState.user.logout() : appState.resetAll();
   navigate('/');
 };
 

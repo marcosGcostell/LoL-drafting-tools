@@ -78,5 +78,4 @@ export const initView = () => {
   ].forEach(target => {
     appState.addEventListener(target, showAllStatsFromState);
   });
-  appState.addEventListener('reset', clearStatsSection);
 };

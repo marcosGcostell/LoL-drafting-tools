@@ -91,5 +91,4 @@ export const initView = () => {
   ].forEach(target => {
     appState.addEventListener(target, showAllPoolFromState);
   });
-  appState.addEventListener('reset', _clearPool);
 };

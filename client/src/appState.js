@@ -40,16 +40,14 @@ class AppState extends EventTarget {
     }
 
     // Events redirected from User events
-    User.addEventListener('login', () =>
-      this.dispatchEvent(new Event('user:login'))
-    );
-    User.addEventListener('logout', () =>
-      this.dispatchEvent(new Event('user:logout'))
-    );
+    User.addEventListener('login', this.#loginUser.bind(this));
+    User.addEventListener('logout', this.resetAll.bind(this));
   }
 
   #defaultValues() {
     this.appMode = 'counters';
+    this.currentPage = 'starter';
+    this.silentMode = false;
     this.lane = null;
     this.rank = 'all';
     this.vslane = null;
@@ -65,6 +63,35 @@ class AppState extends EventTarget {
     this.statsListsOwner = [];
     this.user = User;
     this.popUpOn = '';
+  }
+
+  async #setUserDefaults() {
+    console.log('Reading state from user...');
+    this.lane = User.data.primaryRole || this.lane;
+    this.vslane = this.lane;
+    this.rank = User.data.rank;
+    User.data.patch ? this.patch.setTimeMode() : this.patch.setVersionMode();
+    this.maxListItems = User.config.maxListItems;
+    this.pickRateThreshold = User.config.pickRateThreshold;
+    await this.setOption('lane', this.lane);
+    const pool = User.data.championPool[this.lane];
+    if (pool?.length) {
+      for (const champion of pool) {
+        await this.addToPool(appData.getChampionByName(champion));
+      }
+    }
+  }
+
+  async #loginUser() {
+    console.log('login event catch...');
+    if (this.currentPage !== 'counters') {
+      this.silentMode = true;
+    }
+    await this.#setUserDefaults();
+    this.silentMode = false;
+    console.log('Dispatching state login event...');
+    this.#save();
+    this.dispatchEvent(new Event('user:login'));
   }
 
   #save() {
@@ -109,6 +136,14 @@ class AppState extends EventTarget {
     this.dispatchEvent(new CustomEvent('reload'));
   }
 
+  setAppMode(appMode) {
+    this.appMode = appMode;
+  }
+
+  setCurrentPage(currentPage) {
+    this.currentPage = currentPage;
+  }
+
   // Change and update events: 'lane', 'bothLanes', 'rank', 'vslane', 'patch'
   async setOption(target, value) {
     let eventTarget = target;
@@ -122,21 +157,25 @@ class AppState extends EventTarget {
     }
 
     this.#save();
-    // Event to display waiters
-    this.dispatchEvent(
-      new CustomEvent(`change:${eventTarget}`, {
-        detail: { target: eventTarget, value },
-      })
-    );
+    if (!this.silentMode) {
+      // Event to display waiters
+      this.dispatchEvent(
+        new CustomEvent(`change:${eventTarget}`, {
+          detail: { target: eventTarget, value },
+        })
+      );
+    }
 
     await dataModel.updateData(eventTarget);
 
     // Event to update views
-    this.dispatchEvent(
-      new CustomEvent(`updated:${eventTarget}`, {
-        detail: { target: eventTarget, value },
-      })
-    );
+    if (!this.silentMode) {
+      this.dispatchEvent(
+        new CustomEvent(`updated:${eventTarget}`, {
+          detail: { target: eventTarget, value },
+        })
+      );
+    }
   }
 
   setSetting(target, value) {
@@ -144,32 +183,38 @@ class AppState extends EventTarget {
     this.#fixTierlist();
     this.#fixAllStatsLists();
     this.#save();
-    this.dispatchEvent(
-      new CustomEvent('settings', { detail: { target, value } })
-    );
+    if (!this.silentMode) {
+      this.dispatchEvent(
+        new CustomEvent('settings', { detail: { target, value } })
+      );
+    }
   }
 
   async addToPool(champion) {
     if (this.pool.find(el => el.id === champion.id)) return;
 
-    this.dispatchEvent(
-      new CustomEvent('pool:add', {
-        detail: { index: this.pool.length, champion },
-      })
-    );
+    if (!this.silentMode) {
+      this.dispatchEvent(
+        new CustomEvent('pool:add', {
+          detail: { index: this.pool.length, champion },
+        })
+      );
+    }
 
     await dataModel.getNewData(champion);
 
     const index = this.pool.length - 1;
-    this.dispatchEvent(
-      new CustomEvent('pool:added', {
-        detail: {
-          index,
-          champion: this.pool[index],
-          stats: this.fixedStatsLists[index],
-        },
-      })
-    );
+    if (!this.silentMode) {
+      this.dispatchEvent(
+        new CustomEvent('pool:added', {
+          detail: {
+            index,
+            champion: this.pool[index],
+            stats: this.fixedStatsLists[index],
+          },
+        })
+      );
+    }
   }
 
   removeFromPool(index) {
@@ -179,7 +224,11 @@ class AppState extends EventTarget {
       this.fixedStatsLists.splice(index, 1);
       this.statsListsOwner.splice(index, 1);
       this.#save();
-      this.dispatchEvent(new CustomEvent('pool:remove', { detail: { index } }));
+      if (!this.silentMode) {
+        this.dispatchEvent(
+          new CustomEvent('pool:remove', { detail: { index } })
+        );
+      }
     }
   }
 
@@ -189,7 +238,9 @@ class AppState extends EventTarget {
     this.fixedStatsLists = [];
     this.statsListsOwner = [];
     this.#save();
-    this.dispatchEvent(new CustomEvent('pool:reset'));
+    if (!this.silentMode) {
+      this.dispatchEvent(new CustomEvent('pool:reset'));
+    }
   }
 
   resetAll() {

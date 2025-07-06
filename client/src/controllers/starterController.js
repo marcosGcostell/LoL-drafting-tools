@@ -23,10 +23,16 @@ export const init = async () => {
     if (!template) throw new Error('HTML template is not found');
 
     document.querySelector('main').innerHTML = template;
+    appState.setCurrentPage('starter');
 
     // Render selector and set handler for starter lane selection
     await starterView.insertSelector(appData.toSortedArray('roles'));
     starterView.addHandlerSelector(chooseOptionHandler);
+
+    appState.addEventListener('user:login', e => {
+      e.stopImmediatePropagation();
+      navigate(`/${appState.appMode}`);
+    });
     return true;
   } catch (err) {
     // TODO should handle error here

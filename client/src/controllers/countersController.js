@@ -15,6 +15,8 @@ export const init = async () => {
 
     document.querySelector('main').innerHTML = template;
 
+    appState.setCurrentPage('counters');
+
     // Set the options inputs and search handlers
     await inputsController.setHandlers();
     searchController.setHandlers();

@@ -17,6 +17,7 @@ const handleRoute = async () => {
   const isLoggedIn = User.isLoggedIn();
 
   if (path === '/' || path === '/starter') {
+    // if (isLoggedIn) return navigate('/counters');
     const starter = await starterController.init();
     if (starter) await backgroundController.init();
   } else if (path === '/counters') {

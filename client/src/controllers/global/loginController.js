@@ -16,7 +16,8 @@ export const handleUserBtn = e => {
   }
 };
 
-const loginHandler = e => {
+const loginHandler = async e => {
+  e.preventDefault();
   const form = e.target;
   const formData = new FormData(form);
   const userName = formData.get('username')?.trim();
@@ -29,12 +30,16 @@ const loginHandler = e => {
     return;
   }
 
-  if (!User.login(userName, password)) {
+  console.log('Sending data to log in...');
+  const result = await User.login(userName, password);
+  console.log('Login completed!');
+  if (!result) {
     loginView.errorMessage = User.response;
     loginView.renderError();
+  } else {
+    loginView.closeModal();
+    appState.popUpOn = '';
   }
-  loginView.closeModal();
-  appState.popUpOn = '';
 };
 
 const btnSignupHandler = e => {};

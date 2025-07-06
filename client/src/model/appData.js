@@ -112,7 +112,10 @@ class AppData {
 
   getChampionByName(championName) {
     const idResult = this.idList.find(
-      id => this.champions[id].name === championName
+      id =>
+        this.champions[id].name === championName ||
+        this.champions[id].id === championName ||
+        this.champions[id].riotId === championName
     );
     return this.champions[idResult];
   }
