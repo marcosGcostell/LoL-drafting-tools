@@ -239,6 +239,7 @@ class AppState extends EventTarget {
   resetAll() {
     this.#defaultValues();
     sessionStorage.removeItem(LS_STATE);
+    this.user.logout({ fireEvent: false });
     this.dispatchEvent(new CustomEvent('reset'));
   }
 

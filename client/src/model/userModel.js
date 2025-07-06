@@ -126,10 +126,10 @@ class User extends EventTarget {
     }
   }
 
-  logout() {
+  logout({ fireEvent = true } = {}) {
     this.#defaultValues;
     sessionStorage.removeItem(LS_USER);
-    this.dispatchEvent(new Event('logout'));
+    if (fireEvent) this.dispatchEvent(new Event('logout'));
   }
 
   fromJSON(obj) {
