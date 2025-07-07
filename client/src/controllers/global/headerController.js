@@ -19,7 +19,7 @@ const handleUserBtn = e => {
   }
 };
 
-const userNameHandler = e => {
+const userNameHandler = _ => {
   appState.user.isLoggedIn()
     ? headerView.showUserName(appState.user.userName)
     : headerView.showUserName('Not logged in');
@@ -32,6 +32,8 @@ export async function init() {
   headerView.addHandlerUserBtn(handleUserBtn);
   appState.addEventListener('user:login', userNameHandler);
   appState.addEventListener('user:logout', userNameHandler);
+
+  userNameHandler(null);
 
   // FIXME This is a reset button for development on the logo
   document.querySelector('.header__logo').addEventListener('click', resetApp);

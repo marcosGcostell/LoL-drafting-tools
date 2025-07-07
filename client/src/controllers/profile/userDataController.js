@@ -37,7 +37,7 @@ const checkUsername = () => {
 
   const message = authService.validateUsername(userName, true);
   if (message) {
-    userDataView.setUserMsg(message);
+    userDataView.showUserMsg(message);
     return;
   }
 
@@ -50,7 +50,7 @@ const checkEmail = () => {
 
   const message = authService.validateEmail(email, true);
   if (message) {
-    userDataView.setUserMsg(message);
+    userDataView.showUserMsg(message);
     return;
   }
 
@@ -91,7 +91,7 @@ const checkUserData = target => {
   } else return;
 
   if (message) {
-    userDataView.setUserMsg(message);
+    userDataView.showUserMsg(message);
     return;
   }
 

@@ -71,22 +71,18 @@ export default class UserDataView extends View {
   }
 
   // Pass handler to activate. Omit handler to disable
-  changeCheckBtn(target, handler = null) {
+  async changeCheckBtn(target, handler = null) {
     if (this.isActive[target] === (handler !== null)) return;
 
     const btn = document.querySelector(`#${target}__btn`);
-    this._parentElement = btn.closest('div');
+    this._parentElement = btn.parentElement;
 
     const action = handler ? 'activate' : 'disable';
-    this.render([target, action], { noClear: true });
+    await this.render([target, action], { noClear: true });
     btn.remove();
 
-    if (handler) {
-      this.addHandlerBtn(target, handler);
-      this.isActive[target] = true;
-    } else {
-      this.isActive[target] = false;
-    }
+    this.isActive[target] = !!handler;
+    if (handler) this.addHandlerBtn(target, handler);
   }
 
   setFocus(target) {
@@ -121,10 +117,7 @@ export default class UserDataView extends View {
   }
 
   _generateActiveMarkup(target) {
-    return `<button id="${target}__btn" class="selector__clickable">Check</button>`.replace(
-      'Check',
-      target === 'password' ? 'Save' : 'Check'
-    );
+    return `<button id="${target}__btn" class="selector__clickable">Check</button>`;
   }
 
   _generateDisabledMarkup(target) {
@@ -135,14 +128,14 @@ export default class UserDataView extends View {
         </div>`;
   }
 
-  _setMaxItems(value) {
+  setMaxItems(value) {
     if (!value || isNaN(value) || value < 1) return;
     const maxItemsElement = document.querySelector('#max-items');
-    maxItemsElement.value = value;
+    maxItemsElement.value = value.toFixed(0);
     maxItemsElement.blur();
   }
 
-  _setPickRateThreshold(value) {
+  setPickRateThreshold(value) {
     if (!value || isNaN(value) || value < 1) return;
     const pickRateElement = document.querySelector('#min-pr');
     pickRateElement.value = value.toFixed(1);
