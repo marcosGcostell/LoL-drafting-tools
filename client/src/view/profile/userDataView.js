@@ -35,6 +35,7 @@ export default class UserDataView extends View {
       .querySelector(`#${target}__btn`)
       .addEventListener('click', function (e) {
         e.preventDefault();
+        e.stopPropagation();
         handler(target);
       });
   }
