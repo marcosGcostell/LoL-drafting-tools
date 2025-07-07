@@ -4,6 +4,7 @@ import Champion from '../models/riot-champion-model.js';
 import catchAsync from '../models/utils/catch-async.js';
 import AppError from '../models/utils/app-error.js';
 import { RESERVED_USER_NAMES } from '../models/utils/config.js';
+import e from 'express';
 
 const _isValidUserName = userName => {
   const usernameRegex = /^[a-zA-Z][a-zA-Z0-9_]*$/;
@@ -89,6 +90,33 @@ export const validateUserData = catchAsync(async (req, res, next) => {
   }
 
   next();
+});
+
+export const userExists = catchAsync(async (req, res, next) => {
+  const { userName, email } = req.body;
+
+  if (!userName && !email) {
+    return next(new AppError('Field can not be empty', 400));
+  }
+  if (email && !User.isValidEmail(email)) {
+    return next(new AppError('Please provide a valid email', 400));
+  }
+
+  const user = await User.findOne({
+    $or: [{ email }, { userNameToLower: userName?.toLowerCase() }],
+  });
+
+  const checkedField = userName ? 'userName' : 'email';
+  if (user) {
+    return next(
+      new AppError(`User with this ${checkedField} already exists`, 400)
+    );
+  }
+
+  res.status(200).json({
+    status: 'success',
+    isValid: true,
+  });
 });
 
 export const getAllUsers = catchAsync(async (req, res, next) => {

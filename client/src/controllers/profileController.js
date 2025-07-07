@@ -2,13 +2,17 @@ import appState from '../appState.js';
 import * as userDataController from './profile/userDataController.js';
 import UserHeaderView from '../view/profile/userHeaderView.js';
 import { PROFILE_PAGE_TEMPLATE } from '../utils/config.js';
+import { navigate } from '../router.js';
 
 let userHeaderView;
 
 // TODO implement header buttons handlers
 const logout = () => {};
 const saveProfile = () => {};
-const discardChanges = () => {};
+const discardChanges = () => {
+  appState.setCurrentPage(appState.appMode);
+  navigate(`/${appState.appMode}`);
+};
 
 export const init = async () => {
   try {
