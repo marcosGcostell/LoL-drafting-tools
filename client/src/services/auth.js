@@ -1,28 +1,33 @@
+import { checkUserFromAPI } from './apiCalls.js';
 import { PASSWORD_MIN_LENGTH } from '../../../models/utils/config.js';
 
-export const validateEmail = (email, checkOnApi = false) => {
+export const validateEmail = async (email, checkOnApi = false) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!email || !emailRegex.test(email)) {
     return 'Please, provide a valid email.';
   }
   if (!checkOnApi) return null;
 
-  // Check on API
+  const message = checkUserFromAPI({ email });
+  if (message) return message;
+
   return null;
 };
 
-export const validateUsername = (userName, checkOnApi = false) => {
+export const validateUsername = async (userName, checkOnApi = false) => {
   const usernameRegex = /^[a-zA-Z][a-zA-Z0-9_]*$/;
   if (!usernameRegex.test(userName)) {
     return 'User name should start with a letter and use only letters, numbers or underscore(_)';
   }
   if (!checkOnApi) return null;
 
-  // Check on API
+  const message = checkUserFromAPI({ userName });
+  if (message) return message;
+
   return null;
 };
 
-export const validatePassword = (
+export const validatePassword = async (
   { oldPassword, password, confirmPassword },
   { length = true, confirm = false, change = false } = { length: true }
 ) => {
@@ -42,7 +47,7 @@ export const validatePassword = (
   return null;
 };
 
-export const validateAuthForm = (fields, isSignup = false) => {
+export const validateAuthForm = async (fields, isSignup = false) => {
   const { userName, password, email, confirmPassword, termsAccepted } = fields;
   let message = null;
 
@@ -50,19 +55,19 @@ export const validateAuthForm = (fields, isSignup = false) => {
     return 'Please, provide an username or email and a password.';
   }
 
-  message = validatePassword({ password }, { length: true });
+  message = await validatePassword({ password }, { length: true });
   if (message) return message;
 
   // Signup validators
 
   if (isSignup) {
-    message = validateUsername(userName);
+    message = await validateUsername(userName);
     if (message) return message;
 
-    message = validateEmail(email);
+    message = await validateEmail(email);
     if (message) return message;
 
-    message = validatePassword(
+    message = await validatePassword(
       { password, confirmPassword },
       { length: false, confirm: true }
     );

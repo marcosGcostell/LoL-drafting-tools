@@ -8,6 +8,7 @@ export const STATS_ROUTE = 'stats';
 export const USER_ROUTE = 'users/me';
 export const LOGIN_ROUTE = 'users/login';
 export const SIGNUP_ROUTE = 'users/signup';
+export const CHECK_USER_ROUTE = 'users/check';
 
 // Keys for local storage
 export const LS_APP_DATA = 'draftKingAppData';

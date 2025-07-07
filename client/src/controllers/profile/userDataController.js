@@ -2,7 +2,6 @@ import appState from '../../appState.js';
 import * as profileModel from '../../model/profileModel.js';
 import * as authService from '../../services/auth.js';
 import UserDataView from '../../view/profile/userDataView.js';
-import { validateAuthForm } from '../../services/auth.js';
 
 let userDataView;
 
@@ -32,37 +31,11 @@ const pickRateHandler = value => {
   userDataView.setPickRateThreshold(appState.pickRateThreshold);
 };
 
-const checkUsername = () => {
-  const userName = profileModel.getFormField(userDataView.form, 'username');
-
-  const message = authService.validateUsername(userName, true);
-  if (message) {
-    userDataView.showUserMsg(message);
-    return;
-  }
-
-  userDataView.resetUserMsg();
-  userDataView.changeCheckBtn('username');
-};
-
-const checkEmail = () => {
-  const email = profileModel.getFormField(userDataView.form, 'email');
-
-  const message = authService.validateEmail(email, true);
-  if (message) {
-    userDataView.showUserMsg(message);
-    return;
-  }
-
-  userDataView.resetUserMsg();
-  userDataView.changeCheckBtn('email');
-};
-
-const savePassword = _ => {
+const savePassword = async _ => {
   const { password, new__password, confirm__password } =
     profileModel.getPasswordFields(userDataView.form);
 
-  const message = authService.validatePassword(
+  const message = await authService.validatePassword(
     {
       oldPassword: password,
       password: new__password,
@@ -80,17 +53,22 @@ const savePassword = _ => {
   userDataView.togglePanel();
 };
 
-const checkUserData = target => {
-  const email = profileModel.getFormField(userDataView.form, target);
+const checkUserData = async target => {
+  const field = profileModel.getFormField(userDataView.form, target);
 
   let message = null;
   if (target === 'username') {
-    message = authService.validateUsername(email, true);
+    message = await authService.validateUsername(field, true);
   } else if (target === 'email') {
-    message = authService.validateEmail(email, true);
+    message = await authService.validateEmail(field, true);
   } else return;
 
-  if (message) {
+  const fieldIsChanged =
+    (target === 'username' &&
+      field.toLowerCase() !== appState.user.userName.toLowerCase()) ||
+    (target === 'email' &&
+      field.toLowerCase() !== appState.user.email.toLowerCase());
+  if (message && fieldIsChanged) {
     userDataView.showUserMsg(message);
     return;
   }

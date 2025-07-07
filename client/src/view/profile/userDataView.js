@@ -26,8 +26,8 @@ export default class UserDataView extends View {
     document.querySelector('#name').value = name || '';
     document.querySelector('#username').value = userName || '';
     document.querySelector('#email').value = email || '';
-    this._setMaxItems(config?.maxListItems);
-    this._setPickRateThreshold(config?.pickRateThreshold);
+    this.setMaxItems(config?.maxListItems);
+    this.setPickRateThreshold(config?.pickRateThreshold);
   }
 
   addHandlerBtn(target, handler) {

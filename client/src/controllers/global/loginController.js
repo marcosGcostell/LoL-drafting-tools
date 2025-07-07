@@ -18,7 +18,7 @@ const loginHandler = async e => {
   const userName = formData.get('username')?.trim();
   const password = formData.get('password');
 
-  const errorMessage = validateAuthForm({ userName, password });
+  const errorMessage = await validateAuthForm({ userName, password });
   if (errorMessage) {
     loginView.errorMessage = errorMessage;
     loginView.renderError();

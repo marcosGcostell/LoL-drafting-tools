@@ -4,7 +4,6 @@ import Champion from '../models/riot-champion-model.js';
 import catchAsync from '../models/utils/catch-async.js';
 import AppError from '../models/utils/app-error.js';
 import { RESERVED_USER_NAMES } from '../models/utils/config.js';
-import e from 'express';
 
 const _isValidUserName = userName => {
   const usernameRegex = /^[a-zA-Z][a-zA-Z0-9_]*$/;

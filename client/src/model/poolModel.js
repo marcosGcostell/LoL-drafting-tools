@@ -1,4 +1,4 @@
-import fetchListFromAPI from '../services/apiCalls.js';
+import { fetchListFromAPI } from '../services/apiCalls.js';
 import { STATS_ROUTE } from '../utils/config.js';
 
 // const _hasChanged = (champion, index) => {
