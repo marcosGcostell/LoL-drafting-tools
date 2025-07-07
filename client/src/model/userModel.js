@@ -10,25 +10,17 @@ class User extends EventTarget {
   constructor(userName = '', token = null) {
     super();
     this.#defaultValues();
-    this._userName = userName;
-    this._token = token;
+    this.userName = userName;
+    this.token = token;
 
     this.#load();
     this.#save();
   }
 
-  get userName() {
-    return this._userName;
-  }
-
-  get token() {
-    return this._token;
-  }
-
   #defaultValues() {
     this.__type = 'user';
-    this._token = null;
-    this._userName = '';
+    this.token = null;
+    this.userName = '';
     this.name = '';
     this.email = '';
     this.config = {};
@@ -42,8 +34,7 @@ class User extends EventTarget {
     try {
       const parsed = JSON.parse(localData);
       if (parsed.token && parsed.userName) {
-        this._userName = parsed.userName;
-        this._token = parsed.token;
+        Object.assign(this, parsed);
         this.dispatchEvent(new Event('login'));
       }
     } catch (err) {
@@ -52,22 +43,17 @@ class User extends EventTarget {
   }
 
   #save() {
-    sessionStorage.setItem(
-      LS_USER,
-      JSON.stringify({
-        userName: this._userName,
-        token: this._token,
-      })
-    );
+    const data = { ...this };
+    sessionStorage.setItem(LS_USER, JSON.stringify(data));
   }
 
   async getData() {
-    if (!this._token) return null;
+    if (!this.token) return null;
 
     try {
       const response = await fetch(`${LOCAL_API}${USER_ROUTE}`, {
         // method: 'GET',
-        headers: { Authorization: `Bearer ${this._token}` },
+        headers: { Authorization: `Bearer ${this.token}` },
       });
 
       const { data } = await response.json();
@@ -77,7 +63,7 @@ class User extends EventTarget {
         return null;
       }
       this.name = data.user.name;
-      this._userName = data.user.userName;
+      this.userName = data.user.userName;
       this.email = data.user.email;
       this.config = data.user.config;
       this.data = data.user.data;
@@ -93,10 +79,10 @@ class User extends EventTarget {
   }
 
   isLoggedIn() {
-    return Boolean(this._token);
+    return Boolean(this.token);
   }
 
-  async login(userName, password) {
+  async checkUserPassword(userName, password) {
     if (!userName || !password) {
       this.response = 'Please, provide an username or email and a password.';
       return null;
@@ -109,9 +95,23 @@ class User extends EventTarget {
       });
 
       const { token, message } = await response.json();
+      return { token, message };
+    } catch (err) {
+      this.response = err.message;
+      return null;
+    }
+  }
+
+  async login(userName, password) {
+    try {
+      const { token, message } = await this.checkUserPassword(
+        userName,
+        password
+      );
+
       if (token) {
-        this._userName = userName;
-        this._token = token;
+        this.userName = userName;
+        this.token = token;
 
         const data = await this.getData();
         if (!data) return null;
@@ -136,9 +136,7 @@ class User extends EventTarget {
     if (fireEvent) this.dispatchEvent(new Event('logout'));
   }
 
-  fromJSON(obj) {
-    // const user = new User(obj.userName, obj.token);
-    // return user;
+  fromJSON(_) {
     return this;
   }
 }

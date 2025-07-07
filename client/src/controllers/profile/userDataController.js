@@ -1,0 +1,123 @@
+import appState from '../../appState.js';
+import * as profileModel from '../../model/profileModel.js';
+import * as authService from '../../services/auth.js';
+import UserDataView from '../../view/profile/userDataView.js';
+import { validateAuthForm } from '../../services/auth.js';
+
+let userDataView;
+
+export const togglePanel = _ => {
+  if (!appState.popUpOn || appState.popUpOn === 'password') {
+    userDataView.togglePanel();
+    appState.popUpOn = userDataView.isPanelShowed ? 'password' : '';
+    if (userDataView.isPanelShowed) userDataView.showPasswordMsg('');
+  }
+};
+
+const listItemsHandler = value => {
+  const parsedValue = parseInt(value);
+  if (parsedValue) {
+    appState.setSetting('maxListItems', parsedValue);
+  }
+  // Need to set again the value to display correct format
+  userDataView.setMaxItems(appState.maxListItems);
+};
+
+const pickRateHandler = value => {
+  const parsedValue = parseFloat(value);
+  if (parsedValue) {
+    appState.setSetting('pickRateThreshold', parsedValue);
+  }
+  // Need to set again the value to display correct format
+  userDataView.setPickRateThreshold(appState.pickRateThreshold);
+};
+
+const checkUsername = () => {
+  const userName = profileModel.getFormField(userDataView.form, 'username');
+
+  const message = authService.validateUsername(userName, true);
+  if (message) {
+    userDataView.setUserMsg(message);
+    return;
+  }
+
+  userDataView.resetUserMsg();
+  userDataView.changeCheckBtn('username');
+};
+
+const checkEmail = () => {
+  const email = profileModel.getFormField(userDataView.form, 'email');
+
+  const message = authService.validateEmail(email, true);
+  if (message) {
+    userDataView.setUserMsg(message);
+    return;
+  }
+
+  userDataView.resetUserMsg();
+  userDataView.changeCheckBtn('email');
+};
+
+const savePassword = _ => {
+  const { password, new__password, confirm__password } =
+    profileModel.getPasswordFields(userDataView.form);
+
+  const message = authService.validatePassword(
+    {
+      oldPassword: password,
+      password: new__password,
+      confirmPassword: confirm__password,
+    },
+    { length: true, confirm: true, change: true }
+  );
+
+  if (message) {
+    userDataView.showPasswordMsg(message);
+    return;
+  }
+
+  userDataView.showPasswordMsg('Password changed successfully');
+  userDataView.togglePanel();
+};
+
+const checkUserData = target => {
+  const email = profileModel.getFormField(userDataView.form, target);
+
+  let message = null;
+  if (target === 'username') {
+    message = authService.validateUsername(email, true);
+  } else if (target === 'email') {
+    message = authService.validateEmail(email, true);
+  } else return;
+
+  if (message) {
+    userDataView.setUserMsg(message);
+    return;
+  }
+
+  userDataView.resetUserMsg();
+  userDataView.changeCheckBtn(target);
+};
+
+const activateInputBtn = target => {
+  userDataView.changeCheckBtn(target, checkUserData.bind(null, target));
+};
+
+export const init = async () => {
+  // Set user data in the form
+  userDataView = new UserDataView();
+  userDataView.init(appState.user);
+  // Load champion pool
+
+  // Set handlers for the profile view
+  // Fix Buttons
+  userDataView.addHandlerBtn('password', togglePanel);
+  userDataView.addHandlerBtn('password__save', savePassword);
+  // Disabled buttons
+  ['username', 'email'].forEach(id => {
+    userDataView.addHandlerInput(id, activateInputBtn);
+  });
+  // Settings inputs changes
+  userDataView.addHandlerCommit('max-items', listItemsHandler);
+  userDataView.addHandlerCommit('min-pr', pickRateHandler);
+};

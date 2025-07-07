@@ -1,5 +1,14 @@
 import appState from '../appState.js';
+import * as userDataController from './profile/userDataController.js';
+import UserHeaderView from '../view/profile/userHeaderView.js';
 import { PROFILE_PAGE_TEMPLATE } from '../utils/config.js';
+
+let userHeaderView;
+
+// TODO implement header buttons handlers
+const logout = () => {};
+const saveProfile = () => {};
+const discardChanges = () => {};
 
 export const init = async () => {
   try {
@@ -10,6 +19,15 @@ export const init = async () => {
 
     document.querySelector('main').innerHTML = template;
     appState.setCurrentPage('profile');
+
+    // initialize the views
+    userHeaderView = new UserHeaderView();
+    userDataController.init();
+
+    // Set handlers for the header buttons
+    userHeaderView.addHandlerBtn('logout', logout);
+    userHeaderView.addHandlerBtn('save', saveProfile);
+    userHeaderView.addHandlerBtn('discard', discardChanges);
   } catch (err) {
     // TODO should handle error here
     throw err;
