@@ -13,31 +13,27 @@ export const getPasswordFields = form => {
   return values;
 };
 
-export const getChanges = form => {
+export const getChanges = (form, user) => {
   const changes = {};
   const formData = new FormData(form);
   const fields = ['name', 'username', 'email', 'max-items', 'min-pr'];
 
-  // fields.filter(field => )
+  const config = {};
+  ['max-items', 'min-pr'].forEach(option => {
+    const formValue = +formData.get(option)?.trim();
+    if (formValue !== user.config[option]) {
+      config[option] = formValue;
+    }
+  });
 
-  //   const valorForm = formData.get(campo)?.trim();
-  //   // Solo comparar username y email con appState.user, el resto son para cambio de contraseña
-  //   if (
-  //     (campo === 'username' || campo === 'email') &&
-  //     valorForm !== appState.user[campo]
-  //   ) {
-  //     cambios[campo] = valorForm;
-  //   }
-  //   // Para contraseñas, solo añadir si hay valor
-  //   if (
-  //     (campo === 'password' ||
-  //       campo === 'new__password' ||
-  //       campo === 'confirm__password') &&
-  //     valorForm
-  //   ) {
-  //     cambios[campo] = valorForm;
-  //   }
-  // });
+  const userChanges = {};
+  if (Object.keys(config).length) userChanges.config = config;
+  ['name', 'username', 'email'].forEach(option => {
+    const formValue = formData.get(option)?.trim();
+    if (formValue !== user[option]) {
+      userChanges[option] = formValue;
+    }
+  });
 
-  // return cambios;
+  return userChanges;
 };

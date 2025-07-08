@@ -28,7 +28,7 @@ export const validateUsername = async (userName, checkOnApi = false) => {
 };
 
 const checkUserPassword = async (user, password) => {
-  const { token } = await user.checkUserPassword(user.userName, password);
+  const { token } = await user.apiLoginRequest(user.userName, password);
 
   return token ? { token } : 'Current password is incorrect.';
 };

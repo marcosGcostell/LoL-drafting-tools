@@ -35,10 +35,9 @@ export const initView = () => {
     'updated:vslane',
     'updated:rank',
     'updated:patch',
-    'settings',
-    'reload',
+    'updated:settings',
+    'app:reload',
   ].forEach(target => {
     appState.addEventListener(target, showTierlistFromState);
   });
-  appState.addEventListener('reset', clearTierlist);
 };

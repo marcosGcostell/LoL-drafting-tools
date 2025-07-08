@@ -30,7 +30,7 @@ export async function init() {
 
   // Set the login button handler
   headerView.addHandlerUserBtn(handleUserBtn);
-  ['user:login', 'user:logout', 'reload'].forEach(event =>
+  ['user:login', 'user:logout', 'app:reload'].forEach(event =>
     appState.addEventListener(event, userNameHandler)
   );
 

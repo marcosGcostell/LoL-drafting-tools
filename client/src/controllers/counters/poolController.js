@@ -87,7 +87,7 @@ export const initView = () => {
     'updated:bothLanes',
     'updated:rank',
     'updated:patch',
-    'reload',
+    'app:reload',
   ].forEach(target => {
     appState.addEventListener(target, showAllPoolFromState);
   });

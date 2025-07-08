@@ -89,5 +89,5 @@ export const setHandlers = async () => {
   inputsView.addHandlerInput(listItemsHandler, 'max-items');
   inputsView.addHandlerInput(pickRateHandler, 'min-pr');
 
-  appState.addEventListener('reload', setOptionsFromState);
+  appState.addEventListener('app:reload', setOptionsFromState);
 };

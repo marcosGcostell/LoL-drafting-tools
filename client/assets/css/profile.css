@@ -15,12 +15,19 @@
   padding: 1rem;
 }
 
-.profile__logout {
+.profile__header__msg {
   flex: 1;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding-left: 2rem;
+}
+
+.profile__logout {
   display: flex;
   justify-content: right;
   align-items: center;
-
+  width: 8.5rem;
   gap: 1rem;
   padding: 0 1rem;
 }

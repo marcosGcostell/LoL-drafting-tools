@@ -58,6 +58,7 @@ const savePassword = async _ => {
     userDataView.showPasswordMsg(appState.user.response);
   }
 
+  appState.userUpdated();
   userDataView.showPasswordMsg('Password changed successfully.');
   userDataView.togglePanel();
 };
@@ -88,6 +89,24 @@ const checkUserData = async target => {
 
 const activateInputBtn = target => {
   userDataView.changeCheckBtn(target, checkUserData.bind(null, target));
+};
+
+export const isFormActive = () => {
+  if (
+    appState.popUpOn ||
+    userDataView.isActive.userName ||
+    userDataView.isActive.email
+  ) {
+    userDataView.showUserMsg(
+      'Pleae, check your username or email before saving the data'
+    );
+    return true;
+  }
+  return false;
+};
+
+export const getFormChanges = () => {
+  return profileModel.getChanges(userDataView.form, appState.user);
 };
 
 export const init = async () => {

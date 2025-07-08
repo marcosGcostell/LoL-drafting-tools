@@ -13,7 +13,8 @@ export default class UserDataView extends View {
     this.confirmPasswordInput = document.querySelector('#confirm__password');
     this.passwordPopup.addEventListener('click', e => e.stopPropagation());
 
-    this.userMsg = 'Check your username or email before saving the data';
+    this.userMsg =
+      'Username and email are valid. Check before save if you change them';
 
     this.isActive = {
       username: false,

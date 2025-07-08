@@ -4,6 +4,7 @@ import { resetApp } from './global/headerController.js';
 import UserHeaderView from '../view/profile/userHeaderView.js';
 import { PROFILE_PAGE_TEMPLATE } from '../utils/config.js';
 import { navigate } from '../router.js';
+import { wait } from '../utils/helpers.js';
 
 let userHeaderView;
 
@@ -12,7 +13,27 @@ const logout = () => {
   resetApp();
 };
 
-const saveProfile = () => {};
+const saveProfile = async () => {
+  if (userDataController.isFormActive()) return;
+
+  const data = userDataController.getFormChanges();
+  if (!Object.keys(data).length) discardChanges();
+
+  try {
+    const result = appState.user.updateData(data);
+    if (result) {
+      userHeaderView.headerMessage.textContent =
+        '✅ User successfully updated.';
+      await wait(1);
+      userHeaderView.headerMessage.textContent = '';
+      discardChanges();
+    }
+
+    userHeaderView.headerMessage.textContent = appState.user.response;
+    await wait(1);
+    userHeaderView.headerMessage.textContent = '';
+  } catch (err) {}
+};
 
 const discardChanges = () => {
   appState.setCurrentPage(appState.appMode);

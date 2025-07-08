@@ -99,7 +99,11 @@ class User extends EventTarget {
       }
 
       if (body?.password) {
-        if (!(await this.login(this.userName, body.password))) {
+        if (
+          !(await this.login(this.userName, body.password, {
+            silentMode: true,
+          }))
+        ) {
           this.response = `Could't login with new password. Error: ${this.response}`;
           return null;
         }
@@ -122,7 +126,7 @@ class User extends EventTarget {
     return Boolean(this.token);
   }
 
-  async checkUserPassword(loginName, password) {
+  async apiLoginRequest(loginName, password) {
     if (!loginName || !password) {
       this.response = 'Please, provide an username or email and a password.';
       return null;
@@ -146,9 +150,9 @@ class User extends EventTarget {
     }
   }
 
-  async login(loginName, password) {
+  async login(loginName, password, { silentMode = false } = {}) {
     try {
-      const { token, message } = await this.checkUserPassword(
+      const { token, message } = await this.apiLoginRequest(
         loginName,
         password
       );
@@ -168,7 +172,7 @@ class User extends EventTarget {
       }
 
       this.#save();
-      this.dispatchEvent(new Event('login'));
+      if (!silentMode) this.dispatchEvent(new Event('login'));
       return data;
     } catch (err) {
       this.response = err.message;

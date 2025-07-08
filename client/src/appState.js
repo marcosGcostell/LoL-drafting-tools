@@ -122,7 +122,7 @@ class AppState extends EventTarget {
     if (this.vslane !== this.tierlistLane) {
       await dataModel.getNewTierlist();
     }
-    this.dispatchEvent(new CustomEvent('reload'));
+    this.dispatchEvent(new Event('app:reload'));
   }
 
   setAppMode(appMode) {
@@ -130,13 +130,17 @@ class AppState extends EventTarget {
     this.#save();
   }
 
-  triggerPopUp(target) {
-    this.dispatchEvent(new CustomEvent(`popup:${target}`));
-  }
-
   setCurrentPage(currentPage) {
     this.currentPage = currentPage;
     this.#save();
+  }
+
+  userUpdated() {
+    this.dispatchEvent(new CustomEvent('user:login'));
+  }
+
+  triggerPopUp(target) {
+    this.dispatchEvent(new CustomEvent(`popup:${target}`));
   }
 
   // Change and update events: 'lane', 'bothLanes', 'rank', 'vslane', 'patch'
@@ -180,7 +184,7 @@ class AppState extends EventTarget {
     this.#save();
     if (!this.silentMode) {
       this.dispatchEvent(
-        new CustomEvent('settings', { detail: { target, value } })
+        new CustomEvent('updated:settings', { detail: { target, value } })
       );
     }
   }
@@ -245,7 +249,6 @@ class AppState extends EventTarget {
       this.user.logout({ fireEvent: false });
     }
     this.dispatchEvent(new CustomEvent('user:logout'));
-    this.dispatchEvent(new CustomEvent('reset'));
   }
 
   //////////////////////////////////////////
