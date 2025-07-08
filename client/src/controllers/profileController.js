@@ -20,7 +20,7 @@ const saveProfile = async () => {
   if (!Object.keys(data).length) discardChanges();
 
   try {
-    const result = appState.user.updateData(data);
+    const result = await appState.user.updateData(data);
     if (result) {
       userHeaderView.headerMessage.textContent =
         '✅ User successfully updated.';

@@ -16,22 +16,30 @@ export const getPasswordFields = form => {
 export const getChanges = (form, user) => {
   const changes = {};
   const formData = new FormData(form);
-  const fields = ['name', 'username', 'email', 'max-items', 'min-pr'];
+  const settigns = [
+    ['max-items', 'maxListItems'],
+    ['min-pr', 'pickRateThreshold'],
+  ];
+  const options = [
+    ['name', 'name'],
+    ['username', 'userName'],
+    ['email', 'email'],
+  ];
 
   const config = {};
-  ['max-items', 'min-pr'].forEach(option => {
-    const formValue = +formData.get(option)?.trim();
-    if (formValue !== user.config[option]) {
-      config[option] = formValue;
+  settigns.forEach(([formId, userId]) => {
+    const formValue = +formData.get(formId);
+    if (formValue !== user.config[userId]) {
+      config[userId] = formValue;
     }
   });
 
   const userChanges = {};
   if (Object.keys(config).length) userChanges.config = config;
-  ['name', 'username', 'email'].forEach(option => {
-    const formValue = formData.get(option)?.trim();
-    if (formValue !== user[option]) {
-      userChanges[option] = formValue;
+  options.forEach(([formId, userId]) => {
+    const formValue = formData.get(formId)?.trim();
+    if (formValue !== user[userId]) {
+      userChanges[userId] = formValue;
     }
   });
 

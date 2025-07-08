@@ -94,7 +94,7 @@ const activateInputBtn = target => {
 export const isFormActive = () => {
   if (
     appState.popUpOn ||
-    userDataView.isActive.userName ||
+    userDataView.isActive.username ||
     userDataView.isActive.email
   ) {
     userDataView.showUserMsg(

@@ -8,7 +8,7 @@ export const validateEmail = async (email, checkOnApi = false) => {
   }
   if (!checkOnApi) return null;
 
-  const message = checkUserFromAPI({ email });
+  const message = await checkUserFromAPI({ email });
   if (message) return message;
 
   return null;
@@ -21,7 +21,7 @@ export const validateUsername = async (userName, checkOnApi = false) => {
   }
   if (!checkOnApi) return null;
 
-  const message = checkUserFromAPI({ userName });
+  const message = await checkUserFromAPI({ userName });
   if (message) return message;
 
   return null;
