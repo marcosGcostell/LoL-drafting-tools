@@ -4,7 +4,7 @@ import { navigate } from '../../router.js';
 
 let headerView;
 
-const resetApp = () => {
+export const resetApp = () => {
   appState.user.isLoggedIn() ? appState.user.logout() : appState.resetAll();
   navigate('/');
 };
@@ -30,8 +30,9 @@ export async function init() {
 
   // Set the login button handler
   headerView.addHandlerUserBtn(handleUserBtn);
-  appState.addEventListener('user:login', userNameHandler);
-  appState.addEventListener('user:logout', userNameHandler);
+  ['user:login', 'user:logout', 'reload'].forEach(event =>
+    appState.addEventListener(event, userNameHandler)
+  );
 
   userNameHandler(null);
 

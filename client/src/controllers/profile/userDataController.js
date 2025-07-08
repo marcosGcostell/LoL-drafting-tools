@@ -35,21 +35,30 @@ const savePassword = async _ => {
   const { password, new__password, confirm__password } =
     profileModel.getPasswordFields(userDataView.form);
 
-  const message = await authService.validatePassword(
+  const result = await authService.validatePassword(
     {
       oldPassword: password,
       password: new__password,
       confirmPassword: confirm__password,
     },
-    { length: true, confirm: true, change: true }
+    { length: true, confirm: true, user: appState.user }
   );
 
-  if (message) {
-    userDataView.showPasswordMsg(message);
+  if (!result?.token) {
+    userDataView.showPasswordMsg(result);
     return;
   }
 
-  userDataView.showPasswordMsg('Password changed successfully');
+  if (
+    !(await appState.user.updateData({
+      password: new__password,
+      passwordConfirm: confirm__password,
+    }))
+  ) {
+    userDataView.showPasswordMsg(appState.user.response);
+  }
+
+  userDataView.showPasswordMsg('Password changed successfully.');
   userDataView.togglePanel();
 };
 

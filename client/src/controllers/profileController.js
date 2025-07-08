@@ -1,5 +1,6 @@
 import appState from '../appState.js';
 import * as userDataController from './profile/userDataController.js';
+import { resetApp } from './global/headerController.js';
 import UserHeaderView from '../view/profile/userHeaderView.js';
 import { PROFILE_PAGE_TEMPLATE } from '../utils/config.js';
 import { navigate } from '../router.js';
@@ -7,8 +8,12 @@ import { navigate } from '../router.js';
 let userHeaderView;
 
 // TODO implement header buttons handlers
-const logout = () => {};
+const logout = () => {
+  resetApp();
+};
+
 const saveProfile = () => {};
+
 const discardChanges = () => {
   appState.setCurrentPage(appState.appMode);
   navigate(`/${appState.appMode}`);

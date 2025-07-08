@@ -27,12 +27,12 @@ export const fetchListFromAPI = async (route, queryData) => {
   }
 };
 
-export const checkUserFromAPI = async query => {
+export const checkUserFromAPI = async body => {
   try {
     const response = await fetch(`${LOCAL_API}${CHECK_USER_ROUTE}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(query),
+      body: JSON.stringify(body),
     });
     const { message, isValid } = await response.json();
     if (isValid) return null;

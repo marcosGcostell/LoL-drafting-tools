@@ -27,9 +27,15 @@ export const validateUsername = async (userName, checkOnApi = false) => {
   return null;
 };
 
+const checkUserPassword = async (user, password) => {
+  const { token } = await user.checkUserPassword(user.userName, password);
+
+  return token ? { token } : 'Current password is incorrect.';
+};
+
 export const validatePassword = async (
   { oldPassword, password, confirmPassword },
-  { length = true, confirm = false, change = false } = { length: true }
+  { length = true, confirm = false, user = null } = { length: true }
 ) => {
   if (length && password.length < PASSWORD_MIN_LENGTH) {
     return `Password should be at least ${PASSWORD_MIN_LENGTH} chars long.`;
@@ -40,10 +46,13 @@ export const validatePassword = async (
   if (confirm && confirmPassword !== password) {
     return 'Passwords are not the same.';
   }
-  if (change && !oldPassword) {
+  if (user && !oldPassword) {
     return 'Please, provide your current password.';
   }
-  // Check on API
+  // Check if current password is correct with API call
+  if (user && oldPassword) {
+    return await checkUserPassword(user, oldPassword);
+  }
   return null;
 };
 

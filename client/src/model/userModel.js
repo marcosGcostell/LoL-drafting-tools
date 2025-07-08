@@ -28,6 +28,14 @@ class User extends EventTarget {
     this.response = '';
   }
 
+  #valuesFromResponse(user) {
+    this.name = user.name;
+    this.userName = user.userName;
+    this.email = user.email;
+    this.config = user.config;
+    this.data = user.data;
+  }
+
   #load() {
     const localData = sessionStorage.getItem(LS_USER);
     if (!localData) return;
@@ -62,12 +70,44 @@ class User extends EventTarget {
         this.response = 'Could not get the user data from the database.';
         return null;
       }
-      this.name = data.user.name;
-      this.userName = data.user.userName;
-      this.email = data.user.email;
-      this.config = data.user.config;
-      this.data = data.user.data;
+      this.#valuesFromResponse(data.user);
       return this;
+    } catch (err) {
+      this.response = err.message;
+      return null;
+    }
+  }
+
+  async updateData(body) {
+    if (!this.token || !body) return null;
+
+    try {
+      const response = await fetch(`${LOCAL_API}${USER_ROUTE}`, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      });
+
+      const { data } = await response.json();
+
+      if (!data?.user) {
+        this.response = 'Could not update the user data.';
+        return null;
+      }
+
+      if (body?.password) {
+        if (!(await this.login(this.userName, body.password))) {
+          this.response = `Could't login with new password. Error: ${this.response}`;
+          return null;
+        }
+      } else {
+        this.#valuesFromResponse(data.user);
+        this.#save();
+      }
+      return data;
     } catch (err) {
       this.response = err.message;
       return null;
@@ -82,8 +122,8 @@ class User extends EventTarget {
     return Boolean(this.token);
   }
 
-  async checkUserPassword(userName, password) {
-    if (!userName || !password) {
+  async checkUserPassword(loginName, password) {
+    if (!loginName || !password) {
       this.response = 'Please, provide an username or email and a password.';
       return null;
     }
@@ -91,7 +131,11 @@ class User extends EventTarget {
       const response = await fetch(`${LOCAL_API}${LOGIN_ROUTE}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userName, password }),
+        body: JSON.stringify({
+          userName: loginName,
+          email: loginName,
+          password,
+        }),
       });
 
       const { token, message } = await response.json();
@@ -102,28 +146,30 @@ class User extends EventTarget {
     }
   }
 
-  async login(userName, password) {
+  async login(loginName, password) {
     try {
       const { token, message } = await this.checkUserPassword(
-        userName,
+        loginName,
         password
       );
 
-      if (token) {
-        this.userName = userName;
-        this.token = token;
-
-        const data = await this.getData();
-        if (!data) return null;
-
-        this.#save();
-        console.log('Logged from user. Dispatching event...');
-        this.dispatchEvent(new Event('login'));
-        return data;
-      } else {
+      if (!token) {
         this.response = message;
         return null;
       }
+
+      // this.userName = userName;
+      this.token = token;
+
+      const data = await this.getData();
+      if (!data) {
+        this.response = 'Could not get the user data after logged in';
+        return null;
+      }
+
+      this.#save();
+      this.dispatchEvent(new Event('login'));
+      return data;
     } catch (err) {
       this.response = err.message;
       return null;
@@ -134,6 +180,11 @@ class User extends EventTarget {
     this.#defaultValues();
     sessionStorage.removeItem(LS_USER);
     if (fireEvent) this.dispatchEvent(new Event('logout'));
+  }
+
+  updateToken(token) {
+    this.token = token;
+    this.#save();
   }
 
   fromJSON(_) {

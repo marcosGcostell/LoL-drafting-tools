@@ -244,6 +244,7 @@ class AppState extends EventTarget {
     if (this.user.isLoggedIn()) {
       this.user.logout({ fireEvent: false });
     }
+    this.dispatchEvent(new CustomEvent('user:logout'));
     this.dispatchEvent(new CustomEvent('reset'));
   }
 
