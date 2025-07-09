@@ -1,7 +1,8 @@
 import appState from '../appState.js';
 import * as userDataController from './profile/userDataController.js';
-import { resetApp } from './global/headerController.js';
+import * as userPoolController from './profile/userPoolController.js';
 import UserHeaderView from '../view/profile/userHeaderView.js';
+import { resetApp } from './global/headerController.js';
 import { PROFILE_PAGE_TEMPLATE } from '../utils/config.js';
 import { navigate } from '../router.js';
 import { wait } from '../utils/helpers.js';
@@ -52,6 +53,7 @@ export const init = async () => {
     // initialize the views
     userHeaderView = new UserHeaderView();
     userDataController.init();
+    userPoolController.init();
 
     // Set handlers for the header buttons
     userHeaderView.addHandlerBtn('logout', logout);

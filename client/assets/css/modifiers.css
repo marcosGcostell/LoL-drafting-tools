@@ -3,3 +3,7 @@
 .hidden {
   display: none;
 }
+
+.item__active {
+  background-color: var(--color-grey-dark-4);
+}
