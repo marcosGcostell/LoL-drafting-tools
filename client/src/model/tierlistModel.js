@@ -1,5 +1,5 @@
 import ChampionList from './championListModel.js';
-import fetchListFromAPI from '../services/apiCalls.js';
+import { fetchListFromAPI } from '../services/apiCalls.js';
 import { TIERLIST_ROUTE } from '../utils/config.js';
 
 export async function getTierlist({ vslane, rank, patch }) {

@@ -1,11 +1,11 @@
-import fetchListFromAPI from '../services/apiCalls.js';
+import { fetchListFromAPI } from '../services/apiCalls.js';
 import { STATS_ROUTE } from '../utils/config.js';
 
 // const _hasChanged = (champion, index) => {
 //   return (
 //     appState.pool[index].rank !== appState.rank ||
 //     appState.pool[index].lane !== appState.lane ||
-//     appState.pool[index].patch !== appState.patch.toApi() ||
+//     appState.pool[index].patch !== appState.patch.mode ||
 //     appState.pool[index].id !== champion.id
 //   );
 // };

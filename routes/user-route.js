@@ -7,6 +7,11 @@ const router = express.Router();
 
 router.post('/signup', userController.validateUserName, authController.signup);
 router.post('/login', authController.login);
+router.post(
+  '/check',
+  userController.validateUserName,
+  userController.userExists
+);
 
 router
   .route('/')

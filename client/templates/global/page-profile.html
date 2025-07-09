@@ -1,0 +1,115 @@
+<!-- PROFILE HEADER -->
+<section class="profile-header">
+  <div class="profile__save">
+    <button id="save__btn" type="button" class="btn__profile btn__clickable">
+      Save
+    </button>
+    <button id="discard__btn" type="button" class="btn__profile btn__clickable">
+      Discard changes
+    </button>
+  </div>
+  <div class="profile__header__msg">
+    <span id="header_msg"></span>
+  </div>
+  <div class="profile__logout">
+    <button id="logout__btn" type="button" class="btn__profile btn__clickable">
+      Log out
+    </button>
+  </div>
+</section>
+<!-- DATA SECTION -->
+<section class="data-section">
+  <!-- PROFILE DATA -->
+  <div class="profile-data">
+    <form class="user__profile">
+      <label for="name">Name:</label>
+      <input id="name" name="name" type="text" />
+
+      <label for="username">Username:</label>
+      <div id="username__container" class="inline__input">
+        <input id="username" name="username" type="text" />
+        <div id="username__btn" class="inline__btn">
+          <svg>
+            <use href="assets/img/icons/icons.svg#icon-check"></use>
+          </svg>
+        </div>
+      </div>
+      <div class="separator"></div>
+      <label for="email">email:</label>
+      <div id="email__container" class="inline__input">
+        <input id="email" name="email" type="email" />
+        <div id="email__btn" class="inline__btn">
+          <svg>
+            <use href="assets/img/icons/icons.svg#icon-check"></use>
+          </svg>
+        </div>
+      </div>
+      <div class="profile__msg">
+        <span id="user__msg"
+          >Check your username or email before saving the data</span
+        >
+      </div>
+      <hr />
+      <label for="settigs">Settigs:</label>
+      <div id="settigs" class="profile__settings">
+        <div class="inline__input">
+          <label for="max-items">Default maximum lists items:</label>
+          <input id="max-items" name="max-items" type="number" />
+        </div>
+        <div class="inline__input">
+          <label for="min-pr">Default % Pick Rate Threshold > </label>
+          <input id="min-pr" name="min-pr" type="number" />
+        </div>
+      </div>
+      <hr />
+      <!-- Password selector -->
+      <div class="password-section">
+        <div class="inline__input">
+          <label for="password__btn" style="width: 100%"
+            >Press to change password</label
+          >
+          <button
+            id="password__btn"
+            style="width: 4.8rem"
+            class="selector__clickable"
+          >
+            Password
+          </button>
+        </div>
+      </div>
+      <!-- Password popup -->
+      <div class="password__popup hidden">
+        <div class="inline__input">
+          <label>Current password:</label>
+          <input id="password" name="password" type="password" />
+        </div>
+        <div class="inline__input">
+          <label for="new__password">New password:</label>
+          <input id="new__password" name="new__password" type="password" />
+        </div>
+        <div class="inline__input">
+          <label for="confirm__password">Confirm password:</label>
+          <input
+            id="confirm__password"
+            name="confirm__password"
+            type="password"
+          />
+          <button id="password__save__btn" class="selector__clickable">
+            Save
+          </button>
+        </div>
+        <div class="profile__msg">
+          <span class="password__msg"
+            >Password change will apply immediately by clicking 'Save' in this
+            password panel.</span
+          >
+        </div>
+      </div>
+      <div>
+        <span id="password__msg" class="password__msg"></span>
+      </div>
+    </form>
+  </div>
+  <!-- CHAMPION POOL -->
+  <div class="profile-pool"></div>
+</section>

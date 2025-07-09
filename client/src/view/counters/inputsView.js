@@ -11,13 +11,13 @@ export default class InputsView extends View {
     this._laneTemplate = null;
     this._rankTemplate = null;
     this._currentTemplate = '';
-    this._laneTempPromise = fetch(`${LANE_ITEM_TEMPLATE}`)
+    this._laneTempPromise = fetch(LANE_ITEM_TEMPLATE)
       .then(response => response.text())
       .then(data => {
         this._laneTemplate = data;
         return data;
       });
-    this._rankTempPromise = fetch(`${RANK_ITEM_TEMPLATE}`)
+    this._rankTempPromise = fetch(RANK_ITEM_TEMPLATE)
       .then(response => response.text())
       .then(data => {
         this._rankTemplate = data;

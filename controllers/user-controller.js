@@ -91,6 +91,33 @@ export const validateUserData = catchAsync(async (req, res, next) => {
   next();
 });
 
+export const userExists = catchAsync(async (req, res, next) => {
+  const { userName, email } = req.body;
+
+  if (!userName && !email) {
+    return next(new AppError('Field can not be empty', 400));
+  }
+  if (email && !User.isValidEmail(email)) {
+    return next(new AppError('Please provide a valid email', 400));
+  }
+
+  const user = await User.findOne({
+    $or: [{ email }, { userNameToLower: userName?.toLowerCase() }],
+  });
+
+  const checkedField = userName ? 'userName' : 'email';
+  if (user) {
+    return next(
+      new AppError(`User with this ${checkedField} already exists`, 400)
+    );
+  }
+
+  res.status(200).json({
+    status: 'success',
+    isValid: true,
+  });
+});
+
 export const getAllUsers = catchAsync(async (req, res, next) => {
   // Execute the query
   const users = await User.find();

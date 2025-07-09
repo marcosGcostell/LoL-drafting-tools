@@ -10,7 +10,7 @@ import { COUNTER_PAGE_TEMPLATE } from '../utils/config.js';
 export const init = async () => {
   try {
     // Insert the HTML page
-    const response = await fetch(`${COUNTER_PAGE_TEMPLATE}`);
+    const response = await fetch(COUNTER_PAGE_TEMPLATE);
     const template = await response.text();
     if (!template) throw new Error('HTML template is not found');
 

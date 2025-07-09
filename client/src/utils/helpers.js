@@ -11,3 +11,9 @@ export const sortListAsc = (list, property) => {
 export const sortListDesc = (list, property) => {
   list.sort((a, b) => b[property] - a[property]);
 };
+
+export const wait = function (seconds) {
+  return new Promise(response => {
+    setTimeout(response, seconds * 1000);
+  });
+};

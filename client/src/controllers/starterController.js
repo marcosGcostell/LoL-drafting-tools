@@ -7,11 +7,21 @@ import { STARTER_PAGE_TEMPLATE } from '../utils/config.js';
 
 const chooseOptionHandler = id => {
   appState.initFromStarter(id);
+  appState.setCurrentPage(`${appState.appMode}`);
   navigate(`/${appState.appMode}`);
 };
 
 export const init = async () => {
+  if (appState.currentPage === 'profile' && appState.user.isLoggedIn()) {
+    navigate('/profile');
+    return false;
+  }
+  if (appState.currentPage === 'signup' && !appState.user.isLoggedIn()) {
+    navigate('/signup');
+    return false;
+  }
   if (appState.lane) {
+    appState.setCurrentPage(`${appState.appMode}`);
     navigate(`/${appState.appMode}`);
     // Need to skip the rest of router calls if it goes to other page
     return false;
@@ -19,7 +29,7 @@ export const init = async () => {
 
   try {
     // Insert the HTML page
-    const response = await fetch(`${STARTER_PAGE_TEMPLATE}`);
+    const response = await fetch(STARTER_PAGE_TEMPLATE);
     const template = await response.text();
     if (!template) throw new Error('HTML template is not found');
 
@@ -34,6 +44,7 @@ export const init = async () => {
 
     appState.addEventListener('user:login', e => {
       e.stopImmediatePropagation();
+      appState.setCurrentPage(`${appState.appMode}`);
       navigate(`/${appState.appMode}`);
     });
     return true;

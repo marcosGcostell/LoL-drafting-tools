@@ -9,7 +9,7 @@ class StarterView extends View {
     this._errorMessage = 'Can not load the data';
     this._message = '';
     this._template = null;
-    this._templatePromise = fetch(`${LANE_STARTER_TEMPLATE}`)
+    this._templatePromise = fetch(LANE_STARTER_TEMPLATE)
       .then(response => response.text())
       .then(data => {
         this._template = data;

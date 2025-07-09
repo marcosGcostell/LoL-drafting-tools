@@ -5,6 +5,7 @@ footer {
   text-align: center;
   height: 2.8rem;
   color: var(--color-grey-light-4);
+  border-top: var(--color-grey-dark-4) solid 2px;
 }
 
 footer p {

@@ -2,6 +2,7 @@ import appState from '../appState.js';
 import * as loginController from './global/loginController.js';
 import * as inputsController from './counters/inputsController.js';
 import * as searchController from './global/searchController.js';
+import * as userDataController from './profile/userDataController.js';
 
 const hidePopUps = e => {
   console.log('Main hide popups');
@@ -11,6 +12,8 @@ const hidePopUps = e => {
     searchController.toggleSearchPanel(e);
   } else if (appState.popUpOn === 'login') {
     loginController.toggleModal(e);
+  } else if (appState.popUpOn === 'password') {
+    userDataController.togglePanel(e);
   } else if (
     appState.popUpOn === 'lane' ||
     appState.popUpOn === 'rank' ||

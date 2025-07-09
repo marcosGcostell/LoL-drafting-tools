@@ -7,7 +7,7 @@ export default class ListView extends View {
     this._errorMessage = 'No champion data recieved!';
     this._message = '';
     this._itemTemplate = null;
-    this._templatePromise = fetch(`${TIERLIST_ITEM_TEMPLATE}`)
+    this._templatePromise = fetch(TIERLIST_ITEM_TEMPLATE)
       .then(response => response.text())
       .then(data => {
         this._itemTemplate = data;

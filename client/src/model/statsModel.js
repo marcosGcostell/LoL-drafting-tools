@@ -1,5 +1,5 @@
 import ChampionList from './championListModel.js';
-import fetchListFromAPI from '../services/apiCalls.js';
+import { fetchListFromAPI } from '../services/apiCalls.js';
 import { COUNTERS_ROUTE } from '../utils/config.js';
 
 const getCounterList = async (champion, { lane, rank, vslane, patch }) => {

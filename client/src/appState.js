@@ -1,5 +1,5 @@
 import appData from './model/appData.js';
-import User from './model/userModel.js';
+import user from './model/userModel.js';
 import Patch from './model/patchModel.js';
 import * as dataModel from './model/dataModel.js';
 import { reviver } from './services/session.js';
@@ -31,9 +31,9 @@ class AppState extends EventTarget {
       }
     }
 
-    // Events redirected from User events
-    User.addEventListener('login', this.#loginUser.bind(this));
-    User.addEventListener('logout', this.resetAll.bind(this));
+    // Events redirected from user events
+    user.addEventListener('login', this.#loginUser.bind(this));
+    user.addEventListener('logout', this.resetAll.bind(this));
   }
 
   #defaultValues() {
@@ -53,19 +53,19 @@ class AppState extends EventTarget {
     this.statsLists = [];
     this.fixedStatsLists = [];
     this.statsListsOwner = [];
-    this.user = User;
+    this.user = user;
     this.popUpOn = '';
   }
 
   async #setUserDefaults() {
-    this.lane = User.data.primaryRole || this.lane;
+    this.lane = user.data.primaryRole || this.lane;
     this.vslane = this.lane;
-    this.rank = User.data.rank;
-    User.data.patch ? this.patch.setTimeMode() : this.patch.setVersionMode();
-    this.maxListItems = User.config.maxListItems;
-    this.pickRateThreshold = User.config.pickRateThreshold;
+    this.rank = user.data.rank;
+    user.data.patch ? this.patch.setTimeMode() : this.patch.setVersionMode();
+    this.maxListItems = user.config.maxListItems;
+    this.pickRateThreshold = user.config.pickRateThreshold;
     await this.setOption('lane', this.lane);
-    const pool = User.data.championPool[this.lane];
+    const pool = user.data.championPool[this.lane];
     if (pool?.length) {
       for (const champion of pool) {
         await this.addToPool(appData.getChampionByName(champion));
@@ -122,25 +122,31 @@ class AppState extends EventTarget {
     if (this.vslane !== this.tierlistLane) {
       await dataModel.getNewTierlist();
     }
-    this.dispatchEvent(new CustomEvent('reload'));
+    this.dispatchEvent(new Event('app:reload'));
   }
 
   setAppMode(appMode) {
     this.appMode = appMode;
+    this.#save();
+  }
+
+  setCurrentPage(currentPage) {
+    this.currentPage = currentPage;
+    this.#save();
+  }
+
+  userUpdated() {
+    this.dispatchEvent(new CustomEvent('user:login'));
   }
 
   triggerPopUp(target) {
     this.dispatchEvent(new CustomEvent(`popup:${target}`));
   }
 
-  setCurrentPage(currentPage) {
-    this.currentPage = currentPage;
-  }
-
   // Change and update events: 'lane', 'bothLanes', 'rank', 'vslane', 'patch'
   async setOption(target, value) {
     let eventTarget = target;
-    this[target] = value;
+    if (target !== 'patch') this[target] = value;
     if (target === 'lane') {
       if (!this.tierlist.length || this.tierlistLane !== value) {
         this.vslane = value;
@@ -178,7 +184,7 @@ class AppState extends EventTarget {
     this.#save();
     if (!this.silentMode) {
       this.dispatchEvent(
-        new CustomEvent('settings', { detail: { target, value } })
+        new CustomEvent('updated:settings', { detail: { target, value } })
       );
     }
   }
@@ -242,7 +248,7 @@ class AppState extends EventTarget {
     if (this.user.isLoggedIn()) {
       this.user.logout({ fireEvent: false });
     }
-    this.dispatchEvent(new CustomEvent('reset'));
+    this.dispatchEvent(new CustomEvent('user:logout'));
   }
 
   //////////////////////////////////////////

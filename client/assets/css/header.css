@@ -4,7 +4,8 @@ header {
   display: flex;
   align-items: center;
   padding: 0.5rem 1.2rem;
-  margin-bottom: 0.3rem;
+  padding-bottom: 0.8rem;
+  border-bottom: var(--color-grey-dark-4) solid 2px;
 }
 
 .header {

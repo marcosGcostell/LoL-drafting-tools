@@ -1,9 +1,9 @@
 import Patch from '../model/patchModel.js';
-import User from '../model/userModel.js';
+import user from '../model/userModel.js';
 
 const classList = {
   Patch,
-  User,
+  user,
 };
 
 export function reviver(_, value) {

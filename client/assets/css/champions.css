@@ -2,8 +2,7 @@
 
 .pool-section {
   flex: 1;
-  /* min-width: 50rem; */
-  height: 9rem;
+  height: 100%;
   display: flex;
   justify-content: flex-start;
   align-items: center;

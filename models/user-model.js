@@ -115,4 +115,8 @@ userSchema.methods.hasChangedPassword = function (JWTTimestamp) {
   return false;
 };
 
+userSchema.statics.isValidEmail = function (email) {
+  return validator.isEmail(email);
+};
+
 export default mongoose.model('User', userSchema);
