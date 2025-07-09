@@ -52,15 +52,12 @@ export const getUserDataFromAPI = async token => {
   if (!token) return { message: 'You need to be logged in to update the user' };
 
   try {
-    console.log('Getting data. Token: ', token);
     const response = await fetch(`${LOCAL_API}${USER_ROUTE}`, {
       // method: 'GET',
       headers: { Authorization: `Bearer ${token}` },
     });
-    console.log('response: ', response);
 
     const { data } = await response.json();
-    console.log('parsing data: ', data);
 
     if (!data?.user) {
       return { message: 'Could not get the user data from the database.' };
@@ -102,7 +99,6 @@ export const loginOnAPI = async (loginName, password) => {
     return { message: 'Please, provide an username or email and a password.' };
   }
   try {
-    console.log('login on API');
     const response = await fetch(`${LOCAL_API}${LOGIN_ROUTE}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -112,10 +108,8 @@ export const loginOnAPI = async (loginName, password) => {
         password,
       }),
     });
-    console.log('request send');
 
     const { token, message } = await response.json();
-    console.log('login token: ', token);
     return { token, message };
   } catch (err) {
     return { message: err.message };

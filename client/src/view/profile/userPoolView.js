@@ -1,7 +1,7 @@
 import View from '../global/view.js';
 import {
   LANE_PROFILE_TEMPLATE,
-  RANK_ITEM_TEMPLATE,
+  RANK_PROFILE_TEMPLATE,
 } from '../../utils/config.js';
 
 export default class UserPoolView extends View {
@@ -18,18 +18,14 @@ export default class UserPoolView extends View {
         this._laneTemplate = data;
         return data;
       });
-    this._rankTempPromise = fetch(RANK_ITEM_TEMPLATE)
+    this._rankTempPromise = fetch(RANK_PROFILE_TEMPLATE)
       .then(response => response.text())
       .then(data => {
         this._rankTemplate = data;
         return data;
       });
 
-    this._primaryRoleElement = document.querySelector('#primary__role');
-    this._secondaryRoleElement = document.querySelector('#secondary__role');
-    this._rankElement = document.querySelector('.rank__selector');
-
-    this.selectorDisplayed = null;
+    this.popUpDisplayed = null;
   }
 
   async insertSelectors(roles, ranks) {
@@ -38,13 +34,13 @@ export default class UserPoolView extends View {
     }
 
     this._currentTemplate = this._laneTemplate;
-    this._parentElement = this._primaryRoleElement;
+    this._parentElement = document.querySelector('#primary__selector');
     await this.render(roles, { target: 'selector' });
-    this._parentElement = this._secondaryRoleElement;
+    this._parentElement = document.querySelector('#secondary__selector');
     await this.render(roles, { target: 'selector' });
-    // this._currentTemplate = this._rankTemplate;
-    // this._parentElement = this._rankElement;
-    // await this.render(ranks);
+    this._currentTemplate = this._rankTemplate;
+    this._parentElement = document.querySelector('#rank__selector');
+    await this.render(ranks, { target: 'selector' });
   }
 
   init({ data }) {
@@ -52,30 +48,32 @@ export default class UserPoolView extends View {
     this.setOptionActive('secondary', data.secondaryRole || 'middle');
   }
 
-  addHandlerLaneSelector(target, handler) {
-    this[`_${target}RoleElement`].addEventListener('click', function (e) {
-      e.preventDefault();
-      const id = e.target.closest('div').dataset.value;
-      handler(target, id);
-    });
+  addHandler(target, type, handler) {
+    document
+      .querySelector(`#${target}__${type}`)
+      .addEventListener('click', function (e) {
+        e.preventDefault();
+        handler(e, target);
+      });
   }
 
-  toggleSelector(target = this.selectorDisplayed) {
+  toggleSelector(target = this.popUpDisplayed) {
     if (!target) return;
-    document.querySelector(`.${target}__selector`).classList.toggle('hidden');
-    this.selectorDisplayed = this.selectorDisplayed ? null : target;
+    document.querySelector(`#${target}__selector`).classList.toggle('hidden');
+    this.popUpDisplayed = this.popUpDisplayed ? null : target;
   }
 
-  changeRank(option) {
-    const image = this._rankElement.querySelector('img');
-    const text = this._rankElement.querySelector('span');
+  changeRank(rank) {
+    const image = document.querySelector('#rank__btn img');
+    const text = document.querySelector('#rank__btn span');
 
-    image.setAttribute('src', `assets/img/ranks/${option.img}`);
-    text.textContent = option.name;
+    image.setAttribute('src', `assets/img/ranks/${rank.img}`);
+    text.textContent = rank.name;
+    document.querySelector('#rank__btn span').dataset.value = rank.id;
   }
 
   setOptionActive(target, option) {
-    const element = this[`_${target}RoleElement`];
+    const element = document.querySelector(`#${target}__selector`);
     Array.from(element.children).forEach(el =>
       el.dataset.value === option
         ? el.classList.add('item__active')

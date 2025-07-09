@@ -10,8 +10,6 @@ export const toggleSelectors = (e, target) => {
     appState.popUpOn = inputsView.selectorDisplayed
       ? inputsView.selectorDisplayed
       : '';
-
-    e.stopPropagation();
   }
 };
 

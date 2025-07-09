@@ -10,10 +10,14 @@ import { wait } from '../utils/helpers.js';
 let userHeaderView;
 
 const logout = () => {
+  if (appState.popUpOn) return;
+
   resetApp();
 };
 
 const saveProfile = async () => {
+  if (appState.popUpOn) return;
+
   if (userDataController.isFormActive()) return;
 
   const data = userDataController.getFormChanges();
@@ -36,6 +40,8 @@ const saveProfile = async () => {
 };
 
 const discardChanges = () => {
+  if (appState.popUpOn) return;
+
   appState.setCurrentPage(appState.appMode);
   navigate(`/${appState.appMode}`);
 };

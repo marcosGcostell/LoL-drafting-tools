@@ -113,20 +113,39 @@
   <!-- CHAMPION POOL -->
   <div class="profile-pool">
     <div class="profile__lane">
-      <span class="profile__lane__title">Primary role: </span>
-      <div id="primary__role" class="profile__lane__selector" data-value="top">
-        <!-- Place to insert profile lane selector -->
-      </div>
-    </div>
-    <div class="profile__lane">
-      <span class="profile__lane__title">Secondary role: </span>
+      <span class="profile__cat__title">Primary role: </span>
       <div
-        id="secondary__role"
+        id="primary__selector"
         class="profile__lane__selector"
         data-value="top"
       >
         <!-- Place to insert profile lane selector -->
       </div>
     </div>
+    <div class="profile__lane">
+      <span class="profile__cat__title">Secondary role: </span>
+      <div
+        id="secondary__selector"
+        class="profile__lane__selector"
+        data-value="top"
+      >
+        <!-- Place to insert profile lane selector -->
+      </div>
+    </div>
+    <div class="profile__rank">
+      <span class="profile__cat__title">Defaut rank: </span>
+      <div
+        id="rank__btn"
+        class="profile__rank__btn input__clickable"
+        data-value="all"
+      >
+        <img src="assets/img/ranks/all.webp" class="rank__btn" alt="Ranks" />
+        <span>All</span>
+      </div>
+      <div id="rank__selector" class="profile__rank__selector hidden">
+        <!-- Place to insert rank selector -->
+      </div>
+    </div>
+    <div>Patch</div>
   </div>
 </section>

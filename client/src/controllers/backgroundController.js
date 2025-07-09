@@ -3,6 +3,7 @@ import * as loginController from './global/loginController.js';
 import * as inputsController from './counters/inputsController.js';
 import * as searchController from './global/searchController.js';
 import * as userDataController from './profile/userDataController.js';
+import * as userPoolController from './profile/userPoolController.js';
 
 const hidePopUps = e => {
   console.log('Main hide popups');
@@ -14,13 +15,14 @@ const hidePopUps = e => {
     loginController.toggleModal(e);
   } else if (appState.popUpOn === 'password') {
     userDataController.togglePanel(e);
-  } else if (
-    appState.popUpOn === 'lane' ||
-    appState.popUpOn === 'rank' ||
-    appState.popUpOn === 'vslane'
-  ) {
+  } else if (appState.popUpOn === 'lane' || appState.popUpOn === 'vslane') {
     inputsController.toggleSelectors(e, appState.popUpOn);
+  } else if (appState.popUpOn === 'rank') {
+    appState.currentPage === 'profile'
+      ? userPoolController.toggleSelectors(e, 'rank')
+      : inputsController.toggleSelectors(e, 'rank');
   }
+  appState.popUpOn = '';
 };
 
 export async function init() {

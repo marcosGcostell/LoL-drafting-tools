@@ -44,6 +44,8 @@ export const STATS_COLUMN_TEMPLATE = './templates/counters/stats-column.tpl';
 export const STATS_ITEM_TEMPLATE = './templates/counters/stats-item.tpl';
 export const LANE_PROFILE_TEMPLATE =
   './templates/profile/lane-selector-item.tpl';
+export const RANK_PROFILE_TEMPLATE =
+  './templates/profile/rank-selector-item.tpl';
 
 // Config parameters
 export const PICK_RATE_THRESHOLD = 1.0;

@@ -60,6 +60,7 @@
 
 .input__clickable:hover,
 .selector__clickable:hover {
+  border: 1px solid var(--color-grey-light-5);
   background-color: var(--color-grey-dark-4);
 }
 
