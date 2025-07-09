@@ -110,8 +110,9 @@
       </div>
     </form>
   </div>
-  <!-- CHAMPION POOL -->
+  <!-- PROFILE POOL SECTION -->
   <div class="profile-pool">
+    <!-- POOL SELECTORS -->
     <div class="profile__lane">
       <span class="profile__cat__title">Primary role: </span>
       <div
@@ -136,7 +137,7 @@
       <span class="profile__cat__title">Defaut rank: </span>
       <div
         id="rank__btn"
-        class="profile__rank__btn input__clickable"
+        class="profile__rank__btn selector__clickable"
         data-value="all"
       >
         <img src="assets/img/ranks/all.webp" class="rank__btn" alt="Ranks" />
@@ -146,6 +147,16 @@
         <!-- Place to insert rank selector -->
       </div>
     </div>
-    <div>Patch</div>
+    <div class="profile__patch">
+      <span class="profile__cat__title">Defualt Patch: </span>
+      <div
+        id="patch__btn"
+        class="profile__patch__btn selector__clickable"
+        data-value=""
+      >
+        <span>Current game version</span>
+      </div>
+    </div>
+    <!-- CHAMPION POOL -->
   </div>
 </section>

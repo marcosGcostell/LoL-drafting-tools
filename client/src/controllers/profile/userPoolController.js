@@ -33,6 +33,15 @@ const setRankHandler = (e, _) => {
   const id = e.target.closest('div').dataset.value;
   userPoolView.changeRank(appData.ranks[id]);
   toggleSelectors(e, 'rank');
+  appState.user.setPoolOptions('rank', id);
+};
+
+const togglePatch = (e, _) => {
+  if (appState.popUpOn) return;
+
+  e.stopPropagation();
+  userPoolView.setPatch(appState.patch.toggle().toProfile());
+  appState.user.setPoolOptions('patch', appState.patch.mode);
 };
 
 export const init = async () => {
@@ -53,4 +62,5 @@ export const init = async () => {
   );
   userPoolView.addHandler('rank', 'btn', toggleSelectors);
   userPoolView.addHandler('rank', 'selector', setRankHandler);
+  userPoolView.addHandler('patch', 'btn', togglePatch);
 };

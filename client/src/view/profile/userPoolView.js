@@ -63,6 +63,16 @@ export default class UserPoolView extends View {
     this.popUpDisplayed = this.popUpDisplayed ? null : target;
   }
 
+  setOptionActive(target, option) {
+    const element = document.querySelector(`#${target}__selector`);
+    Array.from(element.children).forEach(el =>
+      el.dataset.value === option
+        ? el.classList.add('item__active')
+        : el.classList.remove('item__active')
+    );
+    element.dataset.value = option;
+  }
+
   changeRank(rank) {
     const image = document.querySelector('#rank__btn img');
     const text = document.querySelector('#rank__btn span');
@@ -72,14 +82,8 @@ export default class UserPoolView extends View {
     document.querySelector('#rank__btn span').dataset.value = rank.id;
   }
 
-  setOptionActive(target, option) {
-    const element = document.querySelector(`#${target}__selector`);
-    Array.from(element.children).forEach(el =>
-      el.dataset.value === option
-        ? el.classList.add('item__active')
-        : el.classList.remove('item__active')
-    );
-    element.dataset.value = option;
+  setPatch(patchStr) {
+    document.querySelector('#patch__btn span').textContent = patchStr;
   }
 
   async _generateMarkup(options) {

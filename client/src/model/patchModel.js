@@ -33,7 +33,7 @@ export default class Patch {
   }
 
   toProfile() {
-    return this._patchMode ? 'Last 7 days' : 'Active patch version';
+    return this._patchMode ? 'Last 7 days' : 'Current game version';
   }
 
   static fromJSON(obj) {

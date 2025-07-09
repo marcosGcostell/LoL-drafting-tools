@@ -5,11 +5,15 @@ import { navigate } from '../../router.js';
 let headerView;
 
 export const resetApp = () => {
+  if (appState.popUpOn) return;
+
   appState.user.isLoggedIn() ? appState.user.logout() : appState.resetAll();
   navigate('/');
 };
 
 const handleUserBtn = e => {
+  if (appState.popUpOn) return;
+
   if (appState.user.isLoggedIn()) {
     appState.setCurrentPage('profile');
     navigate('/profile');
