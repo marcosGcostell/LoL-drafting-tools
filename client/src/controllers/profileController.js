@@ -8,7 +8,6 @@ import { wait } from '../utils/helpers.js';
 
 let userHeaderView;
 
-// TODO implement header buttons handlers
 const logout = () => {
   resetApp();
 };
@@ -20,8 +19,8 @@ const saveProfile = async () => {
   if (!Object.keys(data).length) discardChanges();
 
   try {
-    const result = await appState.user.updateData(data);
-    if (result) {
+    const user = await appState.user.updateUser(data);
+    if (user) {
       userHeaderView.headerMessage.textContent =
         '✅ User successfully updated.';
       await wait(1);

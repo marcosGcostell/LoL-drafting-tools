@@ -1,4 +1,9 @@
-import { LOCAL_API, CHECK_USER_ROUTE } from '../utils/config.js';
+import {
+  LOCAL_API,
+  CHECK_USER_ROUTE,
+  LOGIN_ROUTE,
+  USER_ROUTE,
+} from '../utils/config.js';
 
 const _checkQuery = ({ lane, rank, vslane = true }) => {
   if (!lane || !rank || !vslane) {
@@ -39,6 +44,80 @@ export const checkUserFromAPI = async body => {
     if (message) return message;
     return 'Field are not valid';
   } catch (err) {
-    throw err;
+    return err.message;
+  }
+};
+
+export const getUserDataFromAPI = async token => {
+  if (!token) return { message: 'You need to be logged in to update the user' };
+
+  try {
+    console.log('Getting data. Token: ', token);
+    const response = await fetch(`${LOCAL_API}${USER_ROUTE}`, {
+      // method: 'GET',
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    console.log('response: ', response);
+
+    const { data } = await response.json();
+    console.log('parsing data: ', data);
+
+    if (!data?.user) {
+      return { message: 'Could not get the user data from the database.' };
+    }
+
+    return { user: data.user };
+  } catch (err) {
+    return { message: err.message };
+  }
+};
+
+export const updateUserOnAPI = async (token, body) => {
+  if (!token) return { message: 'You need to be logged in to update the user' };
+  if (!body) return { message: 'You need to send data to update' };
+
+  try {
+    const response = await fetch(`${LOCAL_API}${USER_ROUTE}`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    const { data } = await response.json();
+
+    if (!data?.user) {
+      return { message: 'Could not update the user data.' };
+    }
+    return { user: data.user };
+  } catch (err) {
+    return { message: err.message };
+  }
+};
+
+export const loginOnAPI = async (loginName, password) => {
+  if (!loginName || !password) {
+    return { message: 'Please, provide an username or email and a password.' };
+  }
+  try {
+    console.log('login on API');
+    const response = await fetch(`${LOCAL_API}${LOGIN_ROUTE}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userName: loginName,
+        email: loginName,
+        password,
+      }),
+    });
+    console.log('request send');
+
+    const { token, message } = await response.json();
+    console.log('login token: ', token);
+    return { token, message };
+  } catch (err) {
+    return { message: err.message };
   }
 };

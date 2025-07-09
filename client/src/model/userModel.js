@@ -1,10 +1,9 @@
 import {
-  LOCAL_API,
-  USER_ROUTE,
-  LOGIN_ROUTE,
-  SIGNUP_ROUTE,
-  LS_USER,
-} from '../utils/config.js';
+  loginOnAPI,
+  getUserDataFromAPI,
+  updateUserOnAPI,
+} from '../services/apiCalls.js';
+import { LS_USER } from '../utils/config.js';
 
 class User extends EventTarget {
   constructor(userName = '', token = null) {
@@ -56,66 +55,42 @@ class User extends EventTarget {
   }
 
   async getData() {
-    if (!this.token) return null;
+    console.log('User class getData()');
+    const { user, message } = await getUserDataFromAPI(this.token);
+    console.log('user get: ', user);
 
-    try {
-      const response = await fetch(`${LOCAL_API}${USER_ROUTE}`, {
-        // method: 'GET',
-        headers: { Authorization: `Bearer ${this.token}` },
-      });
-
-      const { data } = await response.json();
-
-      if (!data?.user) {
-        this.response = 'Could not get the user data from the database.';
-        return null;
-      }
-      this.#valuesFromResponse(data.user);
-      return this;
-    } catch (err) {
-      this.response = err.message;
+    if (!user) {
+      this.response =
+        message || 'Could not get the user data from the database.';
       return null;
     }
+
+    this.#valuesFromResponse(user);
+    return this;
   }
 
-  async updateData(body) {
-    if (!this.token || !body) return null;
+  async updateUser(body) {
+    const { user, message } = await updateUserOnAPI(this.token, body);
 
-    try {
-      const response = await fetch(`${LOCAL_API}${USER_ROUTE}`, {
-        method: 'PATCH',
-        headers: {
-          Authorization: `Bearer ${this.token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
-      });
-
-      const { data } = await response.json();
-
-      if (!data?.user) {
-        this.response = 'Could not update the user data.';
-        return null;
-      }
-
-      if (body?.password) {
-        if (
-          !(await this.login(this.userName, body.password, {
-            silentMode: true,
-          }))
-        ) {
-          this.response = `Could't login with new password. Error: ${this.response}`;
-          return null;
-        }
-      } else {
-        this.#valuesFromResponse(data.user);
-        this.#save();
-      }
-      return data;
-    } catch (err) {
-      this.response = err.message;
+    if (!user) {
+      this.response = message || 'Could not update the user';
       return null;
     }
+
+    if (body?.password) {
+      if (
+        !(await this.login(this.userName, body.password, {
+          silentMode: true,
+        }))
+      ) {
+        this.response = `Could't login with new password. Error: ${this.response}`;
+        return null;
+      }
+    } else {
+      this.#valuesFromResponse(user);
+      this.#save();
+    }
+    return user;
   }
 
   getUpdated() {
@@ -126,69 +101,32 @@ class User extends EventTarget {
     return Boolean(this.token);
   }
 
-  async apiLoginRequest(loginName, password) {
-    if (!loginName || !password) {
-      this.response = 'Please, provide an username or email and a password.';
-      return null;
-    }
-    try {
-      const response = await fetch(`${LOCAL_API}${LOGIN_ROUTE}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userName: loginName,
-          email: loginName,
-          password,
-        }),
-      });
-
-      const { token, message } = await response.json();
-      return { token, message };
-    } catch (err) {
-      this.response = err.message;
-      return null;
-    }
-  }
-
   async login(loginName, password, { silentMode = false } = {}) {
-    try {
-      const { token, message } = await this.apiLoginRequest(
-        loginName,
-        password
-      );
+    const { token, message } = await loginOnAPI(loginName, password);
 
-      if (!token) {
-        this.response = message;
-        return null;
-      }
-
-      // this.userName = userName;
-      this.token = token;
-
-      const data = await this.getData();
-      if (!data) {
-        this.response = 'Could not get the user data after logged in';
-        return null;
-      }
-
-      this.#save();
-      if (!silentMode) this.dispatchEvent(new Event('login'));
-      return data;
-    } catch (err) {
-      this.response = err.message;
+    if (!token) {
+      this.response = message || 'Could not logged in.';
       return null;
     }
+    this.token = token;
+    console.log('user class token: ', token);
+
+    const user = await this.getData();
+    console.log(user);
+    if (!user) {
+      this.response = 'Could not get the user data after logged in';
+      return null;
+    }
+
+    this.#save();
+    if (!silentMode) this.dispatchEvent(new Event('login'));
+    return this;
   }
 
   logout({ fireEvent = true } = {}) {
     this.#defaultValues();
     sessionStorage.removeItem(LS_USER);
     if (fireEvent) this.dispatchEvent(new Event('logout'));
-  }
-
-  updateToken(token) {
-    this.token = token;
-    this.#save();
   }
 
   fromJSON(_) {

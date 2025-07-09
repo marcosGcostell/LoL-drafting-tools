@@ -41,7 +41,7 @@ const savePassword = async _ => {
       password: new__password,
       confirmPassword: confirm__password,
     },
-    { length: true, confirm: true, user: appState.user }
+    { length: true, confirm: true, userName: appState.user.userName }
   );
 
   if (!result?.token) {
@@ -50,7 +50,7 @@ const savePassword = async _ => {
   }
 
   if (
-    !(await appState.user.updateData({
+    !(await appState.user.updateUser({
       password: new__password,
       passwordConfirm: confirm__password,
     }))

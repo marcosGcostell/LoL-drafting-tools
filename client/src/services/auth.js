@@ -1,4 +1,4 @@
-import { checkUserFromAPI } from './apiCalls.js';
+import { checkUserFromAPI, loginOnAPI } from './apiCalls.js';
 import { PASSWORD_MIN_LENGTH } from '../../../models/utils/config.js';
 
 export const validateEmail = async (email, checkOnApi = false) => {
@@ -27,15 +27,19 @@ export const validateUsername = async (userName, checkOnApi = false) => {
   return null;
 };
 
-const checkUserPassword = async (user, password) => {
-  const { token } = await user.apiLoginRequest(user.userName, password);
+const checkUserPassword = async (userName, password) => {
+  try {
+    const { token } = await loginOnAPI(userName, password);
 
-  return token ? { token } : 'Current password is incorrect.';
+    return token ? { token } : 'Current password is incorrect.';
+  } catch (err) {
+    return 'Current password is incorrect.';
+  }
 };
 
 export const validatePassword = async (
   { oldPassword, password, confirmPassword },
-  { length = true, confirm = false, user = null } = { length: true }
+  { length = true, confirm = false, userName = '' } = { length: true }
 ) => {
   if (length && password.length < PASSWORD_MIN_LENGTH) {
     return `Password should be at least ${PASSWORD_MIN_LENGTH} chars long.`;
@@ -46,12 +50,12 @@ export const validatePassword = async (
   if (confirm && confirmPassword !== password) {
     return 'Passwords are not the same.';
   }
-  if (user && !oldPassword) {
+  if (userName && !oldPassword) {
     return 'Please, provide your current password.';
   }
   // Check if current password is correct with API call
-  if (user && oldPassword) {
-    return await checkUserPassword(user, oldPassword);
+  if (userName && oldPassword) {
+    return await checkUserPassword(userName, oldPassword);
   }
   return null;
 };
