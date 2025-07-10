@@ -39,7 +39,7 @@ const checkUserPassword = async (userName, password) => {
 
 export const validatePassword = async (
   { oldPassword, password, confirmPassword },
-  { length = true, confirm = false, userName = '' } = { length: true }
+  { length = true, confirm = false, userName = '' } = { length: true },
 ) => {
   if (length && password.length < PASSWORD_MIN_LENGTH) {
     return `Password should be at least ${PASSWORD_MIN_LENGTH} chars long.`;
@@ -82,7 +82,7 @@ export const validateAuthForm = async (fields, isSignup = false) => {
 
     message = await validatePassword(
       { password, confirmPassword },
-      { length: false, confirm: true }
+      { length: false, confirm: true },
     );
     if (message) return message;
 

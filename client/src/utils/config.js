@@ -31,6 +31,8 @@ export const COUNTER_PAGE_TEMPLATE = './templates/global/page-counters.html';
 export const PROFILE_PAGE_TEMPLATE = './templates/global/page-profile.html';
 export const SIGNUP_PAGE_TEMPLATE = './templates/global/page-signup.html';
 // For components
+export const SELECTOR_ITEM_TEMPLATE =
+  './templates/components/selector-item.tpl';
 export const LANE_ITEM_TEMPLATE = './templates/counters/lane-selector-item.tpl';
 export const RANK_ITEM_TEMPLATE = './templates/counters/rank-selector-item.tpl';
 export const LANE_STARTER_TEMPLATE =

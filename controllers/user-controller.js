@@ -67,24 +67,32 @@ export const validateUserData = catchAsync(async (req, res, next) => {
   if (data?.primaryRank) await _isValidRank(data.primaryRank);
 
   if (data?.championPool && typeof data.championPool === 'object') {
-    for (const [role, champions] of Object.entries(data.championPool)) {
+    Object.entries(data.championPool).forEach(lane => {
+      const [role, champions] = lane;
       if (!Array.isArray(champions)) {
         return next(
-          new AppError(`Champion pool for role '${role}' must be an array`, 400)
+          new AppError(
+            `Champion pool for role '${role}' must be an array`,
+            400,
+          ),
         );
       }
+    });
 
-      for (const champId of champions) {
-        const validChamp = await Champion.isValid(champId);
-        if (!validChamp) {
-          return next(
-            new AppError(
-              `Invalid champion ID '${champId}' in role '${role}'`,
-              400
-            )
-          );
-        }
-      }
+    const flatPool = Object.entries(data.championPool).flatMap(
+      ([role, champions]) => champions.map(champId => ({ role, champId })),
+    );
+
+    const validations = await Promise.all(
+      flatPool.map(({ champId }) => Champion.isValid(champId)),
+    );
+    const errorIndex = validations.findIndex(i => !i);
+
+    if (errorIndex !== -1) {
+      const { role, champId } = flatPool[errorIndex];
+      return next(
+        new AppError(`Invalid champion ID '${champId}' in role '${role}'`, 400),
+      );
     }
   }
 
@@ -108,7 +116,7 @@ export const userExists = catchAsync(async (req, res, next) => {
   const checkedField = userName ? 'userName' : 'email';
   if (user) {
     return next(
-      new AppError(`User with this ${checkedField} already exists`, 400)
+      new AppError(`User with this ${checkedField} already exists`, 400),
     );
   }
 
@@ -135,7 +143,7 @@ export const getAllUsers = catchAsync(async (req, res, next) => {
 export const createUser = catchAsync(async (req, res, next) => {});
 
 export const getUser = catchAsync(async (req, res, next) => {
-  const user = req.user;
+  const { user } = req;
 
   res.status(200).json({
     status: 'success',
@@ -146,7 +154,7 @@ export const getUser = catchAsync(async (req, res, next) => {
 });
 
 export const updateUser = catchAsync(async (req, res, next) => {
-  const user = req.user;
+  const { user } = req;
 
   ['name', 'userName', 'email'].forEach(field => {
     if (req.body[field] !== undefined) {
@@ -170,10 +178,8 @@ export const updateUser = catchAsync(async (req, res, next) => {
             user.data[key][nestedKey] = nestedValue;
           }
         });
-      } else {
-        if (value !== undefined) {
-          user.data[key] = value;
-        }
+      } else if (value !== undefined) {
+        user.data[key] = value;
       }
     });
   }

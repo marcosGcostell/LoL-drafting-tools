@@ -1,5 +1,4 @@
 import appData from '../../model/appData.js';
-import Patch from '../../model/patchModel.js';
 import appState from '../../appState.js';
 import UserPoolView from '../../view/profile/userPoolView.js';
 
@@ -50,20 +49,20 @@ export const init = async () => {
   userPoolView = new UserPoolView();
   await userPoolView.insertSelectors(
     appData.toSortedArray('roles'),
-    appData.toSortedArray('ranks')
+    appData.toSortedArray('ranks'),
   );
 
   // Load config and champion pool
   userPoolView.init(
     appState.user.data,
     appData.ranks,
-    appState.patch.strToProfile(appState.user.patch)
+    appState.patch.strToProfile(appState.user.patch),
   );
 
   // Set handlers for the profile pool view
   // Lane, rank, patch selectors
   ['primary', 'secondary'].forEach(el =>
-    userPoolView.addHandler(el, 'selector', setLaneHandler)
+    userPoolView.addHandler(el, 'selector', setLaneHandler),
   );
   userPoolView.addHandler('rank', 'btn', toggleSelectors);
   userPoolView.addHandler('rank', 'selector', setRankHandler);
