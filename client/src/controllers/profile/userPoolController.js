@@ -1,4 +1,5 @@
 import appData from '../../model/appData.js';
+import Patch from '../../model/patchModel.js';
 import appState from '../../appState.js';
 import UserPoolView from '../../view/profile/userPoolView.js';
 
@@ -53,7 +54,11 @@ export const init = async () => {
   );
 
   // Load config and champion pool
-  userPoolView.init(appState.user);
+  userPoolView.init(
+    appState.user.data,
+    appData.ranks,
+    appState.patch.strToProfile(appState.user.patch)
+  );
 
   // Set handlers for the profile pool view
   // Lane, rank, patch selectors

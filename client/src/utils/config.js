@@ -42,10 +42,14 @@ export const CHAMPION_ON_HOLD_TEMPLATE =
   './templates/counters/champion-on-hold.tpl';
 export const STATS_COLUMN_TEMPLATE = './templates/counters/stats-column.tpl';
 export const STATS_ITEM_TEMPLATE = './templates/counters/stats-item.tpl';
+export const PROFILE_SECTION_TEMPLATE =
+  './templates/profile/profile-pool-lane.tpl';
 export const LANE_PROFILE_TEMPLATE =
   './templates/profile/lane-selector-item.tpl';
 export const RANK_PROFILE_TEMPLATE =
   './templates/profile/rank-selector-item.tpl';
+export const PROFILE_CHAMPION_ITEM =
+  './templates/profile/profile-champion-item.tpl';
 
 // Config parameters
 export const PICK_RATE_THRESHOLD = 1.0;

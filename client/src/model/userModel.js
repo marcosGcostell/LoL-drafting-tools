@@ -31,8 +31,8 @@ class User extends EventTarget {
     this.name = user.name;
     this.userName = user.userName;
     this.email = user.email;
-    this.config = user.config;
-    this.data = user.data;
+    Object.assign(this.config, user.config);
+    Object.assign(this.data, user.data);
   }
 
   #load() {

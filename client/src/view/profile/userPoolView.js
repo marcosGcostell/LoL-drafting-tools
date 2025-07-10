@@ -1,7 +1,11 @@
 import View from '../global/view.js';
 import {
+  ICONS,
+  LANE_ICONS,
+  RANK_ICONS,
   LANE_PROFILE_TEMPLATE,
   RANK_PROFILE_TEMPLATE,
+  PROFILE_SECTION_TEMPLATE,
 } from '../../utils/config.js';
 
 export default class UserPoolView extends View {
@@ -9,9 +13,16 @@ export default class UserPoolView extends View {
 
   constructor() {
     super();
+    this._laneSectionTemplate = null;
     this._laneTemplate = null;
     this._rankTemplate = null;
     this._currentTemplate = '';
+    this._laneSecTempPromise = fetch(PROFILE_SECTION_TEMPLATE)
+      .then(response => response.text())
+      .then(data => {
+        this._laneSectionTemplate = data;
+        return data;
+      });
     this._laneTempPromise = fetch(LANE_PROFILE_TEMPLATE)
       .then(response => response.text())
       .then(data => {
@@ -29,8 +40,16 @@ export default class UserPoolView extends View {
   }
 
   async insertSelectors(roles, ranks) {
-    if (!this._laneTemplate || !this._rankTemplate) {
-      await Promise.all([this._laneTempPromise, this._rankTempPromise]);
+    if (
+      !this._laneSectionTemplate ||
+      !this._laneTemplate ||
+      !this._rankTemplate
+    ) {
+      await Promise.all([
+        this._laneSecTempPromise,
+        this._laneTempPromise,
+        this._rankTempPromise,
+      ]);
     }
 
     this._currentTemplate = this._laneTemplate;
@@ -41,11 +60,16 @@ export default class UserPoolView extends View {
     this._currentTemplate = this._rankTemplate;
     this._parentElement = document.querySelector('#rank__selector');
     await this.render(ranks, { target: 'selector' });
+    this._currentTemplate = this._laneSectionTemplate;
+    this._parentElement = document.querySelector('#lane__container');
+    await this.render(roles, { target: 'section', noClear: true });
   }
 
-  init({ data }) {
-    this.setOptionActive('primary', data.primaryRole || 'top');
-    this.setOptionActive('secondary', data.secondaryRole || 'middle');
+  init(userData, ranks, patchStr) {
+    this.setOptionActive('primary', userData.primaryRole || 'top');
+    this.setOptionActive('secondary', userData.secondaryRole || 'middle');
+    this.changeRank(ranks[userData.rank] || 'all');
+    this.setPatch(patchStr);
   }
 
   addHandler(target, type, handler) {
@@ -87,7 +111,7 @@ export default class UserPoolView extends View {
   }
 
   async _generateMarkup(options) {
-    if (options?.target === 'selector') {
+    if (options?.target === 'selector' || options?.target === 'section') {
       return this._data.map(item => this._generateItemMarkup(item)).join('');
     }
     if (options?.target === 'champion') {
@@ -100,7 +124,11 @@ export default class UserPoolView extends View {
   _generateItemMarkup(item) {
     let output = this._currentTemplate.replace(/{%ID%}/g, item.id);
     output = output.replace(/{%NAME%}/g, item.name);
+    output = output.replace(/{%LONG_NAME%}/g, item.longName);
     output = output.replace(/{%IMG%}/g, item.img);
+    output = output.replace(/{%ICONS%}/g, ICONS);
+    output = output.replace(/{%LANE_ICONS%}/g, LANE_ICONS);
+    output = output.replace(/{%RANK_ICONS%}/g, RANK_ICONS);
     return output;
   }
 
