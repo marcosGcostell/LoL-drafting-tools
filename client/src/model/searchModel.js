@@ -1,14 +1,16 @@
+import { MIN_LETTERS_TO_SECOND_SEARCH } from '../utils/config.js';
+
 export const searchChampions = (query, champions) => {
   if (!query) return { starterQuery, containsQuery };
   const starterQuery = Object.values(champions).filter(
-    el => el.name.toLowerCase().startsWith(query) || el.id.startsWith(query)
+    el => el.name.toLowerCase().startsWith(query) || el.id.startsWith(query),
   );
   const containsQuery =
-    query.length > 2
+    query.length >= MIN_LETTERS_TO_SECOND_SEARCH
       ? Object.values(champions).filter(
           el =>
             !starterQuery.includes(el) &&
-            (el.name.toLowerCase().includes(query) || el.id.includes(query))
+            (el.name.toLowerCase().includes(query) || el.id.includes(query)),
         )
       : '';
   return { starterQuery, containsQuery };

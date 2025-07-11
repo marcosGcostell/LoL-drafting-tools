@@ -57,3 +57,4 @@ export const PROFILE_CHAMPION_ITEM =
 export const PICK_RATE_THRESHOLD = 1.0;
 export const MAX_LIST_ITEMS = 35;
 export const TIME_BEFORE_UPDATE = 24;
+export const MIN_LETTERS_TO_SECOND_SEARCH = 2;

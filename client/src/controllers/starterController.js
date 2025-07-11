@@ -1,12 +1,14 @@
-import appData from '../model/appData.js';
 import appState from '../appState.js';
 import starterView from '../view/starter/starterView.js';
 import * as loginController from './global/loginController.js';
 import { navigate } from '../router.js';
-import { STARTER_PAGE_TEMPLATE } from '../utils/config.js';
 
-const chooseOptionHandler = id => {
-  appState.initFromStarter(id);
+const setLaneHandler = (e, _) => {
+  if (appState.popUpOn) return;
+
+  e.stopPropagation();
+  const laneSelected = e.target.closest('div').dataset.value;
+  appState.initFromStarter(laneSelected);
   appState.setCurrentPage(`${appState.appMode}`);
   navigate(`/${appState.appMode}`);
 };
@@ -29,18 +31,12 @@ export const init = async () => {
 
   try {
     // Insert the HTML page
-    const response = await fetch(STARTER_PAGE_TEMPLATE);
-    const template = await response.text();
-    if (!template) throw new Error('HTML template is not found');
-
-    document.querySelector('main').innerHTML = template;
+    await starterView.initView();
     appState.setCurrentPage('starter');
 
-    // Set the login modal handlers
+    // Init login modal handlers and set the selector handler
     loginController.setHandlers();
-    // Render selector and set handler for starter lane selection
-    await starterView.insertSelector(appData.toSortedArray('roles'));
-    starterView.addHandlerSelector(chooseOptionHandler);
+    starterView.components.starter.addHandlers(setLaneHandler);
 
     appState.addEventListener('user:login', e => {
       e.stopImmediatePropagation();
