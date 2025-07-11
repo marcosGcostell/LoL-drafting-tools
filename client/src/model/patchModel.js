@@ -1,6 +1,8 @@
+import appData from './appData.js';
+
 export default class Patch {
   constructor(version) {
-    this._riotVersion = version;
+    this._riotVersion = version || appData.version;
     this._patchMode = '';
     this.__type = 'Patch';
   }

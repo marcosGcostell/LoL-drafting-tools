@@ -1,5 +1,6 @@
 import View from '../global/view.js';
 import SelectorComponent from '../components/selectorComponent.js';
+import PatchComponent from '../components/patchBtnComponent.js';
 import {
   ICONS,
   LANE_ICONS,
@@ -25,14 +26,18 @@ export default class UserPoolView extends View {
     if (!this._template) await this._templatePromise;
     await this.render(roles, { noClear: true });
 
-    const components = [
-      { parentView: 'profile', target: 'primary', type: 'lane' },
-      { parentView: 'profile', target: 'secondary', type: 'lane' },
-      { parentView: 'profile', target: 'rank', type: 'rank' },
+    const selectors = [
+      { style: 'profile', id: 'primary', data: 'lane' },
+      { style: 'profile', id: 'secondary', data: 'lane' },
+      { style: 'profile', id: 'rank', data: 'rank' },
     ];
-    components.forEach(
-      comp => (this.components[comp.target] = new SelectorComponent(comp)),
+    selectors.forEach(
+      comp => (this.components[comp.id] = new SelectorComponent(comp)),
     );
+    this.components.patch = new PatchComponent({
+      style: 'profile',
+      id: 'patch',
+    });
 
     await Promise.all(Object.values(this.components).map(comp => comp.load()));
 
@@ -41,25 +46,21 @@ export default class UserPoolView extends View {
   }
 
   setFromUserData(userData, patchStr) {
-    this.components.primary.setOptionActive(userData.primaryRole || 'top');
-    this.components.secondary.setOptionActive(
-      userData.secondaryRole || 'middle',
-    );
-    this.components.rank.changeParentButton(userData.rank || 'all');
-    this.setPatch(patchStr);
+    this.components.primary.setActiveItem(userData.primaryRole || 'top');
+    this.components.secondary.setActiveItem(userData.secondaryRole || 'middle');
+    this.components.rank
+      .setActiveItem(userData.rank || 'all')
+      .changeParentButton(userData.rank || 'all');
+    this.components.patch.mode = userData.patch;
   }
 
-  addHandler(target, type, handler) {
+  addHandler(id, type, handler) {
     document
-      .querySelector(`#${target}__${type}`)
+      .querySelector(`#${id}__${type}`)
       .addEventListener('click', function (e) {
         e.preventDefault();
-        handler(e, target);
+        handler(e, id);
       });
-  }
-
-  setPatch(patchStr) {
-    document.querySelector('#patch__btn span').textContent = patchStr;
   }
 
   async _generateMarkup(_) {

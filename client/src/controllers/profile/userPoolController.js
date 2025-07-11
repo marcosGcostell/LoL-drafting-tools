@@ -13,8 +13,10 @@ export const toggleSelector = (e, component) => {
 };
 
 export const hidePopUps = () => {
-  Object.values(userPoolView.components).forEach(component => {
-    if (component.isVisible) component.toggle();
+  const popUpsIds = ['rank'];
+  popUpsIds.forEach(id => {
+    if (userPoolView.components[id].isVisible)
+      userPoolView.components[id].toggle();
   });
 };
 
@@ -23,7 +25,7 @@ const setLaneHandler = (e, component) => {
 
   e.stopPropagation();
   const id = e.target.closest('div').dataset.value;
-  component.setOptionActive(id);
+  component.setActiveItem(id);
   // TODO State is the components. Don't save to user until save / discard
   // appState.user.setPoolOptions(`${component.id}Role`, id);
 };
@@ -38,12 +40,11 @@ const setRankHandler = (e, component) => {
   toggleSelector(e, component);
 };
 
-const togglePatch = (e, _) => {
+const togglePatch = (e, component) => {
   if (appState.popUpOn) return;
 
   e.stopPropagation();
-  userPoolView.setPatch(appState.patch.toggle().toProfile());
-  appState.user.setPoolOptions('patch', appState.patch.mode);
+  userPoolView.components.patch.toggle();
 };
 
 export const init = async () => {
@@ -61,5 +62,5 @@ export const init = async () => {
   userPoolView.components.primary.addHandlers(setLaneHandler);
   userPoolView.components.secondary.addHandlers(setLaneHandler);
   userPoolView.components.rank.addHandlers(setRankHandler, toggleSelector);
-  userPoolView.addHandler('patch', 'btn', togglePatch);
+  userPoolView.components.patch.addHandlers(togglePatch);
 };
