@@ -1,7 +1,7 @@
 <div class="starter__input">
   <img
     src="assets/img/lanes/{%IMG%}"
-    class="input__clickable"
+    class="btn__clickable"
     data-value="{%ID%}"
     alt="{%NAME%}"
   />

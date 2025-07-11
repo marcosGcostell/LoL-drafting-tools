@@ -31,13 +31,13 @@ export default class UserPoolView extends View {
       { style: 'profile', id: 'secondary', data: 'lane' },
       { style: 'profile', id: 'rank', data: 'rank' },
     ];
+    const patch = { style: 'profile', id: 'patch' };
+
     selectors.forEach(
-      comp => (this.components[comp.id] = new SelectorComponent(comp)),
+      selector =>
+        (this.components[selector.id] = new SelectorComponent(selector)),
     );
-    this.components.patch = new PatchComponent({
-      style: 'profile',
-      id: 'patch',
-    });
+    this.components.patch = new PatchComponent(patch);
 
     await Promise.all(Object.values(this.components).map(comp => comp.load()));
 

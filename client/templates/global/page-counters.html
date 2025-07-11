@@ -45,54 +45,56 @@
   <div class="input-section">
     <!-- Standard Inputs -->
     <div class="options">
-      <div class="main__input lane__input selector">
-        <img
-          src="assets/img/lanes/all.webp"
-          class="lane__btn input__clickable"
-          alt="Lanes"
-        />
+      <div
+        id="lane__btn"
+        class="counters__lane__btn selector__clickable relative"
+      >
+        <img src="assets/img/lanes/all.webp" class="lane__btn" alt="Lanes" />
         <span>Lane</span>
-        <div class="popup lane__selector hidden">
+        <div id="lane__selector" class="popup counters__lane__selector hidden">
           <!-- Place to insert lane selector -->
         </div>
       </div>
-      <div class="main__input rank__input selector">
-        <img
-          src="assets/img/ranks/all.webp"
-          class="rank__btn input__clickable"
-          alt="Ranks"
-        />
+      <div
+        id="rank__btn"
+        class="counters__rank__btn selector__clickable relative"
+      >
+        <img src="assets/img/ranks/all.webp" class="rank__btn" alt="Ranks" />
         <span>All</span>
-        <div class="popup rank__selector hidden">
+        <div id="rank__selector" class="popup counters__rank__selector hidden">
           <!-- Place to insert rank selector -->
         </div>
       </div>
-      <div class="small__inputs">
-        <div class="small__input vslane__input selector">
-          <img
-            src="assets/img/lanes/all.webp"
-            class="vslane__btn input__clickable"
-            alt="Lanes"
-          />
+      <div class="small__btns">
+        <div
+          id="vslane__btn"
+          class="counters__vslane__btn selector__clickable relative"
+        >
+          <img src="assets/img/lanes/all.webp" alt="Lanes" />
           <div class="vslane__label">
             <div class="label">vs</div>
             <span>Lane</span>
           </div>
-          <div class="popup vslane__selector hidden">
+          <div
+            id="vslane__selector"
+            class="popup counters__vslane__selector hidden"
+          >
             <!-- Place to insert vslane selector -->
           </div>
         </div>
-        <div class="small__input patch__input">
-          <button class="patch__btn input__clickable">PATCH</button>
+        <div id="patch__btn" class="counters__patch__btn selector__clickable">
+          <span>PATCH</span>
         </div>
       </div>
     </div>
-    <div class="config">
-      <!-- Settings -->
-      <div class="settings">
-        <hr />
+    <hr />
+    <!-- Settings -->
+    <div class="settings">
+      <div>
         <span>List max items</span>
         <input id="max-items" type="text" class="settings__input" value="35" />
+      </div>
+      <div>
         <span>% Pick Rate > </span>
         <input id="min-pr" type="text" class="settings__input" value="1.0" />
       </div>
@@ -103,7 +105,7 @@
     <!-- Place to insert champions selected -->
   </div>
   <div class="search-section">
-    <div class="champion input__clickable" id="select-champion">
+    <div class="champion btn__clickable" id="select-champion">
       <svg class="add__champion">
         <use href="assets/img/icons/icons.svg#icon-plus-circle"></use>
       </svg>

@@ -21,7 +21,7 @@ export const init = async () => {
     // Set the login modal handlers
     loginController.setHandlers();
     // Set the options inputs and search handlers
-    await inputsController.setHandlers();
+    await inputsController.initView();
     searchController.setHandlers();
     // Init the data views
     tierlistController.initView();

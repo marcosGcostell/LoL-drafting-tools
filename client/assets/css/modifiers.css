@@ -7,3 +7,19 @@
 .item__active {
   background-color: var(--color-grey-dark-4);
 }
+
+.btn__clickable,
+.selector__clickable {
+  cursor: pointer;
+}
+
+.btn__clickable:hover,
+.selector__clickable:hover {
+  border: 1px solid var(--color-grey-light-5);
+  background-color: var(--color-grey-dark-4);
+}
+
+.btn__clickable:hover {
+  border: 1px solid var(--color-grey-light-5);
+  transform: scale(1.1);
+}

@@ -8,7 +8,7 @@
     <!-- Place to insert champions selected -->
   </div>
   <div class="profile__search">
-    <div class="profile__champion input__clickable" id="{%ID%}__btn">
+    <div class="profile__champion btn__clickable" id="{%ID%}__btn">
       <svg>
         <use href="{%ICONS%}#icon-plus-circle"></use>
       </svg>

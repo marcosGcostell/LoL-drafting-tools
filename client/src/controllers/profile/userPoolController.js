@@ -1,16 +1,12 @@
 import appData from '../../model/appData.js';
 import appState from '../../appState.js';
+import * as componentsController from '../global/componentsController.js';
 import UserPoolView from '../../view/profile/userPoolView.js';
 
 let userPoolView;
 
-export const toggleSelector = (e, component) => {
-  if (!appState.popUpOn || appState.popUpOn === component.id) {
-    appState.popUpOn = component.toggle().isVisible ? component.id : '';
-
-    e.stopPropagation();
-  }
-};
+//TODO Need a state manager for the view to store de components settings
+// for reloads but don't save data to user until save / discard
 
 export const hidePopUps = () => {
   const popUpsIds = ['rank'];
@@ -18,33 +14,6 @@ export const hidePopUps = () => {
     if (userPoolView.components[id].isVisible)
       userPoolView.components[id].toggle();
   });
-};
-
-const setLaneHandler = (e, component) => {
-  if (appState.popUpOn) return;
-
-  e.stopPropagation();
-  const id = e.target.closest('div').dataset.value;
-  component.setActiveItem(id);
-  // TODO State is the components. Don't save to user until save / discard
-  // appState.user.setPoolOptions(`${component.id}Role`, id);
-};
-
-const setRankHandler = (e, component) => {
-  if (appState.popUpOn !== 'rank' && userPoolView.popUpDisplayed !== 'rank')
-    return;
-
-  e.stopPropagation();
-  const id = e.target.closest('div').dataset.value;
-  component.changeParentButton(id);
-  toggleSelector(e, component);
-};
-
-const togglePatch = (e, component) => {
-  if (appState.popUpOn) return;
-
-  e.stopPropagation();
-  userPoolView.components.patch.toggle();
 };
 
 export const init = async () => {
@@ -59,8 +28,15 @@ export const init = async () => {
   );
 
   // Set handlers for the profile pool view
-  userPoolView.components.primary.addHandlers(setLaneHandler);
-  userPoolView.components.secondary.addHandlers(setLaneHandler);
-  userPoolView.components.rank.addHandlers(setRankHandler, toggleSelector);
-  userPoolView.components.patch.addHandlers(togglePatch);
+  userPoolView.components.primary.addHandlers(
+    componentsController.getSelectorValue,
+  );
+  userPoolView.components.secondary.addHandlers(
+    componentsController.getSelectorValue,
+  );
+  userPoolView.components.rank.addHandlers(
+    componentsController.getSelectorPopUpValue,
+    componentsController.toggleSelector,
+  );
+  userPoolView.components.patch.addHandlers(componentsController.togglePatch);
 };

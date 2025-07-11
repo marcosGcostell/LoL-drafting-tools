@@ -1,6 +1,6 @@
 <div>
   <img
-    class="input__clickable"
+    class="btn__clickable"
     src="assets/img/lanes/{%IMG%}"
     data-value="{%ID%}"
     alt="{%NAME%}"

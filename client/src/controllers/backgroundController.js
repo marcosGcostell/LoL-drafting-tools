@@ -11,18 +11,18 @@ const hidePopUps = e => {
   console.log('Main hide popups');
   e.preventDefault();
   if (appState.popUpOn === '') return;
+  if (appState.currentPage === 'counters') {
+    inputsController.hidePopUps();
+  }
+  if (appState.currentPage === 'profile') {
+    userPoolController.hidePopUps();
+  }
   if (appState.popUpOn === 'search') {
     searchController.toggleSearchPanel(e);
   } else if (appState.popUpOn === 'login') {
     loginController.toggleModal(e);
   } else if (appState.popUpOn === 'password') {
     userDataController.togglePanel(e);
-  } else if (appState.popUpOn === 'lane' || appState.popUpOn === 'vslane') {
-    inputsController.toggleSelectors(e, appState.popUpOn);
-  } else if (appState.popUpOn === 'rank') {
-    appState.currentPage === 'profile'
-      ? userPoolController.hidePopUps()
-      : inputsController.toggleSelectors(e, 'rank');
   }
   appState.popUpOn = '';
 };
