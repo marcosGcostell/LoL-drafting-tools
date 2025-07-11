@@ -7,10 +7,9 @@ import {
 
 export default class SelectorComponent {
   constructor({ parentView, target, type }) {
-    super();
     if (!parentView || !target || !type) return null;
-    this._parentView = parent;
-    this._target = target;
+    this._parentView = parentView;
+    this._type = type;
     this._selectorElement = document.querySelector(`#${target}__selector`);
     this._parentBtn = document.querySelector(`#${target}__btn`);
     this._path = type === 'rank' ? RANK_ICONS : LANE_ICONS;
@@ -18,7 +17,7 @@ export default class SelectorComponent {
       type === 'rank'
         ? appData.toSortedArray('ranks')
         : appData.toSortedArray('roles');
-    this.parentData = type === 'rank' ? appData.ranks : appData.roles;
+    this._parentData = type === 'rank' ? appData.ranks : appData.roles;
     this._template = null;
     this._templatePromise = fetch(SELECTOR_ITEM_TEMPLATE)
       .then(response => response.text())
@@ -26,6 +25,7 @@ export default class SelectorComponent {
         this._template = data;
         return data;
       });
+    this.id = target;
     this.isVisible = false;
     this.itemSelected = null;
   }
@@ -48,7 +48,9 @@ export default class SelectorComponent {
   }
 
   _generateMarkup() {
-    return this._data.map(item => this._generateItemMarkup(item)).join('');
+    return this._selectorData
+      .map(item => this._generateItemMarkup(item))
+      .join('');
   }
 
   _generateItemMarkup(item) {
@@ -56,6 +58,7 @@ export default class SelectorComponent {
     output = output.replace(/{%NAME%}/g, item.name);
     output = output.replace(/{%IMG%}/g, item.img);
     output = output.replace(/{%VIEW%}/g, this._parentView);
+    output = output.replace(/{%TYPE%}/g, this._type);
     output = output.replace(/{%URL%}/g, this._path);
     return output;
   }
@@ -81,22 +84,22 @@ export default class SelectorComponent {
     return this;
   }
 
-  setOptionActive(option) {
+  setOptionActive(id) {
     Array.from(this._selectorElement.children).forEach(el =>
-      el.dataset.value === option
+      el.dataset.value === id
         ? el.classList.add('item__active')
         : el.classList.remove('item__active'),
     );
-    this.itemSelected = option;
+    this.itemSelected = id;
     return this;
   }
 
-  changeParentButton(option) {
+  changeParentButton(id) {
     const image = this._parentBtn.querySelector('img');
     const text = this._parentBtn.querySelector('span');
 
-    image.setAttribute('src', `${this._path}${this.parentData[option].img}`);
-    text.textContent = this.parentData[option].name;
-    this.itemSelected = option;
+    image.setAttribute('src', `${this._path}${this._parentData[id].img}`);
+    text.textContent = this._parentData[id].name;
+    this.itemSelected = id;
   }
 }

@@ -6,6 +6,8 @@ import * as userDataController from './profile/userDataController.js';
 import * as userPoolController from './profile/userPoolController.js';
 
 const hidePopUps = e => {
+  // FIXME When popup components will be modular
+  // Only need to call a hidePopUps function on the current page views
   console.log('Main hide popups');
   e.preventDefault();
   if (appState.popUpOn === '') return;
@@ -19,7 +21,7 @@ const hidePopUps = e => {
     inputsController.toggleSelectors(e, appState.popUpOn);
   } else if (appState.popUpOn === 'rank') {
     appState.currentPage === 'profile'
-      ? userPoolController.toggleSelectors(e, 'rank')
+      ? userPoolController.hidePopUps()
       : inputsController.toggleSelectors(e, 'rank');
   }
   appState.popUpOn = '';

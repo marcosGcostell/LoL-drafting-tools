@@ -4,36 +4,38 @@ import UserPoolView from '../../view/profile/userPoolView.js';
 
 let userPoolView;
 
-export const toggleSelectors = (e, target) => {
-  if (!appState.popUpOn || appState.popUpOn === target) {
-    userPoolView.toggleSelector(target);
-    appState.popUpOn = userPoolView.popUpDisplayed
-      ? userPoolView.popUpDisplayed
-      : '';
+export const toggleSelector = (e, component) => {
+  if (!appState.popUpOn || appState.popUpOn === component.id) {
+    appState.popUpOn = component.toggle().isVisible ? component.id : '';
 
     e.stopPropagation();
   }
 };
 
-const setLaneHandler = (e, target) => {
+export const hidePopUps = () => {
+  Object.values(userPoolView.components).forEach(component => {
+    if (component.isVisible) component.toggle();
+  });
+};
+
+const setLaneHandler = (e, component) => {
   if (appState.popUpOn) return;
 
   e.stopPropagation();
   const id = e.target.closest('div').dataset.value;
-  userPoolView.setOptionActive(target, id);
-  // TODO Set the option to the user and save it
-  appState.user.setPoolOptions(`${target}Role`, id);
+  component.setOptionActive(id);
+  // TODO State is the components. Don't save to user until save / discard
+  // appState.user.setPoolOptions(`${component.id}Role`, id);
 };
 
-const setRankHandler = (e, _) => {
+const setRankHandler = (e, component) => {
   if (appState.popUpOn !== 'rank' && userPoolView.popUpDisplayed !== 'rank')
     return;
 
   e.stopPropagation();
   const id = e.target.closest('div').dataset.value;
-  userPoolView.changeRank(appData.ranks[id]);
-  toggleSelectors(e, 'rank');
-  appState.user.setPoolOptions('rank', id);
+  component.changeParentButton(id);
+  toggleSelector(e, component);
 };
 
 const togglePatch = (e, _) => {
@@ -45,26 +47,19 @@ const togglePatch = (e, _) => {
 };
 
 export const init = async () => {
-  // Init view and insert selectors
+  // Init view
   userPoolView = new UserPoolView();
-  await userPoolView.insertSelectors(
-    appData.toSortedArray('roles'),
-    appData.toSortedArray('ranks'),
-  );
+  await userPoolView.initView(appData.toSortedArray('roles'));
 
   // Load config and champion pool
-  userPoolView.init(
+  userPoolView.setFromUserData(
     appState.user.data,
-    appData.ranks,
     appState.patch.strToProfile(appState.user.patch),
   );
 
   // Set handlers for the profile pool view
-  // Lane, rank, patch selectors
-  ['primary', 'secondary'].forEach(el =>
-    userPoolView.addHandler(el, 'selector', setLaneHandler),
-  );
-  userPoolView.addHandler('rank', 'btn', toggleSelectors);
-  userPoolView.addHandler('rank', 'selector', setRankHandler);
+  userPoolView.components.primary.addHandlers(setLaneHandler);
+  userPoolView.components.secondary.addHandlers(setLaneHandler);
+  userPoolView.components.rank.addHandlers(setRankHandler, toggleSelector);
   userPoolView.addHandler('patch', 'btn', togglePatch);
 };
