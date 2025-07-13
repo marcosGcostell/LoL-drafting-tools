@@ -36,7 +36,7 @@ export const init = async () => {
 
     // Init login modal handlers and set the selector handler
     loginController.setHandlers();
-    starterView.components.starter.addHandlers(setLaneHandler);
+    starterView.components.starter.bind(setLaneHandler);
 
     appState.addEventListener('user:login', e => {
       e.stopImmediatePropagation();

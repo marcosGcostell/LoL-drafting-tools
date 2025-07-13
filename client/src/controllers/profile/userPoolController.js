@@ -28,15 +28,11 @@ export const init = async () => {
   );
 
   // Set handlers for the profile pool view
-  userPoolView.components.primary.addHandlers(
-    componentsController.getSelectorValue,
-  );
-  userPoolView.components.secondary.addHandlers(
-    componentsController.getSelectorValue,
-  );
-  userPoolView.components.rank.addHandlers(
+  userPoolView.components.primary.bind(componentsController.getSelectorValue);
+  userPoolView.components.secondary.bind(componentsController.getSelectorValue);
+  userPoolView.components.rank.bind(
     componentsController.getSelectorPopUpValue,
     componentsController.toggleSelector,
   );
-  userPoolView.components.patch.addHandlers(componentsController.togglePatch);
+  userPoolView.components.patch.bind(componentsController.togglePatch);
 };

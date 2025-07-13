@@ -68,12 +68,12 @@ export const initView = async () => {
 
   // add handlers for option buttons and selectors
   ['lane', 'vslane', 'rank'].forEach(id =>
-    inputsView.components[id].addHandlers(
+    inputsView.components[id].bind(
       setOptionHandler,
       componentsController.toggleSelector,
     ),
   );
-  inputsView.components.patch.addHandlers(togglePatch);
+  inputsView.components.patch.bind(togglePatch);
 
   // Handlers to manage inputs values
   inputsView.addHandlerInput(listItemsHandler, 'max-items');

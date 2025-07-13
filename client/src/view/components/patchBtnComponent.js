@@ -11,6 +11,13 @@ export default class PatchComponent extends Component {
     ]);
   }
 
+  bind(patchHandler) {
+    this._componentElement.addEventListener('click', e => {
+      e.preventDefault();
+      selectorHandler(e, this);
+    });
+  }
+
   get mode() {
     return this._patch.mode;
   }

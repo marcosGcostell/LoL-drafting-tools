@@ -17,12 +17,12 @@ export default class SearchView extends View {
   }
 
   init() {
-    this._panelElement = document.querySelector('.search__popup');
+    this._popUpElement = document.querySelector('.search__popup');
     this._inputElement = document.querySelector('#search');
     this._parentElement = document.querySelector('.search__results');
 
     // prevent propagation for clicking inside a displayed popup
-    this._panelElement.addEventListener('click', e => e.stopPropagation());
+    this._popUpElement.addEventListener('click', e => e.stopPropagation());
   }
 
   addHandlerSearchContent(handler) {
@@ -85,7 +85,7 @@ export default class SearchView extends View {
   toggleSearchPanel() {
     this._inputElement.value = '';
     this._clear();
-    this._panelElement.classList.toggle('hidden');
+    this._popUpElement.classList.toggle('hidden');
     this.isPanelShowed = !this.isPanelShowed;
     if (this.isPanelShowed) {
       this._inputElement.focus();
@@ -94,6 +94,6 @@ export default class SearchView extends View {
 
   reset() {
     this.isPanelShowed = false;
-    this._panelElement.classList.add('hidden');
+    this._popUpElement.classList.add('hidden');
   }
 }

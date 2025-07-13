@@ -14,18 +14,43 @@ export default class Component {
     }
   }
 
-  addHandlers(selectorHandler, parentHandler = null) {
-    if (selectorHandler) {
-      this._componentElement.addEventListener('click', e => {
-        e.preventDefault();
-        selectorHandler(e, this);
-      });
-    }
-    if (parentHandler) {
-      this._parentBtn.addEventListener('click', e => {
-        e.preventDefault();
-        parentHandler(e, this);
-      });
-    }
+  _render() {
+    const markup = this._generateMarkup();
+    this._clear();
+    this._componentElement.insertAdjacentHTML('beforeend', markup);
+  }
+
+  _clear() {
+    this._componentElement.innerHTML = '';
+  }
+
+  toggle() {
+    this._popUpElement.classList.toggle('hidden');
+    this.isVisible = !this.isVisible;
+    return this;
+  }
+
+  hide() {
+    this.isVisible = false;
+    this._popUpElement.classList.add('hidden');
+  }
+
+  setActiveItem(optionId) {
+    Array.from(this._componentElement.children).forEach(el =>
+      el.dataset.value === optionId
+        ? el.classList.add('item__active')
+        : el.classList.remove('item__active'),
+    );
+    this.value = optionId;
+    return this;
+  }
+
+  changeParentButton(optionId) {
+    const image = this._parentBtn.querySelector('img');
+    const text = this._parentBtn.querySelector('span');
+
+    image.setAttribute('src', `${this._path}${this._parentData[optionId].img}`);
+    text.textContent = this._parentData[optionId].name;
+    this.value = optionId;
   }
 }

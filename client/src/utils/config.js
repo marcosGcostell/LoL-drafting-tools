@@ -33,10 +33,6 @@ export const SIGNUP_PAGE_TEMPLATE = './templates/global/page-signup.html';
 // For components
 export const SELECTOR_ITEM_TEMPLATE =
   './templates/components/selector-item.tpl';
-export const LANE_ITEM_TEMPLATE = './templates/counters/lane-selector-item.tpl';
-export const RANK_ITEM_TEMPLATE = './templates/counters/rank-selector-item.tpl';
-export const LANE_STARTER_TEMPLATE =
-  './templates/counters/lane-starter-item.tpl';
 export const TIERLIST_ITEM_TEMPLATE = './templates/counters/tierlist-item.tpl';
 export const SEARCH_ITEM_TEMPLATE = './templates/counters/search-item.tpl';
 export const CHAMPION_TEMPLATE = './templates/counters/champion-item.tpl';
@@ -46,10 +42,6 @@ export const STATS_COLUMN_TEMPLATE = './templates/counters/stats-column.tpl';
 export const STATS_ITEM_TEMPLATE = './templates/counters/stats-item.tpl';
 export const PROFILE_SECTION_TEMPLATE =
   './templates/profile/profile-pool-lane.tpl';
-export const LANE_PROFILE_TEMPLATE =
-  './templates/profile/lane-selector-item.tpl';
-export const RANK_PROFILE_TEMPLATE =
-  './templates/profile/rank-selector-item.tpl';
 export const PROFILE_CHAMPION_ITEM =
   './templates/profile/profile-champion-item.tpl';
 

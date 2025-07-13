@@ -12,6 +12,7 @@ export default class SelectorComponent extends Component {
     super({ style, id, type: 'selector', template: SELECTOR_ITEM_TEMPLATE });
     this._data = data;
     this._parentBtn = document.querySelector(`#${id}__btn`);
+    this._popUpElement = this._componentElement;
     this._path = data === 'rank' ? RANK_ICONS : LANE_ICONS;
     this._selectorData =
       data === 'rank'
@@ -22,21 +23,26 @@ export default class SelectorComponent extends Component {
     this.value = null;
   }
 
+  bind(selectorHandler, parentHandler = null) {
+    if (selectorHandler) {
+      this._componentElement.addEventListener('click', e => {
+        e.preventDefault();
+        selectorHandler(e, this);
+      });
+    }
+    if (parentHandler) {
+      this._parentBtn.addEventListener('click', e => {
+        e.preventDefault();
+        parentHandler(e, this);
+      });
+    }
+  }
+
   async load() {
     if (!this._template) await this._templatePromise;
 
     this._render();
     return this;
-  }
-
-  _render() {
-    const markup = this._generateMarkup();
-    this._clear();
-    this._componentElement.insertAdjacentHTML('beforeend', markup);
-  }
-
-  _clear() {
-    this._componentElement.innerHTML = '';
   }
 
   _generateMarkup() {
@@ -53,30 +59,5 @@ export default class SelectorComponent extends Component {
     output = output.replace(/{%DATA%}/g, this._data);
     output = output.replace(/{%URL%}/g, this._path);
     return output;
-  }
-
-  toggle() {
-    this._componentElement.classList.toggle('hidden');
-    this.isVisible = !this.isVisible;
-    return this;
-  }
-
-  setActiveItem(optionId) {
-    Array.from(this._componentElement.children).forEach(el =>
-      el.dataset.value === optionId
-        ? el.classList.add('item__active')
-        : el.classList.remove('item__active'),
-    );
-    this.value = optionId;
-    return this;
-  }
-
-  changeParentButton(optionId) {
-    const image = this._parentBtn.querySelector('img');
-    const text = this._parentBtn.querySelector('span');
-
-    image.setAttribute('src', `${this._path}${this._parentData[optionId].img}`);
-    text.textContent = this._parentData[optionId].name;
-    this.value = optionId;
   }
 }
