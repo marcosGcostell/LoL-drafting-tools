@@ -1,7 +1,29 @@
 import PoolView from '../../view/counters/poolView.js';
 import appState from '../../appState.js';
+import { hideAllPopUps } from '../backgroundController.js';
 
 let poolView;
+
+export const hidePopUps = (exclude = null) => {
+  const popUpsIds = ['search'];
+  popUpsIds.forEach(id => {
+    const comp = poolView.components[id];
+    if (comp.isVisible && comp.id !== exclude) comp.toggle();
+  });
+};
+
+const togglePopUp = component => {
+  if (appState.popUpOn) hideAllPopUps(component.id);
+
+  appState.popUpOn = component.isVisible ? component.id : '';
+};
+
+const getPickedChampion = component => {
+  appState.popUpOn = '';
+
+  if (component.value) appState.addToPool(component.value);
+  // TODO Handle a possible error with no champion return
+};
 
 const _deletePoolItem = async (index, fireEvent = true) => {
   poolView.removeColumn(index);
@@ -70,9 +92,11 @@ const poolOnHold = async () => {
   });
 };
 
-export const initView = () => {
+export const init = async () => {
   poolView = new PoolView();
-  poolView.init();
+  await poolView.initView();
+
+  poolView.components.search.bind(getPickedChampion, togglePopUp);
 
   appState.addEventListener('pool:add', addPoolItem);
   appState.addEventListener('pool:added', showChampion);
@@ -80,7 +104,7 @@ export const initView = () => {
   ['change:lane', 'change:bothLanes', 'change:rank', 'change:patch'].forEach(
     target => {
       appState.addEventListener(target, poolOnHold);
-    }
+    },
   );
   [
     'updated:lane',

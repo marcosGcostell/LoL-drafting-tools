@@ -19,6 +19,10 @@ const riotStaticSchema = new mongoose.Schema({
     type: String,
     required: [true, 'A name is needed'],
   },
+  longName: {
+    type: String,
+    required: [true, 'A long name is needed'],
+  },
   img: {
     type: String,
     required: [true, 'A image file name is needed'],

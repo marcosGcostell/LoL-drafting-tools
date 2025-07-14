@@ -11,7 +11,7 @@ export default class LoginView extends View {
     this._errorMessage = message;
   }
 
-  init() {
+  initView() {
     this._modalElement = document.querySelector('#login-modal');
     this._parentElement = document.querySelector('.login__msg');
     this.userInput = document.querySelector('#user__logname');
@@ -22,7 +22,7 @@ export default class LoginView extends View {
     [this.userInput, this.passwordInput].forEach(el =>
       el.addEventListener('focus', e => {
         this._clear();
-      })
+      }),
     );
   }
 
@@ -40,7 +40,7 @@ export default class LoginView extends View {
       .querySelector(`.btn__${target}`)
       .addEventListener('click', function (e) {
         e.preventDefault();
-        handler(e);
+        handler();
       });
   }
 

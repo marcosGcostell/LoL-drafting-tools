@@ -1,50 +1,41 @@
 import View from '../global/view.js';
-import { LANE_STARTER_TEMPLATE } from '../../utils/config.js';
+import SelectorComponent from '../components/selectorComponent.js';
+import { STARTER_PAGE_TEMPLATE } from '../../utils/config.js';
 
 class StarterView extends View {
   _parentElement;
 
   constructor() {
     super();
+    this._parentElement = document.querySelector('main');
     this._errorMessage = 'Can not load the data';
     this._message = '';
     this._template = null;
-    this._templatePromise = fetch(LANE_STARTER_TEMPLATE)
+    this._templatePromise = fetch(STARTER_PAGE_TEMPLATE)
       .then(response => response.text())
       .then(data => {
         this._template = data;
         return data;
       });
+    this.components = {};
   }
 
-  addHandlerSelector(handler) {
-    document
-      .querySelector('.starter__selector')
-      .addEventListener('click', function (e) {
-        e.preventDefault();
-        const id = e.target.dataset.value;
-        handler(id);
-      });
-  }
+  async initView() {
+    if (!this._template) await this._templatePromise;
 
-  async insertSelector(roles) {
-    if (!this._template) {
-      await this._templatePromise;
-    }
+    await this.render(true);
 
-    this._parentElement = document.querySelector('.starter-options');
-    await this.render(roles);
+    this.components.starter = new SelectorComponent({
+      style: 'starter',
+      id: 'starter',
+      data: 'lane',
+    });
+
+    await this.components.starter.load();
   }
 
   async _generateMarkup(_) {
-    return this._data.map(item => this._generateItemMarkup(item)).join('');
-  }
-
-  _generateItemMarkup(item) {
-    let output = this._template.replace(/{%ID%}/g, item.id);
-    output = output.replace(/{%NAME%}/g, item.name);
-    output = output.replace(/{%IMG%}/g, item.img);
-    return output;
+    return this._template;
   }
 }
 

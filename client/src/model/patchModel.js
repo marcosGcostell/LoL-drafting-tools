@@ -1,6 +1,8 @@
+import appData from './appData.js';
+
 export default class Patch {
   constructor(version) {
-    this._riotVersion = version;
+    this._riotVersion = version || appData.version;
     this._patchMode = '';
     this.__type = 'Patch';
   }
@@ -29,11 +31,19 @@ export default class Patch {
   }
 
   toView() {
-    return this._patchMode ? 'Last 7 days' : this._riotVersion;
+    return this.strToView(this._patchMode);
   }
 
   toProfile() {
-    return this._patchMode ? 'Last 7 days' : 'Active patch version';
+    return this.strToProfile(this._patchMode);
+  }
+
+  strToView(str) {
+    return str ? 'Last 7 days' : this._riotVersion;
+  }
+
+  strToProfile(str) {
+    return str ? 'Last 7 days' : 'Current game version';
   }
 
   static fromJSON(obj) {

@@ -31,19 +31,22 @@ export const COUNTER_PAGE_TEMPLATE = './templates/global/page-counters.html';
 export const PROFILE_PAGE_TEMPLATE = './templates/global/page-profile.html';
 export const SIGNUP_PAGE_TEMPLATE = './templates/global/page-signup.html';
 // For components
-export const LANE_ITEM_TEMPLATE = './templates/counters/lane-selector-item.tpl';
-export const RANK_ITEM_TEMPLATE = './templates/counters/rank-selector-item.tpl';
-export const LANE_STARTER_TEMPLATE =
-  './templates/counters/lane-starter-item.tpl';
+export const SELECTOR_ITEM_TEMPLATE =
+  './templates/components/selector-item.tpl';
 export const TIERLIST_ITEM_TEMPLATE = './templates/counters/tierlist-item.tpl';
-export const SEARCH_ITEM_TEMPLATE = './templates/counters/search-item.tpl';
+export const SEARCH_ITEM_TEMPLATE = './templates/components/search-item.tpl';
 export const CHAMPION_TEMPLATE = './templates/counters/champion-item.tpl';
 export const CHAMPION_ON_HOLD_TEMPLATE =
   './templates/counters/champion-on-hold.tpl';
 export const STATS_COLUMN_TEMPLATE = './templates/counters/stats-column.tpl';
 export const STATS_ITEM_TEMPLATE = './templates/counters/stats-item.tpl';
+export const PROFILE_SECTION_TEMPLATE =
+  './templates/profile/profile-pool-lane.tpl';
+export const PROFILE_CHAMPION_ITEM =
+  './templates/profile/profile-champion-item.tpl';
 
 // Config parameters
 export const PICK_RATE_THRESHOLD = 1.0;
 export const MAX_LIST_ITEMS = 35;
 export const TIME_BEFORE_UPDATE = 24;
+export const MIN_LETTERS_TO_SECOND_SEARCH = 2;

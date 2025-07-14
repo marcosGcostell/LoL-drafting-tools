@@ -31,8 +31,8 @@ class User extends EventTarget {
     this.name = user.name;
     this.userName = user.userName;
     this.email = user.email;
-    this.config = user.config;
-    this.data = user.data;
+    Object.assign(this.config, user.config);
+    Object.assign(this.data, user.data);
   }
 
   #load() {
@@ -55,9 +55,7 @@ class User extends EventTarget {
   }
 
   async getData() {
-    console.log('User class getData()');
     const { user, message } = await getUserDataFromAPI(this.token);
-    console.log('user get: ', user);
 
     if (!user) {
       this.response =
@@ -109,10 +107,8 @@ class User extends EventTarget {
       return null;
     }
     this.token = token;
-    console.log('user class token: ', token);
 
     const user = await this.getData();
-    console.log(user);
     if (!user) {
       this.response = 'Could not get the user data after logged in';
       return null;
@@ -127,6 +123,20 @@ class User extends EventTarget {
     this.#defaultValues();
     sessionStorage.removeItem(LS_USER);
     if (fireEvent) this.dispatchEvent(new Event('logout'));
+  }
+
+  setPoolOptions(target, value) {
+    if (target) {
+      this.data[target] = value;
+      this.#save();
+    }
+  }
+
+  setPoolChampions(lane, pool) {
+    if (lane && pool) {
+      this.data.championPool[lane] = pool;
+      this.#save();
+    }
   }
 
   fromJSON(_) {

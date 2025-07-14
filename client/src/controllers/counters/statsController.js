@@ -50,9 +50,9 @@ export const statsOnHold = async () => {
   }
 };
 
-export const initView = () => {
+export const init = () => {
   statsView = new StatsView();
-  statsView.init();
+  statsView.initView();
 
   appState.addEventListener('pool:add', addStatsColumn);
   appState.addEventListener('pool:added', renderStatsList);

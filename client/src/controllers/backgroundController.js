@@ -1,32 +1,33 @@
 import appState from '../appState.js';
 import * as loginController from './global/loginController.js';
 import * as inputsController from './counters/inputsController.js';
-import * as searchController from './global/searchController.js';
+import * as poolController from './counters/poolController.js';
 import * as userDataController from './profile/userDataController.js';
+import * as userPoolController from './profile/userPoolController.js';
 
-const hidePopUps = e => {
-  console.log('Main hide popups');
-  e.preventDefault();
+export const hideAllPopUps = (exclude = null) => {
+  // FIXME When popup components will be modular
+  // Only need to call a hidePopUps function of the current page views
   if (appState.popUpOn === '') return;
-  if (appState.popUpOn === 'search') {
-    searchController.toggleSearchPanel(e);
-  } else if (appState.popUpOn === 'login') {
-    loginController.toggleModal(e);
-  } else if (appState.popUpOn === 'password') {
-    userDataController.togglePanel(e);
-  } else if (
-    appState.popUpOn === 'lane' ||
-    appState.popUpOn === 'rank' ||
-    appState.popUpOn === 'vslane'
-  ) {
-    inputsController.toggleSelectors(e, appState.popUpOn);
+  console.log('Main hide popups');
+  if (appState.currentPage === 'counters') {
+    inputsController.hidePopUps(exclude);
+    poolController.hidePopUps(exclude);
   }
+  if (appState.currentPage === 'profile') {
+    userPoolController.hidePopUps(exclude);
+  } else if (appState.popUpOn === 'login') {
+    loginController.toggleModal();
+  } else if (appState.popUpOn === 'password') {
+    userDataController.togglePanel();
+  }
+  appState.popUpOn = '';
 };
 
 export async function init() {
   // Hide popups if clicking outside them or press ESC
-  document.addEventListener('click', hidePopUps);
+  document.addEventListener('click', hideAllPopUps);
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') hidePopUps(e);
+    if (e.key === 'Escape') hideAllPopUps(e);
   });
 }

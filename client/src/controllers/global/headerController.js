@@ -5,17 +5,26 @@ import { navigate } from '../../router.js';
 let headerView;
 
 export const resetApp = () => {
+  if (appState.popUpOn) return;
+
   appState.user.isLoggedIn() ? appState.user.logout() : appState.resetAll();
   navigate('/');
 };
 
 const handleUserBtn = e => {
-  if (appState.user.isLoggedIn()) {
-    appState.setCurrentPage('profile');
-    navigate('/profile');
-  } else {
+  if (appState.popUpOn) return;
+
+  if (!appState.user.isLoggedIn()) {
     appState.triggerPopUp('login');
     e.stopPropagation();
+    return;
+  }
+  if (appState.currentPage === 'profile') {
+    appState.setCurrentPage(appState.appMode);
+    navigate(`/${appState.appMode}`);
+  } else {
+    appState.setCurrentPage('profile');
+    navigate('/profile');
   }
 };
 
@@ -31,7 +40,7 @@ export async function init() {
   // Set the login button handler
   headerView.addHandlerUserBtn(handleUserBtn);
   ['user:login', 'user:logout', 'app:reload'].forEach(event =>
-    appState.addEventListener(event, userNameHandler)
+    appState.addEventListener(event, userNameHandler),
   );
 
   userNameHandler(null);

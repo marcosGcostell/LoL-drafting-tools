@@ -20,15 +20,15 @@ const clearTierlist = () => {
   appState.fixedTierlist = [];
 };
 
-export const initView = () => {
+export const init = () => {
   tierlistView = new TierlistView();
-  tierlistView.init();
+  tierlistView.initView();
 
   // Add appState events handlers
   ['change:bothLanes', 'change:vslane', 'change:rank', 'change:patch'].forEach(
     target => {
       appState.addEventListener(target, tierlistOnHold);
-    }
+    },
   );
   [
     'updated:bothLanes',

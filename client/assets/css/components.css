@@ -1,13 +1,4 @@
 /* Components styles */
-svg {
-  fill: var(--color-grey-light-3);
-}
-
-hr {
-  width: 100%;
-  border-color: var(--color-grey-dark-4);
-  margin-bottom: 0.3rem;
-}
 
 .spinner {
   display: flex;

@@ -5,10 +5,12 @@ import {
   CHAMPION_ON_HOLD_TEMPLATE,
 } from '../../utils/config.js';
 import View from '../global/view.js';
+import SearchComponent from '../components/searchComponent.js';
 
 export default class PoolView extends View {
   constructor() {
     super();
+    this._parentElement = document.querySelector('.pool-section');
     this._errorMessage = 'No champion match that name...';
     this._message = 'Please, enter a champion name...';
     this._template = null;
@@ -25,10 +27,19 @@ export default class PoolView extends View {
         this._templateOnHold = data;
         return data;
       });
+    this.components = {};
   }
 
-  init() {
-    this._parentElement = document.querySelector('.pool-section');
+  async initView() {
+    if (!this._template || !this._templateOnHold) {
+      await Promise.all([this._templatePromise, this._templateOnHoldPromise]);
+    }
+
+    this.components.search = new SearchComponent({
+      style: 'counters',
+      id: 'search',
+    });
+    await this.components.search.load();
   }
 
   // handlers for clicking remove champion, move, etc.
@@ -60,10 +71,6 @@ export default class PoolView extends View {
   async _generateMarkup(options) {
     if (!options?.length) return this._message;
 
-    if (!this._template || !this._templateOnHold) {
-      await Promise.all([this._templatePromise, this._templateOnHoldPromise]);
-    }
-
     return this._data
       .map(champion => {
         return options.onHold
@@ -82,7 +89,7 @@ export default class PoolView extends View {
     output = output.replace(/{%LANE%}/g, champion.lane);
     output = output.replace(
       /{%LANE_RATE%}/g,
-      champion.roleRates[champion.lane].toFixed(2)
+      champion.roleRates[champion.lane].toFixed(2),
     );
     return output;
   }

@@ -12,12 +12,12 @@ import { expirationDate } from '../utils/helpers.js';
  * @class AppData -
  * Manage Riot data stored in the local server
  * This class has an async task involved with its constructor
- * Should be instanciated with 'getFrom' static methods and not 'new AppData()'
+ * Should be instanciated with 'getFrom' static methods and not with new
  */
 class AppData {
   constructor(data) {
     // Object.assign(this, data);
-    // Better to write her all properties to know its content
+    // Better to write here all properties to know its content
     this.version = data.version;
     this.createdAt = data.version;
     this.champions = data.champions;
@@ -115,7 +115,7 @@ class AppData {
       id =>
         this.champions[id].name === championName ||
         this.champions[id].id === championName ||
-        this.champions[id].riotId === championName
+        this.champions[id].riotId === championName,
     );
     return this.champions[idResult];
   }

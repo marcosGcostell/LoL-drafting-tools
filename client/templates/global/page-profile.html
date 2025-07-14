@@ -110,6 +110,60 @@
       </div>
     </form>
   </div>
-  <!-- CHAMPION POOL -->
-  <div class="profile-pool"></div>
+  <!-- PROFILE POOL SECTION -->
+  <div class="profile-pool">
+    <!-- POOL SELECTORS -->
+    <div class="profile__lane">
+      <span class="profile__cat__title">Primary role: </span>
+      <div
+        id="primary__selector"
+        class="profile__lane__selector"
+        data-value="top"
+      >
+        <!-- Place to insert profile lane selector -->
+      </div>
+    </div>
+    <div class="profile__lane">
+      <span class="profile__cat__title">Secondary role: </span>
+      <div
+        id="secondary__selector"
+        class="profile__lane__selector"
+        data-value="top"
+      >
+        <!-- Place to insert profile lane selector -->
+      </div>
+    </div>
+    <div class="profile__rank">
+      <span class="profile__cat__title">Defaut rank: </span>
+      <div
+        id="rank__btn"
+        class="profile__rank__btn selector__clickable"
+        data-value="all"
+      >
+        <img src="assets/img/ranks/all.webp" class="rank__btn" alt="Ranks" />
+        <span>All</span>
+      </div>
+      <div id="rank__selector" class="profile__rank__selector hidden">
+        <!-- Place to insert rank selector -->
+      </div>
+    </div>
+    <div class="profile__patch">
+      <span class="profile__cat__title">Default Patch: </span>
+      <div
+        id="patch__btn"
+        class="profile__patch__btn selector__clickable"
+        data-value=""
+      >
+        <span>Current game version</span>
+      </div>
+    </div>
+    <hr />
+    <!-- CHAMPION POOL -->
+    <div id="lane__container" class="champion__pool">
+      <div class="profile__pool__title">
+        <span>Select yor champion pool: </span>
+      </div>
+      <!-- Place to insert lane sections -->
+    </div>
+  </div>
 </section>

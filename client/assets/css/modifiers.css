@@ -3,3 +3,29 @@
 .hidden {
   display: none;
 }
+
+.item__active {
+  background-color: var(--color-grey-dark-4);
+}
+
+.btn__clickable,
+.selector__clickable,
+.item__clickable {
+  cursor: pointer;
+}
+
+.selector__clickable:hover,
+.item__clickable:hover {
+  border: 1px solid var(--color-grey-light-5);
+  background-color: var(--color-grey-dark-4);
+}
+
+.item__clickable:hover {
+  transform: scale(1.1);
+}
+
+.btn__clickable:hover {
+  background-color: var(--color-grey-light-2);
+  border: 1px solid var(--color-grey-dark-4);
+  transform: scale(1.1);
+}

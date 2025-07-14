@@ -25,7 +25,7 @@ export default class StatsView extends View {
       });
   }
 
-  init() {
+  initView() {
     this._rootElement = document.querySelector('.stats-container');
     this._parentElement = this._rootElement;
   }
@@ -66,15 +66,15 @@ export default class StatsView extends View {
   _generateItemMarkup(item) {
     let output = this._templateItem.replace(
       /{%SCORE%}/g,
-      item.winRatio !== 0 ? item.score : '-'
+      item.winRatio !== 0 ? item.score : '-',
     );
     output = output.replace(
       /{%WR%}/g,
-      item.winRatio !== 0 ? item.winRatio.toFixed(2) : '-'
+      item.winRatio !== 0 ? item.winRatio.toFixed(2) : '-',
     );
     output = output.replace(
       /{%DELTA%}/g,
-      item.winRatio !== 0 ? `Δ${item.delta2.toFixed(2)}` : '-'
+      item.winRatio !== 0 ? `Δ${item.delta2.toFixed(2)}` : '-',
     );
     return output;
   }

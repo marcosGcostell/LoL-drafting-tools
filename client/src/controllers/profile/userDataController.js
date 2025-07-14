@@ -5,7 +5,7 @@ import UserDataView from '../../view/profile/userDataView.js';
 
 let userDataView;
 
-export const togglePanel = _ => {
+export const togglePanel = () => {
   if (!appState.popUpOn || appState.popUpOn === 'password') {
     userDataView.togglePanel();
     appState.popUpOn = userDataView.isPanelShowed ? 'password' : '';
@@ -31,7 +31,7 @@ const pickRateHandler = value => {
   userDataView.setPickRateThreshold(appState.pickRateThreshold);
 };
 
-const savePassword = async _ => {
+const savePassword = async () => {
   const { password, new__password, confirm__password } =
     profileModel.getPasswordFields(userDataView.form);
 
@@ -41,7 +41,7 @@ const savePassword = async _ => {
       password: new__password,
       confirmPassword: confirm__password,
     },
-    { length: true, confirm: true, userName: appState.user.userName }
+    { length: true, confirm: true, userName: appState.user.userName },
   );
 
   if (!result?.token) {
@@ -98,7 +98,7 @@ export const isFormActive = () => {
     userDataView.isActive.email
   ) {
     userDataView.showUserMsg(
-      'Pleae, check your username or email before saving the data'
+      'Pleae, check your username or email before saving the data',
     );
     return true;
   }
@@ -112,7 +112,7 @@ export const getFormChanges = () => {
 export const init = async () => {
   // Set user data in the form
   userDataView = new UserDataView();
-  userDataView.init(appState.user);
+  userDataView.initView(appState.user);
   // Load champion pool
 
   // Set handlers for the profile view

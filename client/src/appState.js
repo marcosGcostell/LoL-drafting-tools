@@ -61,7 +61,7 @@ class AppState extends EventTarget {
     this.lane = user.data.primaryRole || this.lane;
     this.vslane = this.lane;
     this.rank = user.data.rank;
-    user.data.patch ? this.patch.setTimeMode() : this.patch.setVersionMode();
+    this.patch.mode = user.data.patch;
     this.maxListItems = user.config.maxListItems;
     this.pickRateThreshold = user.config.pickRateThreshold;
     await this.setOption('lane', this.lane);
