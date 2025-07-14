@@ -2,9 +2,9 @@ import * as searchModel from '../../model/searchModel.js';
 import Component from './component.js';
 import { SPRITE_SRC, SEARCH_ITEM_TEMPLATE } from '../../utils/config.js';
 
-export default class SarchComponent extends Component {
+export default class SearchComponent extends Component {
   constructor({ style, id }) {
-    if (!style || !id || !data) return null;
+    if (!style || !id) return null;
     super({ style, id, type: 'search', template: SEARCH_ITEM_TEMPLATE });
 
     this._parentBtn = document.querySelector(`#${id}__search__btn`);
@@ -31,11 +31,11 @@ export default class SarchComponent extends Component {
     this._inputElement.addEventListener('input', e => {
       e.preventDefault();
 
-      const { primarySearch, splitIndex } = searchModel.handleQuery(
+      const { search, splitIndex } = searchModel.handleQuery(
         e.target.value.toLowerCase(),
       );
-      if (!primarySearch.length) return this._clear();
-      this._searchResults = primarySearch;
+      if (!search.length) return this._clear();
+      this._searchResults = search;
       this._splitIndex = splitIndex;
 
       this._render();
@@ -43,39 +43,45 @@ export default class SarchComponent extends Component {
   }
 
   bind(pickedChampionHandler, parentHandler) {
-    // Event for clicking a champion from the search list
+    // Callback for clicking a champion from the search list
     this._componentElement.addEventListener('click', e => {
       e.preventDefault();
       e.stopPropagation();
 
       const id = e.target.closest('li').dataset.value;
-      const champion = this._searchResults.find(champion => champion.id === id);
-      if (!champion) return;
+      this.value = this._searchResults.find(champion => champion.id === id);
+      if (!this.value) return;
 
       this.toggle();
-      if (pickedChampionHandler) pickedChampionHandler(champion, this);
+      if (pickedChampionHandler) pickedChampionHandler(this);
     });
 
-    // Event for submitting the search query
+    // Callback for submitting the search query
     this._inputElement.addEventListener('change', e => {
       e.preventDefault();
       e.stopPropagation();
 
-      const champion = searchModel.checkSubmitQuery(
+      this.value = searchModel.checkSubmitQuery(
         this._searchResults,
         this._splitIndex,
       );
 
-      if (!champion) return;
+      if (!this.value) return;
 
       this.toggle();
-      if (pickedChampionHandler) pickedChampionHandler(champion, this);
+      if (pickedChampionHandler) pickedChampionHandler(this);
     });
 
-    // Event for clicking the parent button to show/hide the popup
+    // Callback for clicking the parent button to show/hide the popup
     this._parentBtn.addEventListener('click', e => {
       e.preventDefault();
-      parentHandler(e, this);
+
+      this.toggle();
+      if (this.isVisible) {
+        this.value = null;
+        e.stopPropagation();
+      }
+      parentHandler(this);
     });
   }
 

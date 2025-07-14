@@ -1,6 +1,7 @@
 import View from '../global/view.js';
 import SelectorComponent from '../components/selectorComponent.js';
 import PatchComponent from '../components/patchBtnComponent.js';
+import SearchComponent from '../components/searchComponent.js';
 import {
   ICONS,
   LANE_ICONS,
@@ -32,12 +33,22 @@ export default class UserPoolView extends View {
       { style: 'profile', id: 'rank', data: 'rank' },
     ];
     const patch = { style: 'profile', id: 'patch' };
+    const searchPanels = [
+      { style: 'profile', id: 'top' },
+      { style: 'profile', id: 'jungle' },
+      { style: 'profile', id: 'middle' },
+      { style: 'profile', id: 'bottom' },
+      { style: 'profile', id: 'support' },
+    ];
 
     selectors.forEach(
       selector =>
         (this.components[selector.id] = new SelectorComponent(selector)),
     );
     this.components.patch = new PatchComponent(patch);
+    searchPanels.forEach(
+      search => (this.components[search.id] = new SearchComponent(search)),
+    );
 
     await Promise.all(Object.values(this.components).map(comp => comp.load()));
 
@@ -45,7 +56,7 @@ export default class UserPoolView extends View {
     this.components.secondary.isVisible = true;
   }
 
-  setFromUserData(userData, patchStr) {
+  setFromUserData(userData) {
     this.components.primary.setActiveItem(userData.primaryRole || 'top');
     this.components.secondary.setActiveItem(userData.secondaryRole || 'middle');
     this.components.rank
@@ -54,14 +65,14 @@ export default class UserPoolView extends View {
     this.components.patch.mode = userData.patch;
   }
 
-  addHandler(id, type, handler) {
-    document
-      .querySelector(`#${id}__${type}`)
-      .addEventListener('click', function (e) {
-        e.preventDefault();
-        handler(e, id);
-      });
-  }
+  // addHandler(id, type, handler) {
+  //   document
+  //     .querySelector(`#${id}__${type}`)
+  //     .addEventListener('click', function (e) {
+  //       e.preventDefault();
+  //       handler(e, id);
+  //     });
+  // }
 
   async _generateMarkup(_) {
     return this._data.map(item => this._generateItemMarkup(item)).join('');

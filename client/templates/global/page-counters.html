@@ -105,7 +105,7 @@
     <!-- Place to insert champions selected -->
   </div>
   <div class="search-section">
-    <div class="champion item__clickable" id="select-champion">
+    <div class="champion item__clickable" id="search__search__btn">
       <svg class="add__champion">
         <use href="assets/img/icons/icons.svg#icon-plus-circle"></use>
       </svg>
@@ -113,10 +113,10 @@
       <span class="champion__text">Champion</span>
     </div>
     <div class="popup__container">
-      <div class="popup search__popup hidden">
+      <div id="search__search__popup" class="popup search__popup hidden">
         <div class="search">
           <input
-            id="search"
+            id="search__search__input"
             type="text"
             class="input"
             placeholder="Champion..."
@@ -127,7 +127,7 @@
             </svg>
           </span>
         </div>
-        <ul class="search__results">
+        <ul id="search__search" class="search__results">
           <!-- Place to insert search resutlts -->
         </ul>
       </div>

@@ -8,7 +8,7 @@ export default class InputsView {
     this.components = {};
   }
 
-  async init() {
+  async initView() {
     const selectors = [
       { style: 'counters', id: 'lane', data: 'lane' },
       { style: 'counters', id: 'vslane', data: 'lane' },

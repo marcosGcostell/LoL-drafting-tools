@@ -23,17 +23,30 @@ export default class SelectorComponent extends Component {
     this.value = null;
   }
 
-  bind(selectorHandler, parentHandler = null) {
-    if (selectorHandler) {
-      this._componentElement.addEventListener('click', e => {
-        e.preventDefault();
-        selectorHandler(e, this);
-      });
-    }
+  bind(selectorHandler = null, parentHandler = null) {
+    // Callback for choosing an option from the selector
+    this._componentElement.addEventListener('click', e => {
+      e.preventDefault();
+
+      this.value = e.target.closest('div').dataset.value;
+      this.setActiveItem(this.value);
+      if (parentHandler) {
+        // Stop propagation for selectors inside its own poput that it's closed here
+        // The rest, let the event pass to the backgroud to close other popups
+        e.stopPropagation();
+        this.changeParentButton(this.value);
+        this.toggle();
+      }
+      if (selectorHandler) selectorHandler(this);
+    });
+
     if (parentHandler) {
       this._parentBtn.addEventListener('click', e => {
         e.preventDefault();
-        parentHandler(e, this);
+
+        this.toggle();
+        if (this.isVisible) e.stopPropagation();
+        parentHandler(this);
       });
     }
   }

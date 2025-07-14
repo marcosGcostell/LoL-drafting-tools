@@ -1,28 +1,32 @@
 import appState from '../../appState.js';
-import * as componentsController from '../global/componentsController.js';
+import { hideAllPopUps } from '../backgroundController.js';
 import InputsView from '../../view/counters/inputsView.js';
 
 let inputsView;
 
-const togglePatch = (e, component) => {
-  const mode = componentsController.togglePatch(e, component);
-  if (mode !== -1) {
-    appState.setOption('patch', mode);
+const togglePatch = component => {
+  if (component.mode !== -1) {
+    appState.setOption('patch', component.mode);
   }
 };
 
-const setOptionHandler = (e, component) => {
-  const selection = componentsController.getSelectorPopUpValue(e, component);
-  if (!selection) return;
+const togglePopUp = component => {
+  if (appState.popUpOn) hideAllPopUps(component.id);
+
+  appState.popUpOn = component.isVisible ? component.id : '';
+};
+
+const setOptionHandler = component => {
+  if (!component.value) return;
 
   if (component.id === 'lane') {
     inputsView.components.vslane
-      .setActiveItem(selection)
-      .changeParentButton(selection);
+      .setActiveItem(component.value)
+      .changeParentButton(component.value);
   }
 
-  if (appState[component.id] !== selection) {
-    appState.setOption(component.id, selection);
+  if (appState[component.id] !== component.value) {
+    appState.setOption(component.id, component.value);
   }
 };
 
@@ -53,25 +57,21 @@ const setOptionsFromState = () => {
   inputsView.setPickRateThreshold(appState.pickRateThreshold);
 };
 
-export const hidePopUps = () => {
+export const hidePopUps = (exclude = null) => {
   const popUpsIds = ['lane', 'vslane', 'rank'];
   popUpsIds.forEach(id => {
-    if (inputsView.components[id].isVisible) {
-      inputsView.components[id].toggle();
-    }
+    const comp = inputsView.components[id];
+    if (comp.isVisible && comp.id !== exclude) comp.toggle();
   });
 };
 
-export const initView = async () => {
+export const init = async () => {
   inputsView = new InputsView();
-  await inputsView.init();
+  await inputsView.initView();
 
   // add handlers for option buttons and selectors
   ['lane', 'vslane', 'rank'].forEach(id =>
-    inputsView.components[id].bind(
-      setOptionHandler,
-      componentsController.toggleSelector,
-    ),
+    inputsView.components[id].bind(setOptionHandler, togglePopUp),
   );
   inputsView.components.patch.bind(togglePatch);
 

@@ -34,7 +34,7 @@ export const SIGNUP_PAGE_TEMPLATE = './templates/global/page-signup.html';
 export const SELECTOR_ITEM_TEMPLATE =
   './templates/components/selector-item.tpl';
 export const TIERLIST_ITEM_TEMPLATE = './templates/counters/tierlist-item.tpl';
-export const SEARCH_ITEM_TEMPLATE = './templates/counters/search-item.tpl';
+export const SEARCH_ITEM_TEMPLATE = './templates/components/search-item.tpl';
 export const CHAMPION_TEMPLATE = './templates/counters/champion-item.tpl';
 export const CHAMPION_ON_HOLD_TEMPLATE =
   './templates/counters/champion-on-hold.tpl';

@@ -4,7 +4,7 @@ import { validateAuthForm } from '../../services/auth.js';
 
 let loginView;
 
-export const toggleModal = e => {
+export const toggleModal = () => {
   if (!appState.popUpOn || appState.popUpOn === 'login') {
     loginView.toggleModal();
     appState.popUpOn = loginView.isModalShowed ? 'login' : '';
@@ -35,11 +35,11 @@ const loginHandler = async e => {
   }
 };
 
-const btnSignupHandler = e => {};
+const btnSignupHandler = () => {};
 
-export const setHandlers = () => {
+export const init = () => {
   loginView = new LoginView();
-  loginView.init();
+  loginView.initView();
   loginView.addHandlerModalBtns('close', toggleModal);
   loginView.addHandlerModalBtns('signup', btnSignupHandler);
   loginView.addHandlerForm(loginHandler);

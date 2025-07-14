@@ -3,12 +3,8 @@ import starterView from '../view/starter/starterView.js';
 import * as loginController from './global/loginController.js';
 import { navigate } from '../router.js';
 
-const setLaneHandler = (e, _) => {
-  if (appState.popUpOn) return;
-
-  e.stopPropagation();
-  const laneSelected = e.target.closest('div').dataset.value;
-  appState.initFromStarter(laneSelected);
+const setLaneHandler = component => {
+  appState.initFromStarter(component.value);
   appState.setCurrentPage(`${appState.appMode}`);
   navigate(`/${appState.appMode}`);
 };
@@ -35,7 +31,7 @@ export const init = async () => {
     appState.setCurrentPage('starter');
 
     // Init login modal handlers and set the selector handler
-    loginController.setHandlers();
+    loginController.init();
     starterView.components.starter.bind(setLaneHandler);
 
     appState.addEventListener('user:login', e => {

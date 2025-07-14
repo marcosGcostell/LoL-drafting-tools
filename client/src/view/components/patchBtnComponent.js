@@ -11,10 +11,12 @@ export default class PatchComponent extends Component {
     ]);
   }
 
-  bind(patchHandler) {
+  bind(patchHandler = null) {
     this._componentElement.addEventListener('click', e => {
       e.preventDefault();
-      selectorHandler(e, this);
+
+      this.toggle();
+      if (patchHandler) patchHandler(this);
     });
   }
 

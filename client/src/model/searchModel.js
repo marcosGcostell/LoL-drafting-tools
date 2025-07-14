@@ -2,32 +2,32 @@ import appData from './appData.js';
 import { MIN_LETTERS_TO_SECOND_SEARCH } from '../utils/config.js';
 
 export const searchChampions = query => {
-  if (!query) return { primarySearch: [], secondarySearch: [] };
-  const primarySearch = Object.values(appData.champions).filter(
+  if (!query) return { search: [], secondarySearch: [] };
+  const search = Object.values(appData.champions).filter(
     el => el.name.toLowerCase().startsWith(query) || el.id.startsWith(query),
   );
   const secondarySearch =
     query.length >= MIN_LETTERS_TO_SECOND_SEARCH
       ? Object.values(appData.champions).filter(
           el =>
-            !primarySearch.includes(el) &&
+            !search.includes(el) &&
             (el.name.toLowerCase().includes(query) || el.id.includes(query)),
         )
       : [];
-  return { primarySearch, secondarySearch };
+  return { search, secondarySearch };
 };
 
 export const handleQuery = query => {
   if (!query) return [];
 
-  const { primarySearch, secondarySearch } = searchChampions(query);
-  const splitIndex = secondarySearch.length ? primarySearch.length : -1;
+  const { search, secondarySearch } = searchChampions(query);
+  const splitIndex = secondarySearch.length ? search.length : -1;
   // Combine list if it's any secondarySearch
   if (secondarySearch.length) {
     // Inserts an empty object to render an <hr> element
-    primarySearch.push({}, ...secondarySearch);
+    search.push({}, ...secondarySearch);
   }
-  return { primarySearch, splitIndex };
+  return { search, splitIndex };
 };
 
 export const checkSubmitQuery = (searchResults, splitIndex) => {
@@ -35,9 +35,9 @@ export const checkSubmitQuery = (searchResults, splitIndex) => {
   if (searchResults.length === 1) {
     [champion] = searchResults;
   } else if (splitIndex === 1) {
-    champion = searchResults.slice(0, 1);
+    [champion] = searchResults.slice(0, 1);
   } else if (splitIndex === 0 && searchResults.length === 2) {
-    champion = searchResults.slice(1);
+    [champion] = searchResults.slice(1);
   }
   return champion;
 };

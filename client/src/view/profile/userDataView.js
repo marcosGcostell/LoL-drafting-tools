@@ -23,7 +23,7 @@ export default class UserDataView extends View {
     this.isPanelShowed = false;
   }
 
-  init({ name, userName, email, config }) {
+  initView({ name, userName, email, config }) {
     document.querySelector('#name').value = name || '';
     document.querySelector('#username').value = userName || '';
     document.querySelector('#email').value = email || '';
@@ -37,7 +37,7 @@ export default class UserDataView extends View {
       .addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        handler(target);
+        handler();
       });
   }
 

@@ -15,7 +15,7 @@ export default class ListView extends View {
       });
   }
 
-  init() {
+  initView() {
     this._parentElement = document.querySelector('.tierlist');
   }
 
