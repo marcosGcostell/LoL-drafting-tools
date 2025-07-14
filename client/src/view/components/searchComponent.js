@@ -1,4 +1,4 @@
-import appData from '../../model/appData.js';
+import * as searchModel from '../../model/searchModel.js';
 import Component from './component.js';
 import { SPRITE_SRC, SEARCH_ITEM_TEMPLATE } from '../../utils/config.js';
 
@@ -11,24 +11,11 @@ export default class SarchComponent extends Component {
     this._popUpElement = document.querySelector(`#${id}__search__popup`);
     this._inputElement = document.querySelector(`#${id}__search__input`);
 
-    this.searchList = [];
+    this._searchResults = [];
+    this._splitIndex = -1;
     this.isVisible = false;
     this.value = null;
-  }
-
-  bind(selectorHandler, parentHandler = null) {
-    if (selectorHandler) {
-      this._componentElement.addEventListener('click', e => {
-        e.preventDefault();
-        selectorHandler(e, this);
-      });
-    }
-    if (parentHandler) {
-      this._parentBtn.addEventListener('click', e => {
-        e.preventDefault();
-        parentHandler(e, this);
-      });
-    }
+    this._bindInternalBehaviour();
   }
 
   async load() {
@@ -40,21 +27,60 @@ export default class SarchComponent extends Component {
     return this;
   }
 
-  _render(list) {
-    if (!list || (Array.isArray(list) && list.length === 0)) return;
-    // TODO Should think how to handle this error
+  _bindInternalBehaviour() {
+    this._inputElement.addEventListener('input', e => {
+      e.preventDefault();
 
-    const markup = this._generateMarkup(list);
-    this._clear();
-    this._componentElement.insertAdjacentHTML('beforeend', markup);
+      const { primarySearch, splitIndex } = searchModel.handleQuery(
+        e.target.value.toLowerCase(),
+      );
+      if (!primarySearch.length) return this._clear();
+      this._searchResults = primarySearch;
+      this._splitIndex = splitIndex;
+
+      this._render();
+    });
   }
 
-  _clear() {
-    this._componentElement.innerHTML = '';
+  bind(pickedChampionHandler, parentHandler) {
+    // Event for clicking a champion from the search list
+    this._componentElement.addEventListener('click', e => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const id = e.target.closest('li').dataset.value;
+      const champion = this._searchResults.find(champion => champion.id === id);
+      if (!champion) return;
+
+      this.toggle();
+      if (pickedChampionHandler) pickedChampionHandler(champion, this);
+    });
+
+    // Event for submitting the search query
+    this._inputElement.addEventListener('change', e => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const champion = searchModel.checkSubmitQuery(
+        this._searchResults,
+        this._splitIndex,
+      );
+
+      if (!champion) return;
+
+      this.toggle();
+      if (pickedChampionHandler) pickedChampionHandler(champion, this);
+    });
+
+    // Event for clicking the parent button to show/hide the popup
+    this._parentBtn.addEventListener('click', e => {
+      e.preventDefault();
+      parentHandler(e, this);
+    });
   }
 
-  _generateMarkup(list) {
-    return list
+  _generateMarkup() {
+    return this._searchResults
       .map(champion => {
         if (champion?.id) {
           return this._generateItemMarkup(champion);
@@ -80,9 +106,13 @@ export default class SarchComponent extends Component {
     this.isVisible = !this.isVisible;
     if (this.isVisible) {
       this._inputElement.focus();
-    } else {
-      this._inputElement.value = '';
-      this._clear();
-    }
+    } else this.reset();
+  }
+
+  reset() {
+    this._inputElement.value = '';
+    this._searchResults = [];
+    this._splitIndex = -1;
+    this._clear();
   }
 }

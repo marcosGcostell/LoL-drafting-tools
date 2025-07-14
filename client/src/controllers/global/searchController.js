@@ -17,37 +17,37 @@ const handleQuery = e => {
   const query = e.target.value.toLowerCase();
   if (!query) return searchView._clear();
 
-  const { starterQuery, containsQuery } = searchModel.searchChampions(
+  const { primarySearch, secondarySearch } = searchModel.searchChampions(
     query,
-    appData.champions
+    appData.champions,
   );
-  // Combine list if it's any containsQuery
-  if (containsQuery.length) {
+  // Combine list if it's any secondarySearch
+  if (secondarySearch.length) {
     // Inserts an empty object to render an <hr> element
-    starterQuery.push({}, ...containsQuery);
+    primarySearch.push({}, ...secondarySearch);
   }
-  searchView.render(starterQuery, {
-    length: starterQuery.length,
+  searchView.render(primarySearch, {
+    length: primarySearch.length,
   });
 };
 
 const handleSubmittedQuery = e => {
   const query = e.target.value.toLowerCase();
   if (!query) return;
-  const { starterQuery, containsQuery } = searchModel.searchChampions(
+  const { primarySearch, secondarySearch } = searchModel.searchChampions(
     query,
-    appData.champions
+    appData.champions,
   );
 
   if (
-    starterQuery.length === 1 ||
-    (!starterQuery.length && containsQuery.length === 1)
+    primarySearch.length === 1 ||
+    (!primarySearch.length && secondarySearch.length === 1)
   ) {
     searchView.toggleSearchPanel();
     appState.popUpOn = searchView.isPanelShowed ? 'search' : '';
-    starterQuery.length
-      ? appState.addToPool(...starterQuery)
-      : appState.addToPool(...containsQuery);
+    primarySearch.length
+      ? appState.addToPool(...primarySearch)
+      : appState.addToPool(...secondarySearch);
   }
 };
 

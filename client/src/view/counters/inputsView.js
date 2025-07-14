@@ -25,25 +25,6 @@ export default class InputsView {
     await Promise.all(Object.values(this.components).map(comp => comp.load()));
   }
 
-  addHandlerBtn(handler, target) {
-    document
-      .querySelector(`.${target}__btn`)
-      .addEventListener('click', function (e) {
-        e.preventDefault();
-        handler(e, target);
-      });
-  }
-
-  addHandlerSelector(handler, target) {
-    document
-      .querySelector(`.${target}__selector`)
-      .addEventListener('click', function (e) {
-        e.preventDefault();
-        const id = e.target.dataset.value;
-        handler(id);
-      });
-  }
-
   addHandlerInput(handler, target) {
     document
       .querySelector(`#${target}`)
@@ -51,22 +32,6 @@ export default class InputsView {
         e.preventDefault();
         handler(this.value);
       });
-  }
-
-  async insertSelectors(roles, ranks, patch) {
-    if (!this._laneTemplate || !this._rankTemplate) {
-      await Promise.all([this._laneTempPromise, this._rankTempPromise]);
-    }
-
-    this._currentTemplate = this._laneTemplate;
-    this._parentElement = this._laneElement;
-    await this.render(roles);
-    this._parentElement = this._vslaneElement;
-    await this.render(roles);
-    this._currentTemplate = this._rankTemplate;
-    this._parentElement = this._rankElement;
-    await this.render(ranks);
-    this._patchBtn.textContent = patch;
   }
 
   async _generateMarkup(_) {
@@ -78,25 +43,6 @@ export default class InputsView {
     output = output.replace(/{%NAME%}/g, item.name);
     output = output.replace(/{%IMG%}/g, item.img);
     return output;
-  }
-
-  toggleSelector(target = this.selectorDisplayed) {
-    if (!target) return;
-    document.querySelector(`.${target}__selector`).classList.toggle('hidden');
-    this.selectorDisplayed = this.selectorDisplayed ? null : target;
-  }
-
-  changeOption(target, option) {
-    const image = document.querySelector(`.${target}__input img`);
-    const text = document.querySelector(`.${target}__input span`);
-
-    const folder = target === 'rank' ? 'ranks' : 'lanes';
-    image.setAttribute('src', `assets/img/${folder}/${option.img}`);
-    text.textContent = option.name;
-  }
-
-  setPatch(patchStr) {
-    this._patchBtn.textContent = patchStr;
   }
 
   setMaxItems(value) {
