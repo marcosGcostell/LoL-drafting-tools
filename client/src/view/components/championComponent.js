@@ -1,58 +1,46 @@
 import Component from './component.js';
-import {
-  IMG_SRC,
-  ICONS,
-  PROFILE_CHAMPION_ITEM,
-  CHAMPION_ON_HOLD_TEMPLATE,
-  CHAMPION_TEMPLATE,
-} from '../../utils/config';
+import { IMG_SRC, ICONS } from '../../utils/config';
 
 export default class ChampionComponent extends Component {
-  constructor({ style, champion, index }) {
-    if (!style || !champion || !index) return null;
-    const template =
-      style === 'profile' ? PROFILE_CHAMPION_ITEM : CHAMPION_TEMPLATE;
-    super({ style, id, type: 'champion', template });
-    this._parentPool = document.querySelector(`#${style}__pool`);
-    this._componentElement = this._parentPool;
+  constructor({ style, id, champion, index }) {
+    if (!style || !id) return undefined;
+    if (index === NaN || index < 0) return undefined;
+    super({ style, id, type: 'pool' });
+    this._parentPool = this._componentElement;
     this._championElement = null;
-    this._templateOnHold = null;
-    this._templateOnHoldPromise = fetch(CHAMPION_ON_HOLD_TEMPLATE)
-      .then(response => response.text())
-      .then(data => {
-        this._templateOnHold = data;
-        return data;
-      });
-    this._style = style;
     this._data = champion;
     this.index = index;
+    this.fullyLoaded = false;
   }
 
   _getChampionElement() {
-    this._championElement = document.querySelector(`#${style}__${index}`);
+    this._championElement = document.querySelector(
+      `#${this.id}__${this.index}`,
+    );
   }
 
-  bind(closeHandler, bookmarkHandler) {
+  bind(deleteHandler, bookmarkHandler) {
     // Callback to remove the champion
     this._championElement
       .querySelector(`.${this._style}__champion__close`)
       .addEventListener('click', e => {
         e.preventDefault();
-        this._remove();
-        closeHandler(this);
+        this.remove();
+        deleteHandler(this);
       });
-    this._championElement
-      .querySelector(`.${this._style}__champion__bookmark`)
-      .addEventListener('click', e => {
-        e.preventDefault();
-        bookmarkHandler(this);
-      });
+    // Callback to bookmark champion
+    if (bookmarkHandler) {
+      this._championElement
+        .querySelector(`.${this._style}__champion__bookmark`)
+        .addEventListener('click', e => {
+          e.preventDefault();
+          bookmarkHandler(this);
+        });
+    }
   }
 
-  async load() {
-    if (!this._template || !this._templateOnHold) {
-      await Promise.all([this._templatePromise, this._templateOnHoldPromise]);
-    }
+  preLoad(templateOnHold) {
+    this._templateOnHold = templateOnHold;
 
     if (this._style !== 'profile') {
       this._renderOnHold();
@@ -60,33 +48,38 @@ export default class ChampionComponent extends Component {
     }
   }
 
-  showChampion(champion = null) {
+  fullLoad(template, champion = null) {
+    this._template = template;
     if (champion) this._data = champion;
-    if (this._style !== 'profile') this._remove();
+    if (this._style !== 'profile') this.remove();
     this._render(false);
     this._getChampionElement();
+    this.fullyLoaded = true;
     return this;
   }
 
   changeIndex(newIndex) {
-    this._championElement.setAttribute('id', `#${this._style}__${newIndex}`);
+    this.index = newIndex;
+    this._championElement.setAttribute('id', `#${this.id}__${newIndex}`);
     return this;
   }
 
-  _remove() {
+  remove() {
     this._championElement.remove();
   }
 
   _renderOnHold() {
-    const markup = this._generateMarkup();
+    const markup = this._generateOnHoldMarkup();
     this._componentElement.insertAdjacentHTML('beforeend', markup);
   }
 
   _generateMarkup() {
     let output = this._template.replace(/{%INDEX%}/g, this.index);
     output = output.replace(/{%STYLE%}/g, this._style);
+    output = output.replace(/{%ID%}/g, this.id);
     output = output.replace(/{%IMG_SRC%}/g, IMG_SRC);
     output = output.replace(/{%IMG%}/g, this._data.img);
+    output = output.replace(/{%CHAMPION_ID%}/g, this._data.id);
     output = output.replace(/{%NAME%}/g, this._data.name);
     output = output.replace(/{%WR%}/g, this._data.winRatio.toFixed(2));
     output = output.replace(/{%LANE%}/g, this._data.lane);
@@ -97,8 +90,9 @@ export default class ChampionComponent extends Component {
     return output;
   }
 
-  _generateOnHoldMarkup(index) {
+  _generateOnHoldMarkup() {
     let output = this._templateOnHold.replace(/{%INDEX%}/g, this.index);
+    output = output.replace(/{%STYLE%}/g, this._style);
     output = output.replace(/{%ICONS%}/g, ICONS);
     return output;
   }

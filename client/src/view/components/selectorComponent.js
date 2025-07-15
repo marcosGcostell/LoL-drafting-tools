@@ -8,7 +8,7 @@ import {
 
 export default class SelectorComponent extends Component {
   constructor({ style, id, data }) {
-    if (!style || !id || !data) return null;
+    if (!style || !id || !data) return undefined;
     super({ style, id, type: 'selector', template: SELECTOR_ITEM_TEMPLATE });
     this._data = data;
     this._parentBtn = document.querySelector(`#${id}__btn`);

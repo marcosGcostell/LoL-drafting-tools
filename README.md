@@ -12,13 +12,13 @@ This software is developed by Marcos García under the brand **KuantiK Software.
 
 ### Version
 
-API: 0.6.0
-Client: 0.6.0
+API: 0.7.0
+Client: 0.7.0
 
-### Register 2025/06/25
+### Register 2025/07/15
 
-The development is in the early stages and still is not a minimum viable project.
+The development is in the middle stages and it's near to be a minimum viable project.
 
-The API is fully working with the basics features. It needs users log in fetaures and scheduler for automatic resource downloading.
+The API is fully working with the actual client requisites.
 
-The Client is in the final development stage to its basic functionality. It needs user section and responsiveness for ordering lists.
+The Client is in the final development stage to its basic functionality, with user login capabilities, user profile almost done and counters section finished with few things missing like bookmarking the pool directly, polishing the final stats showed and functionality to ordering lists.
