@@ -35,9 +35,9 @@ const bookmarkHandler = component => {
   console.log('bookmar pressed for: ', component.index);
 };
 
-const addPoolItem = async e => {
+const addPoolItem = e => {
   const { champion } = e.detail;
-  await poolView.pool.addPoolItem(champion);
+  poolView.pool.addPoolItem(champion);
 };
 
 const showChampion = e => {
@@ -47,16 +47,12 @@ const showChampion = e => {
   poolView.pool.renderPoolItem(deleteHandler, bookmarkHandler, champion);
 };
 
-const showAllPoolFromState = async () => {
+const showAllPoolFromState = () => {
   if (!appState.pool.length) return;
 
   poolView.pool.clearPool();
   for (const champion of appState.pool) {
-    await poolView.pool.renderPoolItem(
-      deleteHandler,
-      bookmarkHandler,
-      champion,
-    );
+    poolView.pool.renderPoolItem(deleteHandler, bookmarkHandler, champion);
   }
 };
 
@@ -67,6 +63,8 @@ const poolOnHold = () => {
   appState.pool.forEach(champion => poolView.pool.addPoolItem(champion));
 };
 
+const clearPool = () => poolView.pool.clearPool();
+
 export const init = async () => {
   poolView = new PoolView();
   await poolView.initView('counters', 'counters');
@@ -75,7 +73,7 @@ export const init = async () => {
 
   appState.addEventListener('pool:add', addPoolItem);
   appState.addEventListener('pool:added', showChampion);
-  appState.addEventListener('pool:reset', poolView.pool.clearPool);
+  appState.addEventListener('pool:reset', clearPool);
   ['change:lane', 'change:bothLanes', 'change:rank', 'change:patch'].forEach(
     target => {
       appState.addEventListener(target, poolOnHold);

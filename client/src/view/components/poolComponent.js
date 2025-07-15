@@ -35,7 +35,7 @@ export default class PoolComponent extends Component {
     this._lastItemComponent = null;
   }
 
-  async addPoolItem(champion) {
+  addPoolItem(champion) {
     const component = {
       style: this._style,
       id: this.id,
@@ -45,14 +45,14 @@ export default class PoolComponent extends Component {
     const newItem = new ChampionComponent(component);
     this.items.push(newItem);
     this._getLastItem();
-    await newItem.preLoad(this._templateOnHold);
+    newItem.preLoad(this._templateOnHold);
   }
 
-  async renderPoolItem(deleteHandler, bookmarkHandler = null, champion = null) {
+  renderPoolItem(deleteHandler, bookmarkHandler = null, champion = null) {
     if (!champion) return;
     // FIXME need to handle this error
     if (!this.items.length || this._lastItemComponent?.fullyLoaded) {
-      await this.addPoolItem(champion);
+      this.addPoolItem(champion);
     }
     this._lastItemComponent
       .fullLoad(this._template, champion)
