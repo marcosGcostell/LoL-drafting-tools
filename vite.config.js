@@ -1,6 +1,7 @@
 import { resolve } from 'path';
+import { defineConfig } from 'vite';
 
-export default {
+export default defineConfig({
   root: resolve(__dirname, 'client'),
   server: {
     port: 8000,
@@ -15,4 +16,4 @@ export default {
   build: {
     outDir: resolve(__dirname, 'dist'),
   },
-};
+});
