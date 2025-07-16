@@ -5,10 +5,10 @@ import catchAsync from '../models/utils/catch-async.js';
 import AppError from '../models/utils/app-error.js';
 import { RESERVED_USER_NAMES } from '../models/utils/config.js';
 
-const _isValidUserName = userName => {
+const _isValidUserName = username => {
   const usernameRegex = /^[a-zA-Z][a-zA-Z0-9_]*$/;
 
-  if (!usernameRegex.test(userName)) {
+  if (!usernameRegex.test(username)) {
     return {
       valid: false,
       message:
@@ -16,7 +16,7 @@ const _isValidUserName = userName => {
     };
   }
 
-  if (RESERVED_USER_NAMES.includes(userName.toLowerCase())) {
+  if (RESERVED_USER_NAMES.includes(username.toLowerCase())) {
     return {
       valid: false,
       message: 'This user name is reserved',
@@ -43,11 +43,11 @@ const _isValidRank = async rank => {
 };
 
 export const validateUserName = catchAsync(async (req, res, next) => {
-  const { userName } = req.body;
+  const { username } = req.body;
   // Continue to validate other fields if no data
-  if (!userName) return next();
+  if (!username) return next();
 
-  const result = _isValidUserName(userName);
+  const result = _isValidUserName(username);
 
   if (!result.valid) {
     return next(new AppError(result.message, 400));
@@ -100,9 +100,9 @@ export const validateUserData = catchAsync(async (req, res, next) => {
 });
 
 export const userExists = catchAsync(async (req, res, next) => {
-  const { userName, email } = req.body;
+  const { username, email } = req.body;
 
-  if (!userName && !email) {
+  if (!username && !email) {
     return next(new AppError('Field can not be empty', 400));
   }
   if (email && !User.isValidEmail(email)) {
@@ -110,10 +110,10 @@ export const userExists = catchAsync(async (req, res, next) => {
   }
 
   const user = await User.findOne({
-    $or: [{ email }, { userNameToLower: userName?.toLowerCase() }],
+    $or: [{ email }, { usernameToLower: username?.toLowerCase() }],
   });
 
-  const checkedField = userName ? 'userName' : 'email';
+  const checkedField = username ? 'username' : 'email';
   if (user) {
     return next(
       new AppError(`User with this ${checkedField} already exists`, 400),
@@ -156,7 +156,7 @@ export const getUser = catchAsync(async (req, res, next) => {
 export const updateUser = catchAsync(async (req, res, next) => {
   const { user } = req;
 
-  ['name', 'userName', 'email'].forEach(field => {
+  ['name', 'username', 'email'].forEach(field => {
     if (req.body[field] !== undefined) {
       user[field] = req.body[field];
     }

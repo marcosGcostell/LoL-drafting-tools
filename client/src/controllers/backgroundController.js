@@ -15,12 +15,12 @@ export const hideAllPopUps = (exclude = null) => {
     poolController.hidePopUps(exclude);
   }
   if (appState.currentPage === 'profile') {
+    userDataController.hidePopUps(exclude);
     userPoolController.hidePopUps(exclude);
   } else if (appState.popUpOn === 'login') {
     loginController.toggleModal();
-  } else if (appState.popUpOn === 'password') {
-    userDataController.togglePanel();
   }
+
   appState.popUpOn = '';
 };
 

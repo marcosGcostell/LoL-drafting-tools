@@ -14,11 +14,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please tell us your name!'],
   },
-  userName: {
+  username: {
     type: String,
     required: [true, 'Please tell us your user name!'],
   },
-  userNameToLower: {
+  usernameToLower: {
     type: String,
     unique: true,
     lowercase: true,
@@ -76,8 +76,8 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.pre('validate', function (next) {
-  if (this.isModified('userName')) {
-    this.userNameToLower = this.userName?.toLowerCase();
+  if (this.isModified('username')) {
+    this.usernameToLower = this.username?.toLowerCase();
   }
   next();
 });
@@ -98,7 +98,7 @@ userSchema.pre(/^find/, function (next) {
 
 userSchema.methods.checkPassword = async function (
   candidatePassword,
-  userPassword
+  userPassword,
 ) {
   return await bcrypt.compare(candidatePassword, userPassword);
 };
@@ -107,7 +107,7 @@ userSchema.methods.hasChangedPassword = function (JWTTimestamp) {
   if (this.passwordChangedAt) {
     const changedTimestamp = parseInt(
       this.passwordChangedAt.getTime() / 1000,
-      10
+      10,
     );
     return JWTTimestamp < changedTimestamp;
   }

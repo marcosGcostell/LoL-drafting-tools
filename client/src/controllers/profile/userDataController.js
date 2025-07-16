@@ -4,6 +4,13 @@ import * as authService from '../../services/auth.js';
 import UserDataView from '../../view/profile/userDataView.js';
 
 let userDataView;
+let userCache;
+
+export const hidePopUps = (exclude = null) => {
+  if (!userDataView.isPanelShowed || exclude === 'password') return;
+
+  userDataView.togglePanel();
+};
 
 export const togglePanel = () => {
   if (!appState.popUpOn || appState.popUpOn === 'password') {
@@ -13,22 +20,30 @@ export const togglePanel = () => {
   }
 };
 
-const listItemsHandler = value => {
+const listItemsHandler = (_, value) => {
   const parsedValue = parseInt(value);
   if (parsedValue) {
-    appState.setSetting('maxListItems', parsedValue);
+    userCache.setConfig({ maxListItems: parsedValue });
   }
   // Need to set again the value to display correct format
   userDataView.setMaxItems(appState.maxListItems);
 };
 
-const pickRateHandler = value => {
+const pickRateHandler = (_, value) => {
   const parsedValue = parseFloat(value);
   if (parsedValue) {
-    appState.setSetting('pickRateThreshold', parsedValue);
+    userCache.setConfig({ pickRateThreshold: parsedValue });
   }
   // Need to set again the value to display correct format
   userDataView.setPickRateThreshold(appState.pickRateThreshold);
+};
+
+const inputsHandler = (target, value) => {
+  if (target !== 'name' && userDataView.isActive[target]) return;
+
+  const data = {};
+  data[target] = value;
+  userCache.setProfile(data);
 };
 
 const savePassword = async () => {
@@ -41,7 +56,7 @@ const savePassword = async () => {
       password: new__password,
       confirmPassword: confirm__password,
     },
-    { length: true, confirm: true, userName: appState.user.userName },
+    { length: true, confirm: true, username: appState.user.username },
   );
 
   if (!result?.token) {
@@ -75,7 +90,7 @@ const checkUserData = async target => {
 
   const fieldIsChanged =
     (target === 'username' &&
-      field.toLowerCase() !== appState.user.userName.toLowerCase()) ||
+      field.toLowerCase() !== appState.user.username.toLowerCase()) ||
     (target === 'email' &&
       field.toLowerCase() !== appState.user.email.toLowerCase());
   if (message && fieldIsChanged) {
@@ -98,7 +113,7 @@ export const isFormActive = () => {
     userDataView.isActive.email
   ) {
     userDataView.showUserMsg(
-      'Pleae, check your username or email before saving the data',
+      'Please, check your username or email before saving the data',
     );
     return true;
   }
@@ -109,10 +124,11 @@ export const getFormChanges = () => {
   return profileModel.getChanges(userDataView.form, appState.user);
 };
 
-export const init = async () => {
+export const init = async data => {
   // Set user data in the form
+  userCache = data;
   userDataView = new UserDataView();
-  userDataView.initView(appState.user);
+  userDataView.initView(userCache);
   // Load champion pool
 
   // Set handlers for the profile view
@@ -122,8 +138,10 @@ export const init = async () => {
   // Disabled buttons
   ['username', 'email'].forEach(id => {
     userDataView.addHandlerInput(id, activateInputBtn);
+    userDataView.addHandlerCommit(id, inputsHandler);
   });
-  // Settings inputs changes
+  // Settings rest of inputs changes
   userDataView.addHandlerCommit('max-items', listItemsHandler);
   userDataView.addHandlerCommit('min-pr', pickRateHandler);
+  userDataView.addHandlerCommit('name', inputsHandler);
 };

@@ -15,17 +15,17 @@ const loginHandler = async e => {
   e.preventDefault();
   const form = e.target;
   const formData = new FormData(form);
-  const userName = formData.get('username')?.trim();
+  const username = formData.get('username')?.trim();
   const password = formData.get('password');
 
-  const errorMessage = await validateAuthForm({ userName, password });
+  const errorMessage = await validateAuthForm({ username, password });
   if (errorMessage) {
     loginView.errorMessage = errorMessage;
     loginView.renderError();
     return;
   }
 
-  const result = await appState.user.login(userName, password);
+  const result = await appState.user.login(username, password);
   if (!result) {
     loginView.errorMessage = appState.user.response;
     loginView.renderError();

@@ -33,6 +33,7 @@ export default class PoolComponent extends Component {
     }
     this.items = [];
     this._lastItemComponent = null;
+    return this;
   }
 
   addPoolItem(champion) {

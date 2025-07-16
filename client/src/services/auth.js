@@ -14,22 +14,22 @@ export const validateEmail = async (email, checkOnApi = false) => {
   return null;
 };
 
-export const validateUsername = async (userName, checkOnApi = false) => {
+export const validateUsername = async (username, checkOnApi = false) => {
   const usernameRegex = /^[a-zA-Z][a-zA-Z0-9_]*$/;
-  if (!usernameRegex.test(userName)) {
+  if (!usernameRegex.test(username)) {
     return 'User name should start with a letter and use only letters, numbers or underscore(_)';
   }
   if (!checkOnApi) return null;
 
-  const message = await checkUserFromAPI({ userName });
+  const message = await checkUserFromAPI({ username });
   if (message) return message;
 
   return null;
 };
 
-const checkUserPassword = async (userName, password) => {
+const checkUserPassword = async (username, password) => {
   try {
-    const { token } = await loginOnAPI(userName, password);
+    const { token } = await loginOnAPI(username, password);
 
     return token ? { token } : 'Current password is incorrect.';
   } catch (err) {
@@ -39,7 +39,7 @@ const checkUserPassword = async (userName, password) => {
 
 export const validatePassword = async (
   { oldPassword, password, confirmPassword },
-  { length = true, confirm = false, userName = '' } = { length: true },
+  { length = true, confirm = false, username = '' } = { length: true },
 ) => {
   if (length && password.length < PASSWORD_MIN_LENGTH) {
     return `Password should be at least ${PASSWORD_MIN_LENGTH} chars long.`;
@@ -50,21 +50,21 @@ export const validatePassword = async (
   if (confirm && confirmPassword !== password) {
     return 'Passwords are not the same.';
   }
-  if (userName && !oldPassword) {
+  if (username && !oldPassword) {
     return 'Please, provide your current password.';
   }
   // Check if current password is correct with API call
-  if (userName && oldPassword) {
-    return await checkUserPassword(userName, oldPassword);
+  if (username && oldPassword) {
+    return await checkUserPassword(username, oldPassword);
   }
   return null;
 };
 
 export const validateAuthForm = async (fields, isSignup = false) => {
-  const { userName, password, email, confirmPassword, termsAccepted } = fields;
+  const { username, password, email, confirmPassword, termsAccepted } = fields;
   let message = null;
 
-  if (!userName || !userName.trim() || !password) {
+  if (!username || !username.trim() || !password) {
     return 'Please, provide an username or email and a password.';
   }
 
@@ -74,7 +74,7 @@ export const validateAuthForm = async (fields, isSignup = false) => {
   // Signup validators
 
   if (isSignup) {
-    message = await validateUsername(userName);
+    message = await validateUsername(username);
     if (message) return message;
 
     message = await validateEmail(email);

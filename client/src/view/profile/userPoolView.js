@@ -2,6 +2,7 @@ import View from '../global/view.js';
 import SelectorComponent from '../components/selectorComponent.js';
 import PatchComponent from '../components/patchBtnComponent.js';
 import SearchComponent from '../components/searchComponent.js';
+import PoolComponent from '../components/poolComponent.js';
 import {
   ICONS,
   LANE_ICONS,
@@ -21,6 +22,7 @@ export default class UserPoolView extends View {
         return data;
       });
     this.components = {};
+    this.pools = {};
   }
 
   async initView(roles) {
@@ -33,7 +35,7 @@ export default class UserPoolView extends View {
       { style: 'profile', id: 'rank', data: 'rank' },
     ];
     const patch = { style: 'profile', id: 'patch' };
-    const searchPanels = [
+    const lanePanels = [
       { style: 'profile', id: 'top' },
       { style: 'profile', id: 'jungle' },
       { style: 'profile', id: 'middle' },
@@ -46,33 +48,20 @@ export default class UserPoolView extends View {
         (this.components[selector.id] = new SelectorComponent(selector)),
     );
     this.components.patch = new PatchComponent(patch);
-    searchPanels.forEach(
-      search => (this.components[search.id] = new SearchComponent(search)),
-    );
 
-    await Promise.all(Object.values(this.components).map(comp => comp.load()));
+    lanePanels.forEach(item => {
+      this.components[item.id] = new SearchComponent(item);
+      this.pools[item.id] = new PoolComponent(item);
+    });
+
+    await Promise.all([
+      ...Object.values(this.components).map(comp => comp.load()),
+      ...Object.values(this.pools).map(comp => comp.load()),
+    ]);
 
     this.components.primary.isVisible = true;
     this.components.secondary.isVisible = true;
   }
-
-  setFromUserData(userData) {
-    this.components.primary.setActiveItem(userData.primaryRole || 'top');
-    this.components.secondary.setActiveItem(userData.secondaryRole || 'middle');
-    this.components.rank
-      .setActiveItem(userData.rank || 'all')
-      .changeParentButton(userData.rank || 'all');
-    this.components.patch.mode = userData.patch;
-  }
-
-  // addHandler(id, type, handler) {
-  //   document
-  //     .querySelector(`#${id}__${type}`)
-  //     .addEventListener('click', function (e) {
-  //       e.preventDefault();
-  //       handler(e, id);
-  //     });
-  // }
 
   async _generateMarkup(_) {
     return this._data.map(item => this._generateItemMarkup(item)).join('');

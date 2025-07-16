@@ -1,4 +1,5 @@
 import appState from '../appState.js';
+import UserCache from '../model/UserCacheModel.js';
 import * as userDataController from './profile/userDataController.js';
 import * as userPoolController from './profile/userPoolController.js';
 import UserHeaderView from '../view/profile/userHeaderView.js';
@@ -16,8 +17,6 @@ const logout = () => {
 };
 
 const saveProfile = async () => {
-  if (appState.popUpOn) return;
-
   if (userDataController.isFormActive()) return;
 
   const data = userDataController.getFormChanges();
@@ -40,8 +39,6 @@ const saveProfile = async () => {
 };
 
 const discardChanges = () => {
-  if (appState.popUpOn) return;
-
   appState.setCurrentPage(appState.appMode);
   navigate(`/${appState.appMode}`);
 };
@@ -56,10 +53,11 @@ export const init = async () => {
     document.querySelector('main').innerHTML = template;
     appState.setCurrentPage('profile');
 
-    // initialize the views
+    // set user cache and initialize the views
+    const userCache = new UserCache(appState.user);
     userHeaderView = new UserHeaderView();
-    userDataController.init();
-    userPoolController.init();
+    userDataController.init(userCache);
+    userPoolController.init(userCache);
 
     // Set handlers for the header buttons
     userHeaderView.addHandlerBtn('logout', logout);

@@ -81,12 +81,14 @@ export default class ChampionComponent extends Component {
     output = output.replace(/{%IMG%}/g, this._data.img);
     output = output.replace(/{%CHAMPION_ID%}/g, this._data.id);
     output = output.replace(/{%NAME%}/g, this._data.name);
-    output = output.replace(/{%WR%}/g, this._data.winRatio.toFixed(2));
-    output = output.replace(/{%LANE%}/g, this._data.lane);
-    output = output.replace(
-      /{%LANE_RATE%}/g,
-      this._data.roleRates[this._data.lane].toFixed(2),
-    );
+    if (this._style !== 'profile') {
+      output = output.replace(/{%WR%}/g, this._data.winRatio.toFixed(2));
+      output = output.replace(/{%LANE%}/g, this._data.lane);
+      output = output.replace(
+        /{%LANE_RATE%}/g,
+        this._data.roleRates[this._data.lane].toFixed(2),
+      );
+    }
     return output;
   }
 

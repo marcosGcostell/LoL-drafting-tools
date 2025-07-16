@@ -22,9 +22,43 @@ const togglePopUp = component => {
   appState.popUpOn = component.isVisible ? component.id : '';
 };
 
-const pickedChampionHandler = component => {
+const deleteHandler = component => {
+  const index = component.index;
+  userPoolView.pools[component.id].removePoolItem(component.index);
+};
+
+const addPickedChampion = component => {
   appState.popUpOn = '';
-  console.log(component.value);
+
+  if (component.value) {
+    userPoolView.pools[component.id].renderPoolItem(
+      deleteHandler,
+      undefined,
+      component.value,
+    );
+  }
+};
+
+const setFromUserData = () => {
+  const userData = appState.user.data;
+  userPoolView.components.primary.setActiveItem(userData.primaryRole || 'top');
+  userPoolView.components.secondary.setActiveItem(
+    userData.secondaryRole || 'middle',
+  );
+  userPoolView.components.rank
+    .setActiveItem(userData.rank || 'all')
+    .changeParentButton(userData.rank || 'all');
+  userPoolView.components.patch.mode = userData.patch;
+
+  Object.keys(userData.championPool).forEach(lane => {
+    userData.championPool[lane].forEach(id => {
+      userPoolView.pools[lane].renderPoolItem(
+        deleteHandler,
+        undefined,
+        appData.champions[id],
+      );
+    });
+  });
 };
 
 export const init = async () => {
@@ -33,7 +67,7 @@ export const init = async () => {
   await userPoolView.initView(appData.toSortedArray('roles'));
 
   // Load config and champion pool
-  userPoolView.setFromUserData(appState.user.data);
+  setFromUserData();
 
   // Set handlers for the profile pool view
   userPoolView.components.primary.bind();
@@ -42,6 +76,6 @@ export const init = async () => {
   userPoolView.components.patch.bind();
   const searchPanels = ['top', 'jungle', 'middle', 'bottom', 'support'];
   searchPanels.forEach(id =>
-    userPoolView.components[id].bind(pickedChampionHandler, togglePopUp),
+    userPoolView.components[id].bind(addPickedChampion, togglePopUp),
   );
 };

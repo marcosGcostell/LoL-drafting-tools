@@ -14,6 +14,7 @@ export const CHECK_USER_ROUTE = 'users/check';
 export const LS_APP_DATA = 'draftKingAppData';
 export const LS_STATE = 'draftKingState';
 export const LS_USER = 'draftKingUser';
+export const LS_USER_CACHE = 'draftKingUserCache';
 
 // Paths of resources (relative from index.html)
 export const ICONS = './assets/img/icons/icons.svg';
@@ -33,17 +34,18 @@ export const SIGNUP_PAGE_TEMPLATE = './templates/global/page-signup.html';
 // For components
 export const SELECTOR_ITEM_TEMPLATE =
   './templates/components/selector-item.html';
-export const TIERLIST_ITEM_TEMPLATE = './templates/counters/tierlist-item.html';
 export const SEARCH_ITEM_TEMPLATE = './templates/components/search-item.html';
-export const CHAMPION_TEMPLATE = './templates/counters/champion-item.html';
+export const CHAMPION_TEMPLATE = './templates/components/champion-item.html';
 export const CHAMPION_ON_HOLD_TEMPLATE =
-  './templates/counters/champion-on-hold.html';
+  './templates/components/champion-on-hold.html';
+export const PROFILE_CHAMPION_ITEM =
+  './templates/components/profile-champion-item.html';
+// For views
+export const TIERLIST_ITEM_TEMPLATE = './templates/counters/tierlist-item.html';
 export const STATS_COLUMN_TEMPLATE = './templates/counters/stats-column.html';
 export const STATS_ITEM_TEMPLATE = './templates/counters/stats-item.html';
 export const PROFILE_SECTION_TEMPLATE =
   './templates/profile/profile-pool-lane.html';
-export const PROFILE_CHAMPION_ITEM =
-  './templates/profile/profile-champion-item.html';
 
 // Config parameters
 export const PICK_RATE_THRESHOLD = 1.0;

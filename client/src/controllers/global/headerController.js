@@ -30,7 +30,7 @@ const handleUserBtn = e => {
 
 const userNameHandler = _ => {
   appState.user.isLoggedIn()
-    ? headerView.showUserName(appState.user.userName)
+    ? headerView.showUserName(appState.user.username)
     : headerView.showUserName('Not logged in');
 };
 
