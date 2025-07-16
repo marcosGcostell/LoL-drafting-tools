@@ -2,7 +2,8 @@ import { LS_USER_CACHE } from '../utils/config.js';
 
 export default class UserCache {
   constructor(user) {
-    Object.assign(this, user);
+    // structuredClone doesn't work with objects extending EventTarget
+    Object.assign(this, JSON.parse(JSON.stringify(user)));
     delete this.token;
     delete this.__type;
     delete this.response;

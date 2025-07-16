@@ -13,43 +13,38 @@ export const getPasswordFields = form => {
   return values;
 };
 
-// TODO Check if its used after userCache implemented
-export const getChanges = (form, user) => {
+export const getChanges = (cache, user) => {
+  const profile = ['name', 'username', 'email'];
+  const config = Object.keys(cache.config);
+  const data = Object.keys(cache.data).filter(key => key !== 'championPool');
+  const championPool = Object.keys(cache.data.championPool);
+
   const changes = {};
-  const formData = new FormData(form);
-  const settigns = [
-    ['max-items', 'maxListItems'],
-    ['min-pr', 'pickRateThreshold'],
-  ];
-  const options = ['name', 'username', 'email'];
 
-  const config = {};
-  settigns.forEach(([formId, userId]) => {
-    const formValue = +formData.get(formId);
-    if (formValue !== user.config[userId]) {
-      config[userId] = formValue;
-    }
+  profile.forEach(el => {
+    if (user[el] !== cache[el]) changes[el] = cache[el];
+  });
+  config.forEach(el => {
+    if (user.config[el] !== cache.config[el])
+      changes.config[el] = cache.config[el];
+  });
+  data.forEach(el => {
+    if (user.data[el] !== cache.data[el]) changes.data[el] = cache.data[el];
+  });
+  championPool.forEach(el => {
+    if (user.data.championPool[el] !== cache.data.championPool[el])
+      changes.data.championPool[el] = cache.data.championPool[el];
   });
 
-  const userChanges = {};
-  if (Object.keys(config).length) userChanges.config = config;
-  options.forEach(id => {
-    const formValue = formData.get(id)?.trim();
-    if (formValue !== user[id]) {
-      userChanges[id] = formValue;
-    }
-  });
-
-  return userChanges;
+  return changes;
 };
 
 export const hasBeenChanges = (cache, user) => {
-  // structuredClone doesn't work for user extending EventTarget
+  // structuredClone doesn't work with objects extending EventTarget
   const userCopy = JSON.parse(JSON.stringify(user));
   delete userCopy.token;
   delete userCopy.response;
   delete userCopy.__type;
-  console.log(JSON.stringify(cache), JSON.stringify(userCopy));
 
   return JSON.stringify(cache) !== JSON.stringify(userCopy);
 };

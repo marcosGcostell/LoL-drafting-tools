@@ -1,6 +1,6 @@
 import appState from '../appState.js';
 import UserCache from '../model/UserCacheModel.js';
-import { hasBeenChanges } from '../model/profileModel.js';
+import { getChanges } from '../model/profileModel.js';
 import * as userDataController from './profile/userDataController.js';
 import * as userPoolController from './profile/userPoolController.js';
 import UserHeaderView from '../view/profile/userHeaderView.js';
@@ -20,12 +20,11 @@ const logout = () => {
 const saveProfile = async () => {
   if (userDataController.isFormActive()) return;
 
-  if (!hasBeenChanges(userCache, appState.user)) {
-    return discardChanges();
-  }
+  const userChanges = getChanges(userCache, appState.user);
+  if (!Object.keys(userChanges).length) return discardChanges();
 
   try {
-    const user = await appState.user.updateUser(userCache);
+    const user = await appState.user.updateUser(userChanges);
     if (user) {
       userHeaderView.headerMessage.textContent =
         '✅ User successfully updated.';
