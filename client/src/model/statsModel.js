@@ -40,10 +40,8 @@ const calcScore = (winRatio, counter) => {
   return score;
 };
 
-export async function getStatsList(
-  champion,
-  { lane, rank, vslane, patch, tierlist },
-) {
+// getStatsList function to fetch data from API
+export default async (champion, { lane, rank, vslane, patch, tierlist }) => {
   try {
     if (!tierlist) {
       throw new Error('Need a tierlist to get the stats...');
@@ -61,9 +59,9 @@ export async function getStatsList(
         match.score = calcScore(champion.winRatio, match);
         match.index = opponent.index;
       }
-      return match ? match : { score: 0, winRatio: 0, delta2: 0 };
+      return match || { score: 0, winRatio: 0, delta2: 0 };
     });
   } catch (err) {
     throw err;
   }
-}
+};

@@ -10,7 +10,8 @@ import { STATS_ROUTE } from '../utils/config.js';
 //   );
 // };
 
-export async function getChampion(champion, { lane, rank, vslane, patch }) {
+// getChampion function to fetch data from API
+export default async (champion, { lane, rank, vslane, patch }) => {
   try {
     if (!champion.id) throw new Error("Can't get data without a champion id");
 
@@ -35,4 +36,4 @@ export async function getChampion(champion, { lane, rank, vslane, patch }) {
   } catch (err) {
     throw err;
   }
-}
+};

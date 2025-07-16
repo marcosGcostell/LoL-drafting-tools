@@ -9,8 +9,8 @@ const _checkQuery = ({ lane, rank, vslane = true }) => {
   if (!lane || !rank || !vslane) {
     throw new Error(
       `Can't get a counterlist without parameters:${
-        !state.lane ? ' (lane)' : ''
-      }${!state.rank ? ' (rank)' : ''}${!state.vslane ? ' (vslane)' : ''}`,
+        !lane ? ' (lane)' : ''
+      }${!rank ? ' (rank)' : ''}${!vslane ? ' (vslane)' : ''}`,
     );
   }
 };
