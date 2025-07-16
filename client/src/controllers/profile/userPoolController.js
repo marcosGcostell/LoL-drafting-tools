@@ -8,12 +8,14 @@ let userCache;
 //TODO Need a state manager for the view to store de components settings
 // for reloads but don't save data to user until save / discard
 
-export const hidePopUps = (exclude = null) => {
+export const hidePopUps = e => {
+  const exclude = e.detail?.exclude || null;
   const popUpsIds = ['rank', 'top', 'jungle', 'middle', 'bottom', 'support'];
   popUpsIds.forEach(id => {
     const comp = userPoolView.components[id];
     if (comp.isVisible && comp.id !== exclude) comp.toggle();
   });
+  appState.popUpOn = exclude || '';
 };
 
 const togglePopUp = component => {
@@ -97,4 +99,6 @@ export const init = async data => {
   searchPanels.forEach(id =>
     userPoolView.components[id].bind(addPickedChampion, togglePopUp),
   );
+
+  appState.addEventListener('popup:hideAll', hidePopUps);
 };

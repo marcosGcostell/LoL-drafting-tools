@@ -3,12 +3,14 @@ import appState from '../../appState.js';
 
 let poolView;
 
-export const hidePopUps = (exclude = null) => {
+export const hidePopUps = e => {
+  const exclude = e.detail?.exclude || null;
   const popUpsIds = ['search'];
   popUpsIds.forEach(id => {
     const comp = poolView.components[id];
     if (comp.isVisible && comp.id !== exclude) comp.toggle();
   });
+  appState.popUpOn = exclude || '';
 };
 
 const togglePopUp = component => {
@@ -87,4 +89,5 @@ export const init = async () => {
   ].forEach(target => {
     appState.addEventListener(target, showAllPoolFromState);
   });
+  appState.addEventListener('popup:hideAll', hidePopUps);
 };

@@ -4,11 +4,20 @@ import { validateAuthForm } from '../../services/auth.js';
 
 let loginView;
 
-export const toggleModal = () => {
-  if (!appState.popUpOn || appState.popUpOn === 'login') {
+const hideModal = e => {
+  const exclude = e.detail?.exclude || null;
+
+  if (loginView.isModalShowed && exclude !== 'login') {
     loginView.toggleModal();
-    appState.popUpOn = loginView.isModalShowed ? 'login' : '';
+    appState.popUpOn = '';
   }
+};
+
+export const toggleModal = () => {
+  // if (!appState.popUpOn || appState.popUpOn === 'login') {
+  loginView.toggleModal();
+  appState.popUpOn = loginView.isModalShowed ? 'login' : '';
+  // }
 };
 
 const loginHandler = async e => {
@@ -46,4 +55,5 @@ export const init = () => {
   loginView.addHandlerModalBackground();
 
   appState.addEventListener('popup:login', toggleModal);
+  appState.addEventListener('popup:hideAll', hideModal);
 };

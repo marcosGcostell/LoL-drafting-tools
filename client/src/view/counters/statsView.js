@@ -85,9 +85,9 @@ export default class StatsView extends View {
       .forEach(el => el.remove());
   }
 
-  async addNewColumn() {
+  addNewColumn() {
     const index = this._rootElement.children.length;
-    await this.render(['no data'], { addColumn: true, noClear: true, index });
+    this.render(['no data'], { addColumn: true, noClear: true, index });
     // Leave the _parentElement selected to the list container
     this._selectListContainerElement(index);
     return index;

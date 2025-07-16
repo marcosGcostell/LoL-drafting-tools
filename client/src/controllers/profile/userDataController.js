@@ -6,10 +6,12 @@ import UserDataView from '../../view/profile/userDataView.js';
 let userDataView;
 let userCache;
 
-export const hidePopUps = (exclude = null) => {
+export const hidePopUps = e => {
+  const exclude = e.detail?.exclude || null;
   if (!userDataView.isPanelShowed || exclude === 'password') return;
 
   userDataView.togglePanel();
+  appState.popUpOn = exclude || '';
 };
 
 export const togglePanel = () => {
@@ -144,4 +146,6 @@ export const init = async data => {
   userDataView.addHandlerCommit('max-items', listItemsHandler);
   userDataView.addHandlerCommit('min-pr', pickRateHandler);
   userDataView.addHandlerCommit('name', inputsHandler);
+
+  appState.addEventListener('popup:hideAll', hidePopUps);
 };

@@ -20,41 +20,35 @@ export default class LoginView extends View {
 
     // Reset error message when focus on inputs
     [this.userInput, this.passwordInput].forEach(el =>
-      el.addEventListener('focus', e => {
+      el.addEventListener('focus', _ => {
         this._clear();
       }),
     );
   }
 
   addHandlerUserBtn(handler) {
-    document
-      .querySelector('.header__users')
-      .addEventListener('click', function (e) {
-        e.preventDefault();
-        handler(e);
-      });
+    document.querySelector('.header__users').addEventListener('click', e => {
+      e.preventDefault();
+      handler(e);
+    });
   }
 
   addHandlerModalBtns(target, handler) {
-    document
-      .querySelector(`.btn__${target}`)
-      .addEventListener('click', function (e) {
-        e.preventDefault();
-        handler();
-      });
+    document.querySelector(`.btn__${target}`).addEventListener('click', e => {
+      e.preventDefault();
+      handler();
+    });
   }
 
   addHandlerForm(handler) {
-    this._modalElement
-      .querySelector('form')
-      .addEventListener('submit', function (e) {
-        e.preventDefault();
-        handler(e);
-      });
+    this._modalElement.querySelector('form').addEventListener('submit', e => {
+      e.preventDefault();
+      handler(e);
+    });
   }
 
   addHandlerModalBackground() {
-    this._modalElement.addEventListener('click', function (e) {
+    this._modalElement.addEventListener('click', e => {
       e.stopImmediatePropagation();
     });
   }

@@ -1,20 +1,16 @@
 import user from './model/userModel.js';
-import * as backgroundController from './controllers/backgroundController.js';
-import * as headerController from './controllers/global/headerController.js';
-import * as starterController from './controllers/starterController.js';
+import initBackground from './controllers/backgroundController.js';
+import initHeader from './controllers/global/headerController.js';
+import initStarter from './controllers/starterController.js';
 import initCounters from './controllers/countersController.js';
-import * as profileController from './controllers/profileController.js';
-// import * as signupController from './controllers/signupController.js';
+import initProfile from './controllers/profileController.js';
+// import initSignup from './controllers/signupController.js';
+import { navigate } from './utils/helpers.js';
 import { LS_STATE } from './utils/config.js';
 
-export const navigate = path => {
-  history.pushState({}, '', path);
-  window.dispatchEvent(new PopStateEvent('popstate'));
-};
-
 const loadCommonControllers = async () => {
-  await headerController.init();
-  await backgroundController.init();
+  await initHeader();
+  await initBackground();
 };
 
 const handleRoute = async e => {
@@ -23,7 +19,7 @@ const handleRoute = async e => {
   const isLoggedIn = user.isLoggedIn();
 
   if (path === '/' || path === '/starter') {
-    const starter = await starterController.init();
+    const starter = await initStarter();
     if (starter && isDOMReloaded) await loadCommonControllers();
   } else if (path === '/counters') {
     const localData = JSON.parse(sessionStorage.getItem(LS_STATE));
@@ -32,7 +28,7 @@ const handleRoute = async e => {
     if (isDOMReloaded) await loadCommonControllers();
   } else if (path === '/profile') {
     if (!isLoggedIn) return navigate('/');
-    await profileController.init();
+    await initProfile();
     if (isDOMReloaded) await loadCommonControllers();
     // } else if (path === '/signup') {
     //   if (isLoggedIn) return navigate('/counters');

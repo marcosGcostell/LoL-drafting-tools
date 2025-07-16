@@ -67,7 +67,9 @@ class AppState extends EventTarget {
     await this.setOption('lane', this.lane);
     const pool = user.data.championPool[this.lane];
     if (pool?.length) {
+      // eslint-disable-next-line no-restricted-syntax
       for (const champion of pool) {
+        // eslint-disable-next-line no-await-in-loop
         await this.addToPool(appData.getChampionByName(champion));
       }
     }
@@ -303,7 +305,9 @@ class AppState extends EventTarget {
 
   updateAllStatsLists(statsLists) {
     this.statsLists = statsLists;
-    this.pool.forEach((el, index) => (this.statsListsOwner[index] = el.id));
+    this.pool.forEach((el, index) => {
+      this.statsListsOwner[index] = el.id;
+    });
     this.#fixAllStatsLists();
     this.#save();
   }

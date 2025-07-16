@@ -3,12 +3,14 @@ import InputsView from '../../view/counters/inputsView.js';
 
 let inputsView;
 
-export const hidePopUps = (exclude = null) => {
+export const hidePopUps = e => {
+  const exclude = e.detail?.exclude || null;
   const popUpsIds = ['lane', 'vslane', 'rank'];
   popUpsIds.forEach(id => {
     const comp = inputsView.components[id];
     if (comp.isVisible && comp.id !== exclude) comp.toggle();
   });
+  appState.popUpOn = exclude || '';
 };
 
 const togglePatch = component => {
@@ -79,4 +81,5 @@ export const init = async () => {
   inputsView.addHandlerInput(pickRateHandler, 'min-pr');
 
   appState.addEventListener('app:reload', setOptionsFromState);
+  appState.addEventListener('popup:hideAll', hidePopUps);
 };

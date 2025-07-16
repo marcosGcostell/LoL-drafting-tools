@@ -4,17 +4,22 @@ import { getChanges } from '../model/profileModel.js';
 import * as userDataController from './profile/userDataController.js';
 import * as userPoolController from './profile/userPoolController.js';
 import UserHeaderView from '../view/profile/userHeaderView.js';
-import { resetApp } from './global/headerController.js';
 import { PROFILE_PAGE_TEMPLATE } from '../utils/config.js';
-import { navigate } from '../router.js';
-import { wait } from '../utils/helpers.js';
+import { wait, navigate } from '../utils/helpers.js';
 
 let userHeaderView;
 let userCache;
 
 const logout = () => {
   userCache.deleteCache();
-  resetApp();
+  appState.user.logout();
+  navigate('/');
+};
+
+const discardChanges = () => {
+  userCache.deleteCache();
+  appState.setCurrentPage(appState.appMode);
+  navigate(`/${appState.appMode}`);
 };
 
 const saveProfile = async () => {
@@ -36,16 +41,12 @@ const saveProfile = async () => {
     userHeaderView.headerMessage.textContent = appState.user.response;
     await wait(1);
     userHeaderView.headerMessage.textContent = '';
-  } catch (err) {}
+  } catch (err) {
+    throw err;
+  }
 };
 
-const discardChanges = () => {
-  userCache.deleteCache();
-  appState.setCurrentPage(appState.appMode);
-  navigate(`/${appState.appMode}`);
-};
-
-export const init = async () => {
+export default async () => {
   try {
     // Insert the HTML page
     const response = await fetch(PROFILE_PAGE_TEMPLATE);
