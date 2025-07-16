@@ -14,9 +14,9 @@ export default class Component {
     }
   }
 
-  _render() {
+  _render(clearParent = true) {
     const markup = this._generateMarkup();
-    this._clear();
+    if (clearParent) this._clear();
     this._componentElement.insertAdjacentHTML('beforeend', markup);
   }
 

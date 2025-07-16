@@ -6,10 +6,10 @@ import {
 import { LS_USER } from '../utils/config.js';
 
 class User extends EventTarget {
-  constructor(userName = '', token = null) {
+  constructor(username = '', token = null) {
     super();
     this.#defaultValues();
-    this.userName = userName;
+    this.username = username;
     this.token = token;
 
     this.#load();
@@ -19,7 +19,7 @@ class User extends EventTarget {
   #defaultValues() {
     this.__type = 'user';
     this.token = null;
-    this.userName = '';
+    this.username = '';
     this.name = '';
     this.email = '';
     this.config = {};
@@ -27,9 +27,9 @@ class User extends EventTarget {
     this.response = '';
   }
 
-  #valuesFromResponse(user) {
+  valuesFromResponse(user) {
     this.name = user.name;
-    this.userName = user.userName;
+    this.username = user.username;
     this.email = user.email;
     Object.assign(this.config, user.config);
     Object.assign(this.data, user.data);
@@ -40,7 +40,7 @@ class User extends EventTarget {
     if (!localData) return;
     try {
       const parsed = JSON.parse(localData);
-      if (parsed.token && parsed.userName) {
+      if (parsed.token && parsed.username) {
         Object.assign(this, parsed);
         this.dispatchEvent(new Event('login'));
       }
@@ -63,7 +63,7 @@ class User extends EventTarget {
       return null;
     }
 
-    this.#valuesFromResponse(user);
+    this.valuesFromResponse(user);
     return this;
   }
 
@@ -77,7 +77,7 @@ class User extends EventTarget {
 
     if (body?.password) {
       if (
-        !(await this.login(this.userName, body.password, {
+        !(await this.login(this.username, body.password, {
           silentMode: true,
         }))
       ) {
@@ -85,7 +85,7 @@ class User extends EventTarget {
         return null;
       }
     } else {
-      this.#valuesFromResponse(user);
+      this.valuesFromResponse(user);
       this.#save();
     }
     return user;

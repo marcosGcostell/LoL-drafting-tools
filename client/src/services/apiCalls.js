@@ -10,7 +10,7 @@ const _checkQuery = ({ lane, rank, vslane = true }) => {
     throw new Error(
       `Can't get a counterlist without parameters:${
         !state.lane ? ' (lane)' : ''
-      }${!state.rank ? ' (rank)' : ''}${!state.vslane ? ' (vslane)' : ''}`
+      }${!state.rank ? ' (rank)' : ''}${!state.vslane ? ' (vslane)' : ''}`,
     );
   }
 };
@@ -103,7 +103,7 @@ export const loginOnAPI = async (loginName, password) => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        userName: loginName,
+        username: loginName,
         email: loginName,
         password,
       }),

@@ -50,20 +50,20 @@
   border-radius: 0.7rem;
 } */
 
-.champion__bookmark {
+.counters__champion__bookmark {
   position: relative;
   top: -5.1rem;
   left: 0rem;
 }
 
-.champion__close {
+.counters__champion__close {
   position: relative;
   top: -6.7rem;
   left: 3.45rem;
 }
 
-.champion__bookmark img,
-.champion__close img {
+.counters__champion__bookmark img,
+.counters__champion__close img {
   height: 1.4rem;
   width: 1.4rem;
   border: none;

@@ -1,4 +1,6 @@
 import appState from '../appState.js';
+import UserCache from '../model/UserCacheModel.js';
+import { getChanges } from '../model/profileModel.js';
 import * as userDataController from './profile/userDataController.js';
 import * as userPoolController from './profile/userPoolController.js';
 import UserHeaderView from '../view/profile/userHeaderView.js';
@@ -8,23 +10,21 @@ import { navigate } from '../router.js';
 import { wait } from '../utils/helpers.js';
 
 let userHeaderView;
+let userCache;
 
 const logout = () => {
-  if (appState.popUpOn) return;
-
+  userCache.deleteCache();
   resetApp();
 };
 
 const saveProfile = async () => {
-  if (appState.popUpOn) return;
-
   if (userDataController.isFormActive()) return;
 
-  const data = userDataController.getFormChanges();
-  if (!Object.keys(data).length) discardChanges();
+  const userChanges = getChanges(userCache, appState.user);
+  if (!Object.keys(userChanges).length) return discardChanges();
 
   try {
-    const user = await appState.user.updateUser(data);
+    const user = await appState.user.updateUser(userChanges);
     if (user) {
       userHeaderView.headerMessage.textContent =
         '✅ User successfully updated.';
@@ -40,8 +40,7 @@ const saveProfile = async () => {
 };
 
 const discardChanges = () => {
-  if (appState.popUpOn) return;
-
+  userCache.deleteCache();
   appState.setCurrentPage(appState.appMode);
   navigate(`/${appState.appMode}`);
 };
@@ -56,10 +55,11 @@ export const init = async () => {
     document.querySelector('main').innerHTML = template;
     appState.setCurrentPage('profile');
 
-    // initialize the views
+    // set user cache and initialize the views
+    userCache = new UserCache(appState.user);
     userHeaderView = new UserHeaderView();
-    userDataController.init();
-    userPoolController.init();
+    userDataController.init(userCache);
+    userPoolController.init(userCache);
 
     // Set handlers for the header buttons
     userHeaderView.addHandlerBtn('logout', logout);

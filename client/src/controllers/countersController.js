@@ -21,10 +21,10 @@ export const init = async () => {
     loginController.init();
     // Set the options inputs and search handlers
     await inputsController.init();
+    await poolController.init();
 
     // Init the data views
     tierlistController.init();
-    poolController.init();
     statsController.init();
 
     await appState.initFromCounters();

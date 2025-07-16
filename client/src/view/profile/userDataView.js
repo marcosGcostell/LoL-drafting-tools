@@ -23,9 +23,9 @@ export default class UserDataView extends View {
     this.isPanelShowed = false;
   }
 
-  initView({ name, userName, email, config }) {
+  initView({ name, username, email, config }) {
     document.querySelector('#name').value = name || '';
-    document.querySelector('#username').value = userName || '';
+    document.querySelector('#username').value = username || '';
     document.querySelector('#email').value = email || '';
     this.setMaxItems(config?.maxListItems);
     this.setPickRateThreshold(config?.pickRateThreshold);
@@ -55,7 +55,7 @@ export default class UserDataView extends View {
       .querySelector(`#${target}`)
       .addEventListener('change', function (e) {
         e.preventDefault();
-        handler(e.target.value);
+        handler(target, e.target.value);
       });
   }
 

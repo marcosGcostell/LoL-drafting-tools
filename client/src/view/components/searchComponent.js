@@ -4,7 +4,7 @@ import { SPRITE_SRC, SEARCH_ITEM_TEMPLATE } from '../../utils/config.js';
 
 export default class SearchComponent extends Component {
   constructor({ style, id }) {
-    if (!style || !id) return null;
+    if (!style || !id) return undefined;
     super({ style, id, type: 'search', template: SEARCH_ITEM_TEMPLATE });
 
     this._parentBtn = document.querySelector(`#${id}__search__btn`);

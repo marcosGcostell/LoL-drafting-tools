@@ -14,7 +14,7 @@ export default class HeaderView extends View {
       });
   }
 
-  showUserName(userName) {
-    document.querySelector('.header__username span').textContent = userName;
+  showUserName(username) {
+    document.querySelector('.header__username span').textContent = username;
   }
 }

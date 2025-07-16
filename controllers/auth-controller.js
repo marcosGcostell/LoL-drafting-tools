@@ -24,7 +24,7 @@ export const signup = catchAsync(async (req, res, next) => {
   const data = req.body;
   const newUser = await User.create({
     name: data.name,
-    userName: data.userName,
+    username: data.username,
     email: data.email,
     avatar: data.avatar,
     password: data.password,
@@ -45,16 +45,16 @@ export const signup = catchAsync(async (req, res, next) => {
 });
 
 export const login = catchAsync(async (req, res, next) => {
-  const { email, userName, password } = req.body;
+  const { email, username, password } = req.body;
 
-  if (!(email || userName) || !password) {
+  if (!(email || username) || !password) {
     return next(
       new AppError('Please provide email or user name and Password!', 400),
     );
   }
 
   const user = await User.findOne({
-    $or: [{ email }, { userNameToLower: userName?.toLowerCase() }],
+    $or: [{ email }, { usernameToLower: username?.toLowerCase() }],
   }).select('+password');
   console.log(user);
   if (!user || !(await user.checkPassword(password, user.password))) {

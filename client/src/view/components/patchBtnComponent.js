@@ -3,6 +3,7 @@ import Component from './component.js';
 
 export default class PatchComponent extends Component {
   constructor({ style, id }) {
+    if (!style || !id) return undefined;
     super({ style, id, type: 'btn' });
     this._patch = new Patch();
     this._format = new Map([
