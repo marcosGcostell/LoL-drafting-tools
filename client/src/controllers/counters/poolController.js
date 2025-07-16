@@ -71,7 +71,7 @@ export default async () => {
   poolView = new PoolView();
   await poolView.initView('counters', 'counters');
 
-  poolView.components.search.bind(getPickedChampion, togglePopUp);
+  poolView.components.search.bindHandlers(getPickedChampion, togglePopUp);
 
   appState.addEventListener('pool:add', addPoolItem);
   appState.addEventListener('pool:added', showChampion);

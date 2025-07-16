@@ -49,5 +49,3 @@ export default class ListView extends View {
       .forEach(el => el.remove());
   }
 }
-
-new ListView();

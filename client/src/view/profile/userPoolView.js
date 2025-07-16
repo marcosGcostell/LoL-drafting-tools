@@ -27,7 +27,7 @@ export default class UserPoolView extends View {
 
   async initView(roles) {
     if (!this._template) await this._templatePromise;
-    await this.render(roles, { noClear: true });
+    this.render(roles, { noClear: true });
 
     const selectors = [
       { style: 'profile', id: 'primary', data: 'lane' },
@@ -43,10 +43,9 @@ export default class UserPoolView extends View {
       { style: 'profile', id: 'support' },
     ];
 
-    selectors.forEach(
-      selector =>
-        (this.components[selector.id] = new SelectorComponent(selector)),
-    );
+    selectors.forEach(selector => {
+      this.components[selector.id] = new SelectorComponent(selector);
+    });
     this.components.patch = new PatchComponent(patch);
 
     lanePanels.forEach(item => {

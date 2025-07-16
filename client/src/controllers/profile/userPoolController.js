@@ -92,13 +92,13 @@ export default async data => {
   setFromUserData();
 
   // Set handlers for the profile pool view
-  userPoolView.components.primary.bind(setSelector);
-  userPoolView.components.secondary.bind(setSelector);
-  userPoolView.components.rank.bind(setSelector, togglePopUp);
-  userPoolView.components.patch.bind(setPatch);
+  userPoolView.components.primary.bindHandlers(setSelector);
+  userPoolView.components.secondary.bindHandlers(setSelector);
+  userPoolView.components.rank.bindHandlers(setSelector, togglePopUp);
+  userPoolView.components.patch.bindHandlers(setPatch);
   const searchPanels = ['top', 'jungle', 'middle', 'bottom', 'support'];
   searchPanels.forEach(id =>
-    userPoolView.components[id].bind(addPickedChampion, togglePopUp),
+    userPoolView.components[id].bindHandlers(addPickedChampion, togglePopUp),
   );
 
   appState.addEventListener('popup:hideAll', hidePopUps);

@@ -22,9 +22,10 @@
       { "argsIgnorePattern": "req|res|next|val|_|__" }
     ],
     "import/extensions": 0,
-    "no-plusplus": "off",
+    "react/prop-types": "off",
+    "react/no-unused-class-component-methods": "off",
     "no-useless-catch": "off",
-    "react/prop-types": "off"
+    "no-plusplus": "off"
   },
   "env": {
     "browser": true,

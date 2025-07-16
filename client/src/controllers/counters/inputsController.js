@@ -73,9 +73,9 @@ export default async () => {
 
   // add handlers for option buttons and selectors
   ['lane', 'vslane', 'rank'].forEach(id =>
-    inputsView.components[id].bind(setOptionHandler, togglePopUp),
+    inputsView.components[id].bindHandlers(setOptionHandler, togglePopUp),
   );
-  inputsView.components.patch.bind(togglePatch);
+  inputsView.components.patch.bindHandlers(togglePatch);
 
   // Handlers to manage inputs values
   inputsView.addHandlerInput(listItemsHandler, 'max-items');
