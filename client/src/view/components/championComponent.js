@@ -9,6 +9,7 @@ export default class ChampionComponent extends Component {
     this._parentPool = this._componentElement;
     this._championElement = null;
     this._data = champion;
+    this.value = champion.id;
     this.index = index;
     this.fullyLoaded = false;
   }
@@ -50,7 +51,10 @@ export default class ChampionComponent extends Component {
 
   fullLoad(template, champion = null) {
     this._template = template;
-    if (champion) this._data = champion;
+    if (champion) {
+      this._data = champion;
+      this.value = champion.id;
+    }
     if (this._style !== 'profile') this.remove();
     this._render(false);
     this._getChampionElement();

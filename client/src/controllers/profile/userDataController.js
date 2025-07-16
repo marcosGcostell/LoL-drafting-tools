@@ -120,9 +120,9 @@ export const isFormActive = () => {
   return false;
 };
 
-export const getFormChanges = () => {
-  return profileModel.getChanges(userDataView.form, appState.user);
-};
+// export const getFormChanges = () => {
+//   return profileModel.getChanges(userDataView.form, appState.user);
+// };
 
 export const init = async data => {
   // Set user data in the form

@@ -27,7 +27,7 @@ class User extends EventTarget {
     this.response = '';
   }
 
-  #valuesFromResponse(user) {
+  valuesFromResponse(user) {
     this.name = user.name;
     this.username = user.username;
     this.email = user.email;
@@ -63,7 +63,7 @@ class User extends EventTarget {
       return null;
     }
 
-    this.#valuesFromResponse(user);
+    this.valuesFromResponse(user);
     return this;
   }
 
@@ -85,7 +85,7 @@ class User extends EventTarget {
         return null;
       }
     } else {
-      this.#valuesFromResponse(user);
+      this.valuesFromResponse(user);
       this.#save();
     }
     return user;

@@ -13,6 +13,7 @@ export const getPasswordFields = form => {
   return values;
 };
 
+// TODO Check if its used after userCache implemented
 export const getChanges = (form, user) => {
   const changes = {};
   const formData = new FormData(form);
@@ -40,4 +41,15 @@ export const getChanges = (form, user) => {
   });
 
   return userChanges;
+};
+
+export const hasBeenChanges = (cache, user) => {
+  // structuredClone doesn't work for user extending EventTarget
+  const userCopy = JSON.parse(JSON.stringify(user));
+  delete userCopy.token;
+  delete userCopy.response;
+  delete userCopy.__type;
+  console.log(JSON.stringify(cache), JSON.stringify(userCopy));
+
+  return JSON.stringify(cache) !== JSON.stringify(userCopy);
 };
