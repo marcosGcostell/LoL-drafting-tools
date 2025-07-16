@@ -25,9 +25,13 @@ export default class StatsView extends View {
       });
   }
 
-  initView() {
+  async initView() {
     this._rootElement = document.querySelector('.stats-container');
     this._parentElement = this._rootElement;
+
+    if (!this._templateColumn || !this._templateItem) {
+      await Promise.all([this._tempColumnPromise, this._tempItemPromise]);
+    }
   }
 
   _checkOptions(options) {
@@ -42,12 +46,8 @@ export default class StatsView extends View {
   }
 
   // options = { addColumn: true/false, length: list.length, index: column }
-  async _generateMarkup(options) {
+  _generateMarkup(options) {
     if (!this._checkOptions(options)) return this._message;
-
-    if (!this._templateColumn || !this._templateItem) {
-      await Promise.all([this._tempColumnPromise, this._tempItemPromise]);
-    }
 
     if (options.addColumn) {
       this._parentElement = this._rootElement;
@@ -56,11 +56,7 @@ export default class StatsView extends View {
 
     if (!this._selectListContainerElement(options.index)) return this._message;
 
-    return this._data
-      .map(item => {
-        return this._generateItemMarkup(item);
-      })
-      .join('');
+    return this._data.map(item => this._generateItemMarkup(item)).join('');
   }
 
   _generateItemMarkup(item) {

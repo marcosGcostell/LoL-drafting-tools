@@ -15,9 +15,9 @@ const tierlistOnHold = () => {
   tierlistView.renderSpinner();
 };
 
-export default () => {
+export default async () => {
   tierlistView = new TierlistView();
-  tierlistView.initView();
+  await tierlistView.initView();
 
   // Add appState events handlers
   ['change:bothLanes', 'change:vslane', 'change:rank', 'change:patch'].forEach(

@@ -16,10 +16,9 @@ export default class InputsView {
     ];
     const patch = { style: 'counters', id: 'patch' };
 
-    selectors.forEach(
-      selector =>
-        (this.components[selector.id] = new SelectorComponent(selector)),
-    );
+    selectors.forEach(selector => {
+      this.components[selector.id] = new SelectorComponent(selector);
+    });
     this.components.patch = new PatchComponent(patch);
 
     await Promise.all(Object.values(this.components).map(comp => comp.load()));
@@ -34,7 +33,7 @@ export default class InputsView {
       });
   }
 
-  async _generateMarkup(_) {
+  _generateMarkup(_) {
     return this._data.map(item => this._generateItemMarkup(item)).join('');
   }
 

@@ -28,11 +28,11 @@ const deleteStatsColumn = e => {
   }
 };
 
-export const clearStatsSection = () => {
+const clearStatsSection = () => {
   statsView.clearSection();
 };
 
-export const showAllStatsFromState = async () => {
+const showAllStatsFromState = async () => {
   clearStatsSection();
   if (!appState.fixedStatsLists.length) return;
   for (const list of appState.fixedStatsLists) {
@@ -41,7 +41,7 @@ export const showAllStatsFromState = async () => {
   }
 };
 
-export const statsOnHold = async () => {
+const statsOnHold = async () => {
   clearStatsSection();
   if (!appState.fixedStatsLists.length) return;
   for (const col of appState.fixedStatsLists) {
@@ -50,9 +50,9 @@ export const statsOnHold = async () => {
   }
 };
 
-export const init = () => {
+export default async () => {
   statsView = new StatsView();
-  statsView.initView();
+  await statsView.initView();
 
   appState.addEventListener('pool:add', addStatsColumn);
   appState.addEventListener('pool:added', renderStatsList);

@@ -12,14 +12,14 @@ export default class View {
    * @author Marcos Garcia
    * @todo Finish the implementation
    */
-  async render(data, options = {}) {
+  render(data, options = {}) {
     // TODO Need to change the _parentElement relation
     // Should be a root element for messages and a parentelement to render data
     if (!data || (Array.isArray(data) && data.length === 0))
       return this.renderError();
 
     this._data = data;
-    const markup = await this._generateMarkup(options);
+    const markup = this._generateMarkup(options);
 
     if (options?.onlyMarkup === true) return markup;
 
@@ -29,7 +29,7 @@ export default class View {
     this._parentElement.insertAdjacentHTML('beforeend', markup);
   }
 
-  update(data) {}
+  // update(data) {}
 
   _clear() {
     this._parentElement.innerHTML = '';

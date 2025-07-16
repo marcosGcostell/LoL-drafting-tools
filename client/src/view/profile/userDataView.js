@@ -111,7 +111,7 @@ export default class UserDataView extends View {
     }
   }
 
-  async _generateMarkup(_) {
+  _generateMarkup(_) {
     const [target, mode] = this._data;
     return mode === 'activate'
       ? this._generateActiveMarkup(target)

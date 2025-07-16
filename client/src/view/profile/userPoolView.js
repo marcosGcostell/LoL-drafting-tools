@@ -63,7 +63,7 @@ export default class UserPoolView extends View {
     this.components.secondary.isVisible = true;
   }
 
-  async _generateMarkup(_) {
+  _generateMarkup(_) {
     return this._data.map(item => this._generateItemMarkup(item)).join('');
   }
 
