@@ -87,13 +87,13 @@ class AppData {
         console.log('Reading appData from browser...');
         // return instance set from JSON
         return AppData.getFromJSON(JSON.parse(data));
-      } else {
-        console.log('Reading appData from API...');
-        const appData = await AppData.getFromAPI();
-        localStorage.setItem(LS_APP_DATA, JSON.stringify(appData.SaveToJSON()));
-        // return instance set form API
-        return appData;
       }
+
+      console.log('Reading appData from API...');
+      const appData = await AppData.getFromAPI();
+      localStorage.setItem(LS_APP_DATA, JSON.stringify(appData.SaveToJSON()));
+      // return instance set form API
+      return appData;
     } catch (error) {
       throw error;
     }

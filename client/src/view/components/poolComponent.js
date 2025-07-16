@@ -8,7 +8,10 @@ import {
 
 export default class PoolComponent extends Component {
   constructor({ style, id }) {
-    if (!style || !id) return undefined;
+    if (!style || !id) {
+      throw new Error('Can not create a pool component without all argumnents');
+    }
+
     const template =
       style === 'profile' ? PROFILE_CHAMPION_ITEM : CHAMPION_TEMPLATE;
     super({ style, id, type: 'pool', template });
@@ -49,17 +52,6 @@ export default class PoolComponent extends Component {
     newItem.preLoad(this._templateOnHold);
   }
 
-  renderPoolItem(deleteHandler, bookmarkHandler = null, champion = null) {
-    if (!champion) return;
-    // FIXME need to handle this error
-    if (!this.items.length || this._lastItemComponent?.fullyLoaded) {
-      this.addPoolItem(champion);
-    }
-    this._lastItemComponent
-      .fullLoad(this._template, champion)
-      .bind(deleteHandler, bookmarkHandler);
-  }
-
   removePoolItem(index) {
     this.items = this.items.filter((_, i) => i !== index);
     this.items.forEach((champion, i) => {
@@ -72,5 +64,16 @@ export default class PoolComponent extends Component {
     this.items.forEach(champion => champion.remove());
     this.items = [];
     this._lastItemComponent = null;
+  }
+
+  renderPoolItem(deleteHandler, bookmarkHandler = null, champion = null) {
+    if (!champion) return;
+    // FIXME need to handle this error
+    if (!this.items.length || this._lastItemComponent?.fullyLoaded) {
+      this.addPoolItem(champion);
+    }
+    this._lastItemComponent
+      .fullLoad(this._template, champion)
+      .bindHandlers(deleteHandler, bookmarkHandler);
   }
 }

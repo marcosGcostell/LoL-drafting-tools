@@ -1,7 +1,7 @@
 import appState from '../appState.js';
 import starterView from '../view/starter/starterView.js';
 import * as loginController from './global/loginController.js';
-import { navigate } from '../router.js';
+import { navigate } from '../utils/helpers.js';
 
 const setLaneHandler = component => {
   appState.initFromStarter(component.value);
@@ -9,7 +9,8 @@ const setLaneHandler = component => {
   navigate(`/${appState.appMode}`);
 };
 
-export const init = async () => {
+// Init funcion for loading the page
+export default async () => {
   if (appState.currentPage === 'profile' && appState.user.isLoggedIn()) {
     navigate('/profile');
     return false;
@@ -32,7 +33,7 @@ export const init = async () => {
 
     // Init login modal handlers and set the selector handler
     loginController.init();
-    starterView.components.starter.bind(setLaneHandler);
+    starterView.components.starter.bindHandlers(setLaneHandler);
 
     appState.addEventListener('user:login', e => {
       e.stopImmediatePropagation();

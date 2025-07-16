@@ -6,13 +6,17 @@ import UserDataView from '../../view/profile/userDataView.js';
 let userDataView;
 let userCache;
 
-export const hidePopUps = (exclude = null) => {
+// FIXME When an input is submit, it shouldn't open password popup
+
+const hidePopUps = e => {
+  const exclude = e.detail?.exclude || null;
   if (!userDataView.isPanelShowed || exclude === 'password') return;
 
   userDataView.togglePanel();
+  appState.popUpOn = exclude || '';
 };
 
-export const togglePanel = () => {
+const togglePanel = () => {
   if (!appState.popUpOn || appState.popUpOn === 'password') {
     userDataView.togglePanel();
     appState.popUpOn = userDataView.isPanelShowed ? 'password' : '';
@@ -21,7 +25,7 @@ export const togglePanel = () => {
 };
 
 const listItemsHandler = (_, value) => {
-  const parsedValue = parseInt(value);
+  const parsedValue = parseInt(value, 10);
   if (parsedValue) {
     userCache.setConfig({ maxListItems: parsedValue });
   }
@@ -47,14 +51,14 @@ const inputsHandler = (target, value) => {
 };
 
 const savePassword = async () => {
-  const { password, new__password, confirm__password } =
+  const { password, newPassword, passwordConfirm } =
     profileModel.getPasswordFields(userDataView.form);
 
   const result = await authService.validatePassword(
     {
       oldPassword: password,
-      password: new__password,
-      confirmPassword: confirm__password,
+      password: newPassword,
+      passwordConfirm,
     },
     { length: true, confirm: true, username: appState.user.username },
   );
@@ -66,8 +70,8 @@ const savePassword = async () => {
 
   if (
     !(await appState.user.updateUser({
-      password: new__password,
-      passwordConfirm: confirm__password,
+      password: newPassword,
+      passwordConfirm,
     }))
   ) {
     userDataView.showPasswordMsg(appState.user.response);
@@ -120,16 +124,11 @@ export const isFormActive = () => {
   return false;
 };
 
-// export const getFormChanges = () => {
-//   return profileModel.getChanges(userDataView.form, appState.user);
-// };
-
-export const init = async data => {
+export const initUserData = async data => {
   // Set user data in the form
   userCache = data;
   userDataView = new UserDataView();
   userDataView.initView(userCache);
-  // Load champion pool
 
   // Set handlers for the profile view
   // Fix Buttons
@@ -144,4 +143,6 @@ export const init = async data => {
   userDataView.addHandlerCommit('max-items', listItemsHandler);
   userDataView.addHandlerCommit('min-pr', pickRateHandler);
   userDataView.addHandlerCommit('name', inputsHandler);
+
+  appState.addEventListener('popup:hideAll', hidePopUps);
 };

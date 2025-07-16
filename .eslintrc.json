@@ -17,7 +17,19 @@
     "no-underscore-dangle": "off",
     "class-methods-use-this": "off",
     "prefer-destructuring": ["error", { "object": true, "array": false }],
-    "no-unused-vars": ["error", { "argsIgnorePattern": "req|res|next|val" }],
-    "import/extensions": 0
+    "no-unused-vars": [
+      "error",
+      { "argsIgnorePattern": "req|res|next|val|_|__" }
+    ],
+    "import/extensions": 0,
+    "react/prop-types": "off",
+    "react/no-unused-class-component-methods": "off",
+    "no-useless-catch": "off",
+    "no-plusplus": "off"
+  },
+  "env": {
+    "browser": true,
+    "es6": true,
+    "es2021": true
   }
 }

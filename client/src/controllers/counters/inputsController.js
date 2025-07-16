@@ -1,8 +1,17 @@
 import appState from '../../appState.js';
-import { hideAllPopUps } from '../backgroundController.js';
 import InputsView from '../../view/counters/inputsView.js';
 
 let inputsView;
+
+const hidePopUps = e => {
+  const exclude = e.detail?.exclude || null;
+  const popUpsIds = ['lane', 'vslane', 'rank'];
+  popUpsIds.forEach(id => {
+    const comp = inputsView.components[id];
+    if (comp.isVisible && comp.id !== exclude) comp.toggle();
+  });
+  appState.popUpOn = exclude || '';
+};
 
 const togglePatch = component => {
   if (component.mode !== -1) {
@@ -11,7 +20,7 @@ const togglePatch = component => {
 };
 
 const togglePopUp = component => {
-  if (appState.popUpOn) hideAllPopUps(component.id);
+  if (appState.popUpOn) appState.hideAllPopUps(component.id);
 
   appState.popUpOn = component.isVisible ? component.id : '';
 };
@@ -57,27 +66,21 @@ const setOptionsFromState = () => {
   inputsView.setPickRateThreshold(appState.pickRateThreshold);
 };
 
-export const hidePopUps = (exclude = null) => {
-  const popUpsIds = ['lane', 'vslane', 'rank'];
-  popUpsIds.forEach(id => {
-    const comp = inputsView.components[id];
-    if (comp.isVisible && comp.id !== exclude) comp.toggle();
-  });
-};
-
-export const init = async () => {
+// Init funcion for the view
+export default async () => {
   inputsView = new InputsView();
   await inputsView.initView();
 
   // add handlers for option buttons and selectors
   ['lane', 'vslane', 'rank'].forEach(id =>
-    inputsView.components[id].bind(setOptionHandler, togglePopUp),
+    inputsView.components[id].bindHandlers(setOptionHandler, togglePopUp),
   );
-  inputsView.components.patch.bind(togglePatch);
+  inputsView.components.patch.bindHandlers(togglePatch);
 
   // Handlers to manage inputs values
   inputsView.addHandlerInput(listItemsHandler, 'max-items');
   inputsView.addHandlerInput(pickRateHandler, 'min-pr');
 
   appState.addEventListener('app:reload', setOptionsFromState);
+  appState.addEventListener('popup:hideAll', hidePopUps);
 };

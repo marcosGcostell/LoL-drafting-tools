@@ -2,7 +2,8 @@ import ChampionList from './championListModel.js';
 import { fetchListFromAPI } from '../services/apiCalls.js';
 import { TIERLIST_ROUTE } from '../utils/config.js';
 
-export async function getTierlist({ vslane, rank, patch }) {
+// getTierlist function to fetch data from API
+export default async ({ vslane, rank, patch }) => {
   try {
     console.log(`Getting tier list: ${vslane} ${rank} ${patch.toView()}`);
 
@@ -23,4 +24,4 @@ export async function getTierlist({ vslane, rank, patch }) {
   } catch (err) {
     throw err;
   }
-}
+};

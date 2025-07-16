@@ -1,24 +1,29 @@
 import appState from '../appState.js';
 import UserCache from '../model/UserCacheModel.js';
 import { getChanges } from '../model/profileModel.js';
-import * as userDataController from './profile/userDataController.js';
-import * as userPoolController from './profile/userPoolController.js';
+import { initUserData, isFormActive } from './profile/userDataController.js';
+import initUserPool from './profile/userPoolController.js';
 import UserHeaderView from '../view/profile/userHeaderView.js';
-import { resetApp } from './global/headerController.js';
 import { PROFILE_PAGE_TEMPLATE } from '../utils/config.js';
-import { navigate } from '../router.js';
-import { wait } from '../utils/helpers.js';
+import { wait, navigate } from '../utils/helpers.js';
 
 let userHeaderView;
 let userCache;
 
 const logout = () => {
   userCache.deleteCache();
-  resetApp();
+  appState.user.logout();
+  navigate('/');
+};
+
+const discardChanges = () => {
+  userCache.deleteCache();
+  appState.setCurrentPage(appState.appMode);
+  navigate(`/${appState.appMode}`);
 };
 
 const saveProfile = async () => {
-  if (userDataController.isFormActive()) return;
+  if (isFormActive()) return;
 
   const userChanges = getChanges(userCache, appState.user);
   if (!Object.keys(userChanges).length) return discardChanges();
@@ -36,16 +41,13 @@ const saveProfile = async () => {
     userHeaderView.headerMessage.textContent = appState.user.response;
     await wait(1);
     userHeaderView.headerMessage.textContent = '';
-  } catch (err) {}
+  } catch (err) {
+    throw err;
+  }
 };
 
-const discardChanges = () => {
-  userCache.deleteCache();
-  appState.setCurrentPage(appState.appMode);
-  navigate(`/${appState.appMode}`);
-};
-
-export const init = async () => {
+// Init funcion for loading the page
+export default async () => {
   try {
     // Insert the HTML page
     const response = await fetch(PROFILE_PAGE_TEMPLATE);
@@ -58,8 +60,8 @@ export const init = async () => {
     // set user cache and initialize the views
     userCache = new UserCache(appState.user);
     userHeaderView = new UserHeaderView();
-    userDataController.init(userCache);
-    userPoolController.init(userCache);
+    initUserData(userCache);
+    initUserPool(userCache);
 
     // Set handlers for the header buttons
     userHeaderView.addHandlerBtn('logout', logout);

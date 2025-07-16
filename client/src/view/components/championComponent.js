@@ -3,8 +3,13 @@ import { IMG_SRC, ICONS } from '../../utils/config';
 
 export default class ChampionComponent extends Component {
   constructor({ style, id, champion, index }) {
-    if (!style || !id) return undefined;
-    if (index === NaN || index < 0) return undefined;
+    if (!style || !id) {
+      throw new Error('Can not create a champion item without all argumnents');
+    }
+    if (Number.isNaN(index) || index < 0) {
+      throw new Error('A valid index is required to create a champion item');
+    }
+
     super({ style, id, type: 'pool' });
     this._parentPool = this._componentElement;
     this._championElement = null;
@@ -20,7 +25,7 @@ export default class ChampionComponent extends Component {
     );
   }
 
-  bind(deleteHandler, bookmarkHandler) {
+  bindHandlers(deleteHandler, bookmarkHandler) {
     // Callback to remove the champion
     this._championElement
       .querySelector(`.${this._style}__champion__close`)

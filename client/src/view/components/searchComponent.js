@@ -4,7 +4,12 @@ import { SPRITE_SRC, SEARCH_ITEM_TEMPLATE } from '../../utils/config.js';
 
 export default class SearchComponent extends Component {
   constructor({ style, id }) {
-    if (!style || !id) return undefined;
+    if (!style || !id) {
+      throw new Error(
+        'Can not create a search component without all argumnents',
+      );
+    }
+
     super({ style, id, type: 'search', template: SEARCH_ITEM_TEMPLATE });
 
     this._parentBtn = document.querySelector(`#${id}__search__btn`);
@@ -42,7 +47,7 @@ export default class SearchComponent extends Component {
     });
   }
 
-  bind(pickedChampionHandler, parentHandler) {
+  bindHandlers(pickedChampionHandler, parentHandler) {
     // Callback for clicking a champion from the search list
     this._componentElement.addEventListener('click', e => {
       e.preventDefault();
@@ -90,9 +95,8 @@ export default class SearchComponent extends Component {
       .map(champion => {
         if (champion?.id) {
           return this._generateItemMarkup(champion);
-        } else {
-          return '<hr>';
         }
+        return '<hr>';
       })
       .join('');
   }

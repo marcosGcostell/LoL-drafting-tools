@@ -1,12 +1,13 @@
 import appState from '../appState.js';
 import * as loginController from './global/loginController.js';
-import * as inputsController from './counters/inputsController.js';
-import * as tierlistController from './counters/tierlistController.js';
-import * as poolController from './counters/poolController.js';
-import * as statsController from './counters/statsController.js';
+import initInputs from './counters/inputsController.js';
+import initTierlist from './counters/tierlistController.js';
+import initPool from './counters/poolController.js';
+import initStatsList from './counters/statsController.js';
 import { COUNTER_PAGE_TEMPLATE } from '../utils/config.js';
 
-export const init = async () => {
+// Init funcion for loading the page
+export default async () => {
   try {
     // Insert the HTML page
     const response = await fetch(COUNTER_PAGE_TEMPLATE);
@@ -20,12 +21,12 @@ export const init = async () => {
     // Set the login modal handlers
     loginController.init();
     // Set the options inputs and search handlers
-    await inputsController.init();
-    await poolController.init();
+    await initInputs();
+    await initPool();
 
     // Init the data views
-    tierlistController.init();
-    statsController.init();
+    await initTierlist();
+    await initStatsList();
 
     await appState.initFromCounters();
   } catch (err) {

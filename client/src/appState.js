@@ -67,7 +67,9 @@ class AppState extends EventTarget {
     await this.setOption('lane', this.lane);
     const pool = user.data.championPool[this.lane];
     if (pool?.length) {
+      // eslint-disable-next-line no-restricted-syntax
       for (const champion of pool) {
+        // eslint-disable-next-line no-await-in-loop
         await this.addToPool(appData.getChampionByName(champion));
       }
     }
@@ -91,7 +93,7 @@ class AppState extends EventTarget {
   #fixTierlist() {
     this.fixedTierlist = this.tierlist.slice(0, this.maxListItems);
     const matchingItemsCount = this.fixedTierlist.findIndex(
-      el => el.pickRate < this.pickRateThreshold
+      el => el.pickRate < this.pickRateThreshold,
     );
     this.fixedTierlist.splice(matchingItemsCount);
   }
@@ -99,7 +101,7 @@ class AppState extends EventTarget {
   #fixStatsList(index) {
     this.fixedStatsLists[index] = this.statsLists[index].slice(
       0,
-      this.fixedTierlist.length
+      this.fixedTierlist.length,
     );
   }
 
@@ -120,7 +122,7 @@ class AppState extends EventTarget {
   async initFromCounters() {
     if (!this.vslane) this.initFromStarter('top');
     if (this.vslane !== this.tierlistLane) {
-      await dataModel.getNewTierlist();
+      await dataModel.getNewTierlist(this);
     }
     this.dispatchEvent(new Event('app:reload'));
   }
@@ -143,10 +145,24 @@ class AppState extends EventTarget {
     this.dispatchEvent(new CustomEvent(`popup:${target}`));
   }
 
+  hideAllPopUps(exclude = null) {
+    this.dispatchEvent(
+      new CustomEvent('popup:hideAll', {
+        detail: { exclude },
+      }),
+    );
+  }
+
   // Change and update events: 'lane', 'bothLanes', 'rank', 'vslane', 'patch'
   async setOption(target, value) {
     let eventTarget = target;
-    if (target !== 'patch') this[target] = value;
+
+    if (target === 'patch') {
+      this.patch.mode = value;
+    } else {
+      this[target] = value;
+    }
+
     if (target === 'lane') {
       if (!this.tierlist.length || this.tierlistLane !== value) {
         this.vslane = value;
@@ -161,18 +177,18 @@ class AppState extends EventTarget {
       this.dispatchEvent(
         new CustomEvent(`change:${eventTarget}`, {
           detail: { target: eventTarget, value },
-        })
+        }),
       );
     }
 
-    await dataModel.updateData(eventTarget);
+    await dataModel.updateData(eventTarget, this);
 
     // Event to update views
     if (!this.silentMode) {
       this.dispatchEvent(
         new CustomEvent(`updated:${eventTarget}`, {
           detail: { target: eventTarget, value },
-        })
+        }),
       );
     }
   }
@@ -184,7 +200,7 @@ class AppState extends EventTarget {
     this.#save();
     if (!this.silentMode) {
       this.dispatchEvent(
-        new CustomEvent('updated:settings', { detail: { target, value } })
+        new CustomEvent('updated:settings', { detail: { target, value } }),
       );
     }
   }
@@ -196,11 +212,11 @@ class AppState extends EventTarget {
       this.dispatchEvent(
         new CustomEvent('pool:add', {
           detail: { index: this.pool.length, champion },
-        })
+        }),
       );
     }
 
-    await dataModel.getNewData(champion);
+    await dataModel.getNewData(champion, this);
 
     const index = this.pool.length - 1;
     if (!this.silentMode) {
@@ -211,7 +227,7 @@ class AppState extends EventTarget {
             champion: this.pool[index],
             stats: this.fixedStatsLists[index],
           },
-        })
+        }),
       );
     }
   }
@@ -225,7 +241,7 @@ class AppState extends EventTarget {
       this.#save();
       if (!this.silentMode) {
         this.dispatchEvent(
-          new CustomEvent('pool:remove', { detail: { index } })
+          new CustomEvent('pool:remove', { detail: { index } }),
         );
       }
     }
@@ -295,7 +311,9 @@ class AppState extends EventTarget {
 
   updateAllStatsLists(statsLists) {
     this.statsLists = statsLists;
-    this.pool.forEach((el, index) => (this.statsListsOwner[index] = el.id));
+    this.pool.forEach((el, index) => {
+      this.statsListsOwner[index] = el.id;
+    });
     this.#fixAllStatsLists();
     this.#save();
   }

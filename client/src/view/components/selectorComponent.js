@@ -8,7 +8,10 @@ import {
 
 export default class SelectorComponent extends Component {
   constructor({ style, id, data }) {
-    if (!style || !id || !data) return undefined;
+    if (!style || !id || !data) {
+      throw new Error('Can not create a selector without all argumnents');
+    }
+
     super({ style, id, type: 'selector', template: SELECTOR_ITEM_TEMPLATE });
     this._data = data;
     this._parentBtn = document.querySelector(`#${id}__btn`);
@@ -23,7 +26,7 @@ export default class SelectorComponent extends Component {
     this.value = null;
   }
 
-  bind(selectorHandler = null, parentHandler = null) {
+  bindHandlers(selectorHandler = null, parentHandler = null) {
     // Callback for choosing an option from the selector
     this._componentElement.addEventListener('click', e => {
       e.preventDefault();

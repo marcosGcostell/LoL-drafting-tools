@@ -15,14 +15,10 @@ const tierlistOnHold = () => {
   tierlistView.renderSpinner();
 };
 
-const clearTierlist = () => {
-  tierlistView._clear();
-  appState.fixedTierlist = [];
-};
-
-export const init = () => {
+// Init funcion for the view
+export default async () => {
   tierlistView = new TierlistView();
-  tierlistView.initView();
+  await tierlistView.initView();
 
   // Add appState events handlers
   ['change:bothLanes', 'change:vslane', 'change:rank', 'change:patch'].forEach(

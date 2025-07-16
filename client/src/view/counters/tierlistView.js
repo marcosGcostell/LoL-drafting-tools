@@ -15,15 +15,15 @@ export default class ListView extends View {
       });
   }
 
-  initView() {
+  async initView() {
     this._parentElement = document.querySelector('.tierlist');
-  }
-
-  async _generateMarkup(options) {
-    if (!options?.lane) return -1;
 
     // TODO Maybe the templates should be cached in sessionStorage
     if (!this._itemTemplate) await this._templatePromise;
+  }
+
+  _generateMarkup(options) {
+    if (!options?.lane) return -1;
 
     return this._data
       .map(champion => this._generateItemMarkup(champion, options.lane))
@@ -49,5 +49,3 @@ export default class ListView extends View {
       .forEach(el => el.remove());
   }
 }
-
-new ListView();

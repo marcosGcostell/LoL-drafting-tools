@@ -1,6 +1,5 @@
 import appData from '../../model/appData.js';
 import appState from '../../appState.js';
-import { hideAllPopUps } from '../backgroundController.js';
 import UserPoolView from '../../view/profile/userPoolView.js';
 
 let userPoolView;
@@ -9,16 +8,18 @@ let userCache;
 //TODO Need a state manager for the view to store de components settings
 // for reloads but don't save data to user until save / discard
 
-export const hidePopUps = (exclude = null) => {
+const hidePopUps = e => {
+  const exclude = e.detail?.exclude || null;
   const popUpsIds = ['rank', 'top', 'jungle', 'middle', 'bottom', 'support'];
   popUpsIds.forEach(id => {
     const comp = userPoolView.components[id];
     if (comp.isVisible && comp.id !== exclude) comp.toggle();
   });
+  appState.popUpOn = exclude || '';
 };
 
 const togglePopUp = component => {
-  if (appState.popUpOn) hideAllPopUps(component.id);
+  if (appState.popUpOn) appState.hideAllPopUps(component.id);
 
   appState.popUpOn = component.isVisible ? component.id : '';
 };
@@ -80,7 +81,8 @@ const setFromUserData = () => {
   });
 };
 
-export const init = async data => {
+// Init funcion for the view
+export default async data => {
   // Init view
   userCache = data;
   userPoolView = new UserPoolView();
@@ -90,12 +92,14 @@ export const init = async data => {
   setFromUserData();
 
   // Set handlers for the profile pool view
-  userPoolView.components.primary.bind(setSelector);
-  userPoolView.components.secondary.bind(setSelector);
-  userPoolView.components.rank.bind(setSelector, togglePopUp);
-  userPoolView.components.patch.bind(setPatch);
+  userPoolView.components.primary.bindHandlers(setSelector);
+  userPoolView.components.secondary.bindHandlers(setSelector);
+  userPoolView.components.rank.bindHandlers(setSelector, togglePopUp);
+  userPoolView.components.patch.bindHandlers(setPatch);
   const searchPanels = ['top', 'jungle', 'middle', 'bottom', 'support'];
   searchPanels.forEach(id =>
-    userPoolView.components[id].bind(addPickedChampion, togglePopUp),
+    userPoolView.components[id].bindHandlers(addPickedChampion, togglePopUp),
   );
+
+  appState.addEventListener('popup:hideAll', hidePopUps);
 };

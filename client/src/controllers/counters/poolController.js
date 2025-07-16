@@ -1,19 +1,20 @@
 import PoolView from '../../view/counters/poolView.js';
 import appState from '../../appState.js';
-import { hideAllPopUps } from '../backgroundController.js';
 
 let poolView;
 
-export const hidePopUps = (exclude = null) => {
+const hidePopUps = e => {
+  const exclude = e.detail?.exclude || null;
   const popUpsIds = ['search'];
   popUpsIds.forEach(id => {
     const comp = poolView.components[id];
     if (comp.isVisible && comp.id !== exclude) comp.toggle();
   });
+  appState.popUpOn = exclude || '';
 };
 
 const togglePopUp = component => {
-  if (appState.popUpOn) hideAllPopUps(component.id);
+  if (appState.popUpOn) appState.hideAllPopUps(component.id);
 
   appState.popUpOn = component.isVisible ? component.id : '';
 };
@@ -26,7 +27,7 @@ const getPickedChampion = component => {
 };
 
 const deleteHandler = component => {
-  const index = component.index;
+  const { index } = component;
   poolView.pool.removePoolItem(index);
   appState.removeFromPool(index);
 };
@@ -51,9 +52,9 @@ const showAllPoolFromState = () => {
   if (!appState.pool.length) return;
 
   poolView.pool.clearPool();
-  for (const champion of appState.pool) {
-    poolView.pool.renderPoolItem(deleteHandler, bookmarkHandler, champion);
-  }
+  appState.pool.forEach(champion =>
+    poolView.pool.renderPoolItem(deleteHandler, bookmarkHandler, champion),
+  );
 };
 
 const poolOnHold = () => {
@@ -65,11 +66,12 @@ const poolOnHold = () => {
 
 const clearPool = () => poolView.pool.clearPool();
 
-export const init = async () => {
+// Init funcion for the view
+export default async () => {
   poolView = new PoolView();
   await poolView.initView('counters', 'counters');
 
-  poolView.components.search.bind(getPickedChampion, togglePopUp);
+  poolView.components.search.bindHandlers(getPickedChampion, togglePopUp);
 
   appState.addEventListener('pool:add', addPoolItem);
   appState.addEventListener('pool:added', showChampion);
@@ -88,4 +90,5 @@ export const init = async () => {
   ].forEach(target => {
     appState.addEventListener(target, showAllPoolFromState);
   });
+  appState.addEventListener('popup:hideAll', hidePopUps);
 };

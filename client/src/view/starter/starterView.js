@@ -34,7 +34,7 @@ class StarterView extends View {
     await this.components.starter.load();
   }
 
-  async _generateMarkup(_) {
+  _generateMarkup(_) {
     return this._template;
   }
 }

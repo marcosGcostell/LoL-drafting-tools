@@ -3,16 +3,16 @@ import StatsView from '../../view/counters/statsView.js';
 
 let statsView;
 
-const renderStatsList = async e => {
+const renderStatsList = e => {
   const { index, stats } = e.detail;
-  await statsView.render(stats, { length: stats.length, index });
+  statsView.render(stats, { length: stats.length, index });
 };
 
-const addStatsColumn = async e => {
+const addStatsColumn = e => {
   const { index } = e.detail;
 
   // Add the new column
-  const newIndex = await statsView.addNewColumn();
+  const newIndex = statsView.addNewColumn();
   if (newIndex !== index) {
     throw new Error('Pool items does not match the stats columns...');
   }
@@ -28,31 +28,32 @@ const deleteStatsColumn = e => {
   }
 };
 
-export const clearStatsSection = () => {
+const clearStatsSection = () => {
   statsView.clearSection();
 };
 
-export const showAllStatsFromState = async () => {
+const showAllStatsFromState = async () => {
   clearStatsSection();
   if (!appState.fixedStatsLists.length) return;
-  for (const list of appState.fixedStatsLists) {
-    const index = await statsView.addNewColumn();
-    await statsView.render(list, { length: list.length, index });
-  }
+  appState.fixedStatsLists.forEach(list => {
+    const index = statsView.addNewColumn();
+    statsView.render(list, { length: list.length, index });
+  });
 };
 
-export const statsOnHold = async () => {
+const statsOnHold = async () => {
   clearStatsSection();
   if (!appState.fixedStatsLists.length) return;
-  for (const col of appState.fixedStatsLists) {
-    await statsView.addNewColumn();
+  appState.fixedStatsLists.forEach(_ => {
+    statsView.addNewColumn();
     statsView.renderSpinner();
-  }
+  });
 };
 
-export const init = () => {
+// Init funcion for the view
+export default async () => {
   statsView = new StatsView();
-  statsView.initView();
+  await statsView.initView();
 
   appState.addEventListener('pool:add', addStatsColumn);
   appState.addEventListener('pool:added', renderStatsList);

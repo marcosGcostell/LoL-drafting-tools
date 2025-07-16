@@ -15,9 +15,11 @@ export default class ChampionList {
 
   addChampionIds() {
     this._data.forEach(champion => {
-      appData.champions[champion.name]
-        ? (champion.id = appData.champions[champion.name].id)
-        : (champion.id = appData.getChampionByName(champion.name).id);
+      if (appData.champions[champion.name]) {
+        champion.id = appData.champions[champion.name].id;
+      } else {
+        champion.id = appData.getChampionByName(champion.name).id;
+      }
     });
   }
 

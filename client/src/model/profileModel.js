@@ -4,7 +4,7 @@ export const getFormField = (form, target) => {
 };
 
 export const getPasswordFields = form => {
-  const fields = ['password', 'new__password', 'confirm__password'];
+  const fields = ['password', 'newPassword', 'passwordConfirm'];
   const formData = new FormData(form);
   const values = {};
   fields.forEach(field => {

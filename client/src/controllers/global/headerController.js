@@ -1,20 +1,23 @@
 import appState from '../../appState.js';
 import HeaderView from '../../view/global/headerView.js';
-import { navigate } from '../../router.js';
+import { navigate } from '../../utils/helpers.js';
 
 let headerView;
 
-export const resetApp = () => {
+const resetApp = () => {
   if (appState.popUpOn) return;
 
-  appState.user.isLoggedIn() ? appState.user.logout() : appState.resetAll();
+  if (appState.user.isLoggedIn()) {
+    appState.user.logout();
+  } else {
+    appState.resetAll();
+  }
   navigate('/');
 };
 
 const handleUserBtn = e => {
-  if (appState.popUpOn) return;
-
   if (!appState.user.isLoggedIn()) {
+    appState.hideAllPopUps('login');
     appState.triggerPopUp('login');
     e.stopPropagation();
     return;
@@ -29,12 +32,15 @@ const handleUserBtn = e => {
 };
 
 const userNameHandler = _ => {
-  appState.user.isLoggedIn()
-    ? headerView.showUserName(appState.user.username)
-    : headerView.showUserName('Not logged in');
+  if (appState.user.isLoggedIn()) {
+    headerView.showUserName(appState.user.username);
+  } else {
+    headerView.showUserName('Not logged in');
+  }
 };
 
-export async function init() {
+// Init funcion for the view
+export default async () => {
   headerView = new HeaderView();
 
   // Set the login button handler
@@ -45,6 +51,6 @@ export async function init() {
 
   userNameHandler(null);
 
-  // FIXME This is a reset button for development on the logo
+  // FIXME It should show a hint that it's a reset button
   document.querySelector('.header__logo').addEventListener('click', resetApp);
-}
+};
