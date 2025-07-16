@@ -9,8 +9,8 @@ export default class UserDataView extends View {
     this.form = document.querySelector('.user__profile');
     this.passwordPopup = document.querySelector('.password__popup');
     this.passwordInput = document.querySelector('#password');
-    this.newPasswordInput = document.querySelector('#new__password');
-    this.confirmPasswordInput = document.querySelector('#confirm__password');
+    this.newPasswordInput = document.querySelector('#newPassword');
+    this.confirmPasswordInput = document.querySelector('#passwordConfirm');
     this.passwordPopup.addEventListener('click', e => e.stopPropagation());
 
     this.userMsg =
@@ -32,31 +32,25 @@ export default class UserDataView extends View {
   }
 
   addHandlerBtn(target, handler) {
-    document
-      .querySelector(`#${target}__btn`)
-      .addEventListener('click', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        handler();
-      });
+    document.querySelector(`#${target}__btn`).addEventListener('click', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      handler();
+    });
   }
 
   addHandlerInput(target, handler) {
-    document
-      .querySelector(`#${target}`)
-      .addEventListener('input', function (e) {
-        e.preventDefault();
-        handler(target);
-      });
+    document.querySelector(`#${target}`).addEventListener('input', e => {
+      e.preventDefault();
+      handler(target);
+    });
   }
 
   addHandlerCommit(target, handler) {
-    document
-      .querySelector(`#${target}`)
-      .addEventListener('change', function (e) {
-        e.preventDefault();
-        handler(target, e.target.value);
-      });
+    document.querySelector(`#${target}`).addEventListener('change', e => {
+      e.preventDefault();
+      handler(target, e.target.value);
+    });
   }
 
   togglePanel() {
@@ -99,7 +93,7 @@ export default class UserDataView extends View {
     const input = document.querySelector(`#${target}`);
     if (input) {
       if (target === 'password') {
-        ['', 'new__password', 'confirm__password'].forEach(id => {
+        ['password', 'newPassword', 'passwordConfirm'].forEach(id => {
           const passInput = document.querySelector(`#${id}`);
           if (passInput) {
             passInput.value = '';
@@ -131,14 +125,14 @@ export default class UserDataView extends View {
   }
 
   setMaxItems(value) {
-    if (!value || isNaN(value) || value < 1) return;
+    if (!value || Number.isNaN(value) || value < 1) return;
     const maxItemsElement = document.querySelector('#max-items');
     maxItemsElement.value = value.toFixed(0);
     maxItemsElement.blur();
   }
 
   setPickRateThreshold(value) {
-    if (!value || isNaN(value) || value < 1) return;
+    if (!value || Number.isNaN(value) || value < 1) return;
     const pickRateElement = document.querySelector('#min-pr');
     pickRateElement.value = value.toFixed(1);
     pickRateElement.blur();

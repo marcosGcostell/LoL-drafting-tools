@@ -1,8 +1,8 @@
 import appState from '../appState.js';
 import UserCache from '../model/UserCacheModel.js';
 import { getChanges } from '../model/profileModel.js';
-import * as userDataController from './profile/userDataController.js';
-import * as userPoolController from './profile/userPoolController.js';
+import { initUserData, isFormActive } from './profile/userDataController.js';
+import initUserPool from './profile/userPoolController.js';
 import UserHeaderView from '../view/profile/userHeaderView.js';
 import { PROFILE_PAGE_TEMPLATE } from '../utils/config.js';
 import { wait, navigate } from '../utils/helpers.js';
@@ -23,7 +23,7 @@ const discardChanges = () => {
 };
 
 const saveProfile = async () => {
-  if (userDataController.isFormActive()) return;
+  if (isFormActive()) return;
 
   const userChanges = getChanges(userCache, appState.user);
   if (!Object.keys(userChanges).length) return discardChanges();
@@ -59,8 +59,8 @@ export default async () => {
     // set user cache and initialize the views
     userCache = new UserCache(appState.user);
     userHeaderView = new UserHeaderView();
-    userDataController.init(userCache);
-    userPoolController.init(userCache);
+    initUserData(userCache);
+    initUserPool(userCache);
 
     // Set handlers for the header buttons
     userHeaderView.addHandlerBtn('logout', logout);

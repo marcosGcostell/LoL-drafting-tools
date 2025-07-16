@@ -3,7 +3,7 @@ import InputsView from '../../view/counters/inputsView.js';
 
 let inputsView;
 
-export const hidePopUps = e => {
+const hidePopUps = e => {
   const exclude = e.detail?.exclude || null;
   const popUpsIds = ['lane', 'vslane', 'rank'];
   popUpsIds.forEach(id => {
@@ -66,7 +66,7 @@ const setOptionsFromState = () => {
   inputsView.setPickRateThreshold(appState.pickRateThreshold);
 };
 
-export const init = async () => {
+export default async () => {
   inputsView = new InputsView();
   await inputsView.initView();
 

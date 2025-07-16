@@ -24,12 +24,6 @@ export default class InputsView {
     await Promise.all(Object.values(this.components).map(comp => comp.load()));
   }
 
-  hidePopUps(exclude = null) {
-    this.components.forEach(comp => {
-      if (comp.isVisible && comp.id !== exclude) comp.toggle();
-    });
-  }
-
   addHandlerInput(handler, target) {
     document
       .querySelector(`#${target}`)

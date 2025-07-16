@@ -3,7 +3,7 @@ import appState from '../../appState.js';
 
 let poolView;
 
-export const hidePopUps = e => {
+const hidePopUps = e => {
   const exclude = e.detail?.exclude || null;
   const popUpsIds = ['search'];
   popUpsIds.forEach(id => {
@@ -66,7 +66,7 @@ const poolOnHold = () => {
 
 const clearPool = () => poolView.pool.clearPool();
 
-export const init = async () => {
+export default async () => {
   poolView = new PoolView();
   await poolView.initView('counters', 'counters');
 

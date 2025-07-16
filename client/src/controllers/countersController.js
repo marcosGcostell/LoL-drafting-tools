@@ -1,8 +1,8 @@
 import appState from '../appState.js';
 import * as loginController from './global/loginController.js';
-import * as inputsController from './counters/inputsController.js';
+import initInputs from './counters/inputsController.js';
 import initTierlist from './counters/tierlistController.js';
-import * as poolController from './counters/poolController.js';
+import initPool from './counters/poolController.js';
 import initStatsList from './counters/statsController.js';
 import { COUNTER_PAGE_TEMPLATE } from '../utils/config.js';
 
@@ -20,8 +20,8 @@ export default async () => {
     // Set the login modal handlers
     loginController.init();
     // Set the options inputs and search handlers
-    await inputsController.init();
-    await poolController.init();
+    await initInputs();
+    await initPool();
 
     // Init the data views
     await initTierlist();

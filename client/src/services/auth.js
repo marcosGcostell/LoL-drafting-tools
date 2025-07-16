@@ -38,16 +38,16 @@ const checkUserPassword = async (username, password) => {
 };
 
 export const validatePassword = async (
-  { oldPassword, password, confirmPassword },
+  { oldPassword, password, passwordConfirm },
   { length = true, confirm = false, username = '' } = { length: true },
 ) => {
   if (length && password.length < PASSWORD_MIN_LENGTH) {
     return `Password should be at least ${PASSWORD_MIN_LENGTH} chars long.`;
   }
-  if (confirm && !confirmPassword) {
+  if (confirm && !passwordConfirm) {
     return 'Please, confirm your password.';
   }
-  if (confirm && confirmPassword !== password) {
+  if (confirm && passwordConfirm !== password) {
     return 'Passwords are not the same.';
   }
   if (username && !oldPassword) {
@@ -61,7 +61,7 @@ export const validatePassword = async (
 };
 
 export const validateAuthForm = async (fields, isSignup = false) => {
-  const { username, password, email, confirmPassword, termsAccepted } = fields;
+  const { username, password, email, passwordConfirm, termsAccepted } = fields;
   let message = null;
 
   if (!username || !username.trim() || !password) {
@@ -81,7 +81,7 @@ export const validateAuthForm = async (fields, isSignup = false) => {
     if (message) return message;
 
     message = await validatePassword(
-      { password, confirmPassword },
+      { password, passwordConfirm },
       { length: false, confirm: true },
     );
     if (message) return message;

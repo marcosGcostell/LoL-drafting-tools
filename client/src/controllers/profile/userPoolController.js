@@ -8,7 +8,7 @@ let userCache;
 //TODO Need a state manager for the view to store de components settings
 // for reloads but don't save data to user until save / discard
 
-export const hidePopUps = e => {
+const hidePopUps = e => {
   const exclude = e.detail?.exclude || null;
   const popUpsIds = ['rank', 'top', 'jungle', 'middle', 'bottom', 'support'];
   popUpsIds.forEach(id => {
@@ -81,7 +81,7 @@ const setFromUserData = () => {
   });
 };
 
-export const init = async data => {
+export default async data => {
   // Init view
   userCache = data;
   userPoolView = new UserPoolView();
