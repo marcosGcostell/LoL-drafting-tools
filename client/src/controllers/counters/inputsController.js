@@ -66,6 +66,7 @@ const setOptionsFromState = () => {
   inputsView.setPickRateThreshold(appState.pickRateThreshold);
 };
 
+// Init funcion for the view
 export default async () => {
   inputsView = new InputsView();
   await inputsView.initView();

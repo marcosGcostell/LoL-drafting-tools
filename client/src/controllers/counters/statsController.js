@@ -23,7 +23,7 @@ const deleteStatsColumn = e => {
   const { index } = e.detail;
   statsView.removeColumn(index);
   // the stat list has been removed from appState when removing the pool
-  for (let i = index + 1; i <= appState.fixedStatsLists.length; i += 1) {
+  for (let i = index + 1; i <= appState.fixedStatsLists.length; i++) {
     statsView.changeIndex(i, i - 1);
   }
 };
@@ -50,6 +50,7 @@ const statsOnHold = async () => {
   });
 };
 
+// Init funcion for the view
 export default async () => {
   statsView = new StatsView();
   await statsView.initView();

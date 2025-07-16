@@ -22,6 +22,7 @@
       { "argsIgnorePattern": "req|res|next|val|_|__" }
     ],
     "import/extensions": 0,
+    "no-plusplus": "off",
     "no-useless-catch": "off",
     "react/prop-types": "off"
   },

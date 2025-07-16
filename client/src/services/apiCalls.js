@@ -20,7 +20,7 @@ export const fetchListFromAPI = async (route, queryData) => {
     _checkQuery(queryData);
     const query = `?lane=${queryData.lane}&rank=${queryData.rank}${
       queryData.vslane ? `&vslane=${queryData.vslane}` : ''
-    }${`&patch=${queryData.patch.mode}`}${
+    }${queryData.patch.mode ? `&patch=${queryData.patch.mode}` : ''}${
       queryData.sortedBy ? `&sort=${queryData.sortedBy}` : ''
     }`;
 

@@ -9,6 +9,7 @@ const setLaneHandler = component => {
   navigate(`/${appState.appMode}`);
 };
 
+// Init funcion for loading the page
 export default async () => {
   if (appState.currentPage === 'profile' && appState.user.isLoggedIn()) {
     navigate('/profile');

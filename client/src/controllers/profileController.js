@@ -46,6 +46,7 @@ const saveProfile = async () => {
   }
 };
 
+// Init funcion for loading the page
 export default async () => {
   try {
     // Insert the HTML page

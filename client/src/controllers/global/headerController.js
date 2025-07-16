@@ -39,6 +39,7 @@ const userNameHandler = _ => {
   }
 };
 
+// Init funcion for the view
 export default async () => {
   headerView = new HeaderView();
 

@@ -33,7 +33,7 @@ const calcScore = (winRatio, counter) => {
       (counter.winRatio - winRatio) * 0.1 +
       counter.delta1 * 0.13 +
       (winRatio - counter.opponentWR) * 0.07 +
-      counter.delta2 * 0.25
+      counter.delta2 * 0.25,
   );
   score = score > 9 ? 9 : score;
   score = score < 0 ? 0 : score;
@@ -42,7 +42,7 @@ const calcScore = (winRatio, counter) => {
 
 export async function getStatsList(
   champion,
-  { lane, rank, vslane, patch, tierlist }
+  { lane, rank, vslane, patch, tierlist },
 ) {
   try {
     if (!tierlist) {
@@ -63,7 +63,7 @@ export async function getStatsList(
       }
       return match ? match : { score: 0, winRatio: 0, delta2: 0 };
     });
-  } catch (error) {
+  } catch (err) {
     throw err;
   }
 }

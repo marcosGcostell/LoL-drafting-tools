@@ -15,6 +15,7 @@ const tierlistOnHold = () => {
   tierlistView.renderSpinner();
 };
 
+// Init funcion for the view
 export default async () => {
   tierlistView = new TierlistView();
   await tierlistView.initView();

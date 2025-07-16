@@ -66,6 +66,7 @@ const poolOnHold = () => {
 
 const clearPool = () => poolView.pool.clearPool();
 
+// Init funcion for the view
 export default async () => {
   poolView = new PoolView();
   await poolView.initView('counters', 'counters');

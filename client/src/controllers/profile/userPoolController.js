@@ -81,6 +81,7 @@ const setFromUserData = () => {
   });
 };
 
+// Init funcion for the view
 export default async data => {
   // Init view
   userCache = data;

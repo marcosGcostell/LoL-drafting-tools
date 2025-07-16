@@ -6,6 +6,7 @@ import initPool from './counters/poolController.js';
 import initStatsList from './counters/statsController.js';
 import { COUNTER_PAGE_TEMPLATE } from '../utils/config.js';
 
+// Init funcion for loading the page
 export default async () => {
   try {
     // Insert the HTML page

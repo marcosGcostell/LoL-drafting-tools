@@ -122,7 +122,7 @@ class AppState extends EventTarget {
   async initFromCounters() {
     if (!this.vslane) this.initFromStarter('top');
     if (this.vslane !== this.tierlistLane) {
-      await dataModel.getNewTierlist();
+      await dataModel.getNewTierlist(this);
     }
     this.dispatchEvent(new Event('app:reload'));
   }
@@ -156,7 +156,13 @@ class AppState extends EventTarget {
   // Change and update events: 'lane', 'bothLanes', 'rank', 'vslane', 'patch'
   async setOption(target, value) {
     let eventTarget = target;
-    if (target !== 'patch') this[target] = value;
+
+    if (target === 'patch') {
+      this.patch.mode = value;
+    } else {
+      this[target] = value;
+    }
+
     if (target === 'lane') {
       if (!this.tierlist.length || this.tierlistLane !== value) {
         this.vslane = value;
@@ -175,7 +181,7 @@ class AppState extends EventTarget {
       );
     }
 
-    await dataModel.updateData(eventTarget);
+    await dataModel.updateData(eventTarget, this);
 
     // Event to update views
     if (!this.silentMode) {
@@ -210,7 +216,7 @@ class AppState extends EventTarget {
       );
     }
 
-    await dataModel.getNewData(champion);
+    await dataModel.getNewData(champion, this);
 
     const index = this.pool.length - 1;
     if (!this.silentMode) {
