@@ -2,7 +2,7 @@ import user from './model/userModel.js';
 import * as backgroundController from './controllers/backgroundController.js';
 import * as headerController from './controllers/global/headerController.js';
 import * as starterController from './controllers/starterController.js';
-import * as countersController from './controllers/countersController.js';
+import initCounters from './controllers/countersController.js';
 import * as profileController from './controllers/profileController.js';
 // import * as signupController from './controllers/signupController.js';
 import { LS_STATE } from './utils/config.js';
@@ -28,7 +28,7 @@ const handleRoute = async e => {
   } else if (path === '/counters') {
     const localData = JSON.parse(sessionStorage.getItem(LS_STATE));
     if (!localData?.lane) return navigate('/');
-    await countersController.init();
+    await initCounters();
     if (isDOMReloaded) await loadCommonControllers();
   } else if (path === '/profile') {
     if (!isLoggedIn) return navigate('/');

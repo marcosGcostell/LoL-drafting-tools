@@ -5,9 +5,11 @@ import * as poolController from './counters/poolController.js';
 import * as userDataController from './profile/userDataController.js';
 import * as userPoolController from './profile/userPoolController.js';
 
-export const hideAllPopUps = (exclude = null) => {
+export const hideAllPopUps = e => {
   // FIXME When popup components will be modular
   // Only need to call a hidePopUps function of the current page views
+  const exclude = e.detail?.exclude || null;
+
   if (appState.popUpOn === '') return;
   console.log('Main hide popups');
   if (appState.currentPage === 'counters') {
@@ -30,4 +32,5 @@ export async function init() {
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') hideAllPopUps(e);
   });
+  appState.addEventListener('popup:hideAll', hideAllPopUps);
 }

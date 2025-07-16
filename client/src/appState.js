@@ -91,7 +91,7 @@ class AppState extends EventTarget {
   #fixTierlist() {
     this.fixedTierlist = this.tierlist.slice(0, this.maxListItems);
     const matchingItemsCount = this.fixedTierlist.findIndex(
-      el => el.pickRate < this.pickRateThreshold
+      el => el.pickRate < this.pickRateThreshold,
     );
     this.fixedTierlist.splice(matchingItemsCount);
   }
@@ -99,7 +99,7 @@ class AppState extends EventTarget {
   #fixStatsList(index) {
     this.fixedStatsLists[index] = this.statsLists[index].slice(
       0,
-      this.fixedTierlist.length
+      this.fixedTierlist.length,
     );
   }
 
@@ -143,6 +143,14 @@ class AppState extends EventTarget {
     this.dispatchEvent(new CustomEvent(`popup:${target}`));
   }
 
+  hideAllPopUps(exclude = null) {
+    this.dispatchEvent(
+      new CustomEvent('popup:hideAll', {
+        detail: { exclude },
+      }),
+    );
+  }
+
   // Change and update events: 'lane', 'bothLanes', 'rank', 'vslane', 'patch'
   async setOption(target, value) {
     let eventTarget = target;
@@ -161,7 +169,7 @@ class AppState extends EventTarget {
       this.dispatchEvent(
         new CustomEvent(`change:${eventTarget}`, {
           detail: { target: eventTarget, value },
-        })
+        }),
       );
     }
 
@@ -172,7 +180,7 @@ class AppState extends EventTarget {
       this.dispatchEvent(
         new CustomEvent(`updated:${eventTarget}`, {
           detail: { target: eventTarget, value },
-        })
+        }),
       );
     }
   }
@@ -184,7 +192,7 @@ class AppState extends EventTarget {
     this.#save();
     if (!this.silentMode) {
       this.dispatchEvent(
-        new CustomEvent('updated:settings', { detail: { target, value } })
+        new CustomEvent('updated:settings', { detail: { target, value } }),
       );
     }
   }
@@ -196,7 +204,7 @@ class AppState extends EventTarget {
       this.dispatchEvent(
         new CustomEvent('pool:add', {
           detail: { index: this.pool.length, champion },
-        })
+        }),
       );
     }
 
@@ -211,7 +219,7 @@ class AppState extends EventTarget {
             champion: this.pool[index],
             stats: this.fixedStatsLists[index],
           },
-        })
+        }),
       );
     }
   }
@@ -225,7 +233,7 @@ class AppState extends EventTarget {
       this.#save();
       if (!this.silentMode) {
         this.dispatchEvent(
-          new CustomEvent('pool:remove', { detail: { index } })
+          new CustomEvent('pool:remove', { detail: { index } }),
         );
       }
     }

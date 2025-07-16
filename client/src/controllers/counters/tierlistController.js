@@ -15,12 +15,7 @@ const tierlistOnHold = () => {
   tierlistView.renderSpinner();
 };
 
-const clearTierlist = () => {
-  tierlistView._clear();
-  appState.fixedTierlist = [];
-};
-
-export const init = () => {
+export default () => {
   tierlistView = new TierlistView();
   tierlistView.initView();
 

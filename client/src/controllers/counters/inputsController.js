@@ -1,8 +1,15 @@
 import appState from '../../appState.js';
-import { hideAllPopUps } from '../backgroundController.js';
 import InputsView from '../../view/counters/inputsView.js';
 
 let inputsView;
+
+export const hidePopUps = (exclude = null) => {
+  const popUpsIds = ['lane', 'vslane', 'rank'];
+  popUpsIds.forEach(id => {
+    const comp = inputsView.components[id];
+    if (comp.isVisible && comp.id !== exclude) comp.toggle();
+  });
+};
 
 const togglePatch = component => {
   if (component.mode !== -1) {
@@ -11,7 +18,7 @@ const togglePatch = component => {
 };
 
 const togglePopUp = component => {
-  if (appState.popUpOn) hideAllPopUps(component.id);
+  if (appState.popUpOn) appState.hideAllPopUps(component.id);
 
   appState.popUpOn = component.isVisible ? component.id : '';
 };
@@ -55,14 +62,6 @@ const setOptionsFromState = () => {
   inputsView.components.patch.mode = appState.patch.mode;
   inputsView.setMaxItems(appState.maxListItems);
   inputsView.setPickRateThreshold(appState.pickRateThreshold);
-};
-
-export const hidePopUps = (exclude = null) => {
-  const popUpsIds = ['lane', 'vslane', 'rank'];
-  popUpsIds.forEach(id => {
-    const comp = inputsView.components[id];
-    if (comp.isVisible && comp.id !== exclude) comp.toggle();
-  });
 };
 
 export const init = async () => {

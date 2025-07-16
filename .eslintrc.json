@@ -18,6 +18,12 @@
     "class-methods-use-this": "off",
     "prefer-destructuring": ["error", { "object": true, "array": false }],
     "no-unused-vars": ["error", { "argsIgnorePattern": "req|res|next|val" }],
-    "import/extensions": 0
+    "import/extensions": 0,
+    "react/prop-types": "off"
+  },
+  "env": {
+    "browser": true,
+    "es6": true,
+    "es2021": true
   }
 }

@@ -1,6 +1,5 @@
 import appData from '../../model/appData.js';
 import appState from '../../appState.js';
-import { hideAllPopUps } from '../backgroundController.js';
 import UserPoolView from '../../view/profile/userPoolView.js';
 
 let userPoolView;
@@ -18,7 +17,7 @@ export const hidePopUps = (exclude = null) => {
 };
 
 const togglePopUp = component => {
-  if (appState.popUpOn) hideAllPopUps(component.id);
+  if (appState.popUpOn) appState.hideAllPopUps(component.id);
 
   appState.popUpOn = component.isVisible ? component.id : '';
 };

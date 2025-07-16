@@ -1,6 +1,5 @@
 import PoolView from '../../view/counters/poolView.js';
 import appState from '../../appState.js';
-import { hideAllPopUps } from '../backgroundController.js';
 
 let poolView;
 
@@ -13,7 +12,7 @@ export const hidePopUps = (exclude = null) => {
 };
 
 const togglePopUp = component => {
-  if (appState.popUpOn) hideAllPopUps(component.id);
+  if (appState.popUpOn) appState.hideAllPopUps(component.id);
 
   appState.popUpOn = component.isVisible ? component.id : '';
 };
@@ -26,7 +25,7 @@ const getPickedChampion = component => {
 };
 
 const deleteHandler = component => {
-  const index = component.index;
+  const { index } = component;
   poolView.pool.removePoolItem(index);
   appState.removeFromPool(index);
 };
@@ -51,9 +50,9 @@ const showAllPoolFromState = () => {
   if (!appState.pool.length) return;
 
   poolView.pool.clearPool();
-  for (const champion of appState.pool) {
-    poolView.pool.renderPoolItem(deleteHandler, bookmarkHandler, champion);
-  }
+  appState.pool.forEach(champion =>
+    poolView.pool.renderPoolItem(deleteHandler, bookmarkHandler, champion),
+  );
 };
 
 const poolOnHold = () => {
