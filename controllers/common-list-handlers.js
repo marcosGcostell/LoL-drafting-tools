@@ -36,9 +36,7 @@ export const filterQuery = catchAsync(async (req, res, next) => {
 });
 
 export const getListFromDb = async (Model, queryObj) => {
-  const lists = await Model.deleteMany({
-    createdAt: { $lte: expirationDate() },
-  });
+  await Model.deleteMany({ createdAt: { $lte: expirationDate() } });
 
   const list = await Model.findOne(queryObj);
   // If no list found return null

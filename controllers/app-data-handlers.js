@@ -21,7 +21,7 @@ export const checkGameVersion = catchAsync(async (req, res, next) => {
 
   console.log('Version backup expired!');
   req.version = await Version.replaceFromString(
-    await Riot.getLastGameVersion()
+    await Riot.getLastGameVersion(),
   );
   req.createdAt = new Date().toISOString();
   req.update = req.version !== validVersion?.id;
@@ -46,7 +46,9 @@ export const updateDatabase = catchAsync(async (req, res, next) => {
     folders = idList.map(id => id.toLowerCase());
     console.log('Lolalytics folder list has errors! 🧨');
   }
-  idList.forEach(id => (champions[id].id = folders[id]));
+  idList.forEach(id => {
+    champions[id].id = folders[id];
+  });
 
   // Save data to the database
   console.log('Saving data to database...');

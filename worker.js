@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { updateAllTierlists } from './models/utils/scheduler.js';
+import updateAllTierlists from './models/utils/scheduler.js';
 
 dotenv.config({ path: './config.env' });
 

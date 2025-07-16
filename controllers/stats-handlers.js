@@ -41,12 +41,13 @@ const getStatsData = async (champion, lane, rank, patch) => {
   }
 };
 
-export const getChampionStats = catchAsync(async (req, res, next) => {
+// getChampionStats function to get stats from database or website
+export default catchAsync(async (req, res, next) => {
   const { stats, updatedAt } = await getStatsData(
     req.champion,
     req.lane,
     req.rank,
-    req.patch
+    req.patch,
   );
 
   // Send response

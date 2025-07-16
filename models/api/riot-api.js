@@ -17,6 +17,7 @@ import { RIOT_DATA_DRAGON } from '../utils/config.js';
 
 class Riot {
   #dataDragon = RIOT_DATA_DRAGON;
+
   #locale = 'en_US';
 
   // PRIVATE METHODS

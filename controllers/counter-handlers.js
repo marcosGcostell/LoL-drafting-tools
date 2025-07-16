@@ -19,7 +19,7 @@ const saveCounterList = async (champion, lane, rank, vslane, patch, list) => {
 
   await Counter.create(data);
   console.log(
-    `✅ Counter list saved: (${champion}, ${lane}, ${rank}, ${vslane}, ${patch})`
+    `✅ Counter list saved: (${champion}, ${lane}, ${rank}, ${vslane}, ${patch})`,
   );
   return data;
 };
@@ -44,25 +44,26 @@ const getCounterListData = async (champion, lane, rank, vslane, patch) => {
     lane,
     rank,
     vslane,
-    patch
+    patch,
   );
   saveCounterList(champion, lane, rank, vslane, patch, counterList);
   return { counterList, updatedAt: isoTimeStamp() };
 };
 
-export const getCounterList = catchAsync(async (req, res, next) => {
+// getCounterList function to get a counter list from database or website
+export default catchAsync(async (req, res, next) => {
   const { counterList, updatedAt } = await getCounterListData(
     req.champion,
     req.lane,
     req.rank,
     req.vslane,
-    req.patch
+    req.patch,
   );
   const allTierlists = await getAllTierlist(req.rank, req.patch);
 
   const completeList = counterList.map(el => {
     const [champion] = allTierlists[req.vslane].filter(
-      item => el.name === item.name
+      item => el.name === item.name,
     );
     return {
       name: el.name,

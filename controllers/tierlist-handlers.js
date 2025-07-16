@@ -43,7 +43,7 @@ export const getTierlist = catchAsync(async (req, res, next) => {
   const { tierlist, updatedAt } = await getTierlistData(
     req.lane,
     req.rank,
-    req.patch
+    req.patch,
   );
 
   const sort = req.query.sort || DEFAULT_SORT_FIELD;
@@ -65,12 +65,12 @@ export const getTierlist = catchAsync(async (req, res, next) => {
 
 export const getAllTierlist = async (rank, patch) => {
   const allData = await Promise.all(
-    riotLolRolesArray.map(lane => getTierlistData(lane, rank, patch))
+    riotLolRolesArray.map(lane => getTierlistData(lane, rank, patch)),
   );
   const allTierlists = {};
-  riotLolRolesArray.forEach(
-    lane => (allTierlists[lane] = allData.shift().tierlist)
-  );
+  riotLolRolesArray.forEach(lane => {
+    allTierlists[lane] = allData.shift().tierlist;
+  });
   return allTierlists;
 };
 
@@ -78,7 +78,7 @@ export const getAllRoleRates = (championName, allTierlists) => {
   const allRoleRates = {};
   riotLolRolesArray.forEach(lane => {
     const [champion] = allTierlists[lane].filter(
-      el => el.name === championName
+      el => el.name === championName,
     );
     allRoleRates[lane] = champion?.roleRate || 0;
   });
