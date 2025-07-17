@@ -27,7 +27,6 @@ export const filterQuery = catchAsync(async (req, res, next) => {
   const checkedVsLane = await RiotRole.isValid(vslane);
   const checkedRank = await RiotRank.isValid(rank);
 
-  // TODO Default lane should be most used lane in that champion
   req.lane = checkedLane?.id || 'top';
   req.vslane = checkedVsLane?.id || req.lane;
   req.rank = checkedRank?.id || 'all';

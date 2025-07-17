@@ -233,11 +233,15 @@ class Lolalytics {
       // Convert HTMLCollection with champion information to an array
       // Select only champion cells (skip elements without childrens)
       const championsGrid = section.children[1];
+      if (!championsGrid.children) {
+        throw new AppError(
+          'There is still not enough games. Try another patch or rank.',
+          204,
+        );
+      }
       const championCells = Array.from(championsGrid.children).filter(
         el => el.children.length,
       );
-      // FIXME When it's no data (first days of patch) championsGrid has no children
-      // Should return some specific to be handled ('Not enough games')
 
       // evaluate callback returns an array of objects (one from each HTML Element)
       return championCells

@@ -49,6 +49,8 @@ class AppData {
 
   async init() {
     try {
+      if (this._isInitialized) return;
+
       console.log('Initializing App...');
       const data = localStorage.getItem(LS_APP_DATA);
       if (data) {

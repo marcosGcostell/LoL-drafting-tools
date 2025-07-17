@@ -35,6 +35,7 @@ export const updateDatabase = catchAsync(async (req, res, next) => {
   const champions = await Riot.getNewData(req.version);
   const riotIdList = Object.keys(champions);
   const nameList = riotIdList.map(id => champions[id].name);
+  req.integrity = true;
 
   // Add the lolalytics folder for each champion
   let folders = await Lolalytics.getChampionFolders(riotIdList, nameList);
@@ -43,6 +44,7 @@ export const updateDatabase = catchAsync(async (req, res, next) => {
 
     // Ignore folders fetched and get them from Riot data
     folders = Object.fromEntries(riotIdList.map(id => [id, id.toLowerCase()]));
+    req.integrity = false;
     console.log('Lolalytics folder list has errors! 🧨');
   }
   riotIdList.forEach(id => {
@@ -73,6 +75,7 @@ export const getChampions = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     results: idList.length,
+    integrity: req.integrity,
     data: {
       version: req.version,
       createdAt: req.createdAt,
