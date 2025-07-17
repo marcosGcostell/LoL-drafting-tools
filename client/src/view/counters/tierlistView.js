@@ -18,7 +18,6 @@ export default class ListView extends View {
   async initView() {
     this._parentElement = document.querySelector('.tierlist');
 
-    // TODO Maybe the templates should be cached in sessionStorage
     if (!this._itemTemplate) await this._templatePromise;
   }
 

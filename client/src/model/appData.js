@@ -1,3 +1,4 @@
+import AppError from './appError.js';
 import {
   LOCAL_API,
   APP_DATA_ROUTE,
@@ -25,55 +26,54 @@ class AppData {
   }
 
   async checkVersion() {
-    try {
-      const response = await fetch(`${LOCAL_API}${VERSION_ROUTE}`);
-      const { data } = await response.json();
-      return data.version;
-    } catch (err) {
-      console.error(err);
-      throw err;
+    const response = await fetch(`${LOCAL_API}${VERSION_ROUTE}`);
+    const { data } = await response.json();
+    if (!data.version) {
+      throw new AppError(
+        'Could not get the game version from Riot servers. App may not work. Try to reload',
+        { origin: 'appData', type: 'version' },
+      );
     }
+    return data.version;
   }
 
   async getFromAPI() {
-    try {
-      const response = await fetch(`${LOCAL_API}${APP_DATA_ROUTE}`);
-      const { data } = await response.json();
-      return data;
-    } catch (err) {
-      // FIXME !! the error should be handled here. There is no re-throw
-      console.error(err);
-      throw err;
+    const response = await fetch(`${LOCAL_API}${APP_DATA_ROUTE}`);
+    const { data, integrity } = await response.json();
+    if (!data.version) {
+      throw new AppError(
+        'Could not get the champion data from Riot servers. Try to reload',
+        { origin: 'appData', type: 'champion' },
+      );
     }
+
+    this.integrity = integrity;
+    return data;
   }
 
   async init() {
-    try {
-      if (this._isInitialized) return;
+    if (this._isInitialized) return;
 
-      console.log('Initializing App...');
-      const data = localStorage.getItem(LS_APP_DATA);
-      if (data) {
-        const cache = JSON.parse(data);
-        const newVersion = await this.checkVersion();
-        if (newVersion === cache.version) {
-          // Version has not changed, set from localStorage
-          console.log('Reading appData from browser...');
-          this.setData(cache);
-          this._isInitialized = true;
-          return;
-        }
+    console.log('Initializing App...');
+    const data = localStorage.getItem(LS_APP_DATA);
+    if (data) {
+      const cache = JSON.parse(data);
+      const newVersion = await this.checkVersion();
+      if (newVersion === cache.version) {
+        // Version has not changed, set from localStorage
+        console.log('Reading appData from browser...');
+        this.setData(cache);
+        this._isInitialized = true;
+        return;
       }
-
-      // There is a new version, set form API
-      console.log('Reading appData from API...');
-      const newData = await this.getFromAPI();
-      localStorage.setItem(LS_APP_DATA, JSON.stringify(newData));
-      this.setData(newData);
-      this._isInitialized = true;
-    } catch (error) {
-      throw error;
     }
+
+    // There is a new version, set form API
+    console.log('Reading appData from API...');
+    const newData = await this.getFromAPI();
+    localStorage.setItem(LS_APP_DATA, JSON.stringify(newData));
+    this.setData(newData);
+    this._isInitialized = true;
   }
 
   toSortedArray(property) {

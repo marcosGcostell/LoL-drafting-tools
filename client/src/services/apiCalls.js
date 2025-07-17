@@ -27,7 +27,7 @@ export const fetchListFromAPI = async (route, queryData) => {
 
   const response = await fetch(`${LOCAL_API}${route}${query}`);
   const { data, message } = await response.json();
-  if (message) throw new AppError(message, { origin: 'api', type: 'tierlist' });
+  if (message) throw new AppError(message, { origin: 'api', type: 'list' });
 
   return data;
 };

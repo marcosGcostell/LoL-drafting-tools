@@ -6,7 +6,6 @@ export default class UserCache {
     Object.assign(this, JSON.parse(JSON.stringify(user)));
     delete this.token;
     delete this.__type;
-    delete this.response;
 
     this.#load();
     this.#save();

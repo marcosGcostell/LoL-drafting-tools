@@ -212,12 +212,16 @@ class AppState extends EventTarget {
         await this.#getPoolFromUser();
       }
     } catch (err) {
-      const message = err.isOperational ? `${err.message} ` : '';
+      const errorMessage = err.isOperational ? `${err.message} ` : '';
+      const message =
+        err.isOperational && err.origin === 'api'
+          ? errorMessage
+          : `Somethig went wrong with the server. ${errorMessage}Try to reload the app`;
       this.dispatchEvent(
         new CustomEvent(`error:${eventTarget}`, {
           detail: {
             target: eventTarget,
-            message: `Somethig went wrong with the server. ${message}Try to reload the app`,
+            message,
           },
         }),
       );
