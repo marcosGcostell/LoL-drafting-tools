@@ -5,9 +5,6 @@ import UserPoolView from '../../view/profile/userPoolView.js';
 let userPoolView;
 let userCache;
 
-//TODO Need a state manager for the view to store de components settings
-// for reloads but don't save data to user until save / discard
-
 const hidePopUps = e => {
   const exclude = e.detail?.exclude || null;
   const popUpsIds = ['rank', 'top', 'jungle', 'middle', 'bottom', 'support'];

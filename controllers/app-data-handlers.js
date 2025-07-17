@@ -21,7 +21,7 @@ export const checkGameVersion = catchAsync(async (req, res, next) => {
 
   console.log('Version backup expired!');
   req.version = await Version.replaceFromString(
-    await Riot.getLastGameVersion()
+    await Riot.getLastGameVersion(),
   );
   req.createdAt = new Date().toISOString();
   req.update = req.version !== validVersion?.id;
@@ -33,20 +33,23 @@ export const updateDatabase = catchAsync(async (req, res, next) => {
 
   console.log('There is a new version. Updating database...');
   const champions = await Riot.getNewData(req.version);
-  const idList = Object.keys(champions);
-  const nameList = idList.map(id => champions[id].name);
+  const riotIdList = Object.keys(champions);
+  const nameList = riotIdList.map(id => champions[id].name);
+  req.integrity = true;
 
   // Add the lolalytics folder for each champion
-  let folders = await Lolalytics.getChampionFolders(idList, nameList);
+  let folders = await Lolalytics.getChampionFolders(riotIdList, nameList);
   if (!Lolalytics.listIntegrity) {
     // TODO Maybe should warn the client that this plan b may not work
 
     // Ignore folders fetched and get them from Riot data
-    // FIXME this idList.map set the folders as lolalytics API?
-    folders = idList.map(id => id.toLowerCase());
+    folders = Object.fromEntries(riotIdList.map(id => [id, id.toLowerCase()]));
+    req.integrity = false;
     console.log('Lolalytics folder list has errors! 🧨');
   }
-  idList.forEach(id => (champions[id].id = folders[id]));
+  riotIdList.forEach(id => {
+    champions[id].id = folders[id];
+  });
 
   // Save data to the database
   console.log('Saving data to database...');
@@ -72,6 +75,7 @@ export const getChampions = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     results: idList.length,
+    integrity: req.integrity,
     data: {
       version: req.version,
       createdAt: req.createdAt,

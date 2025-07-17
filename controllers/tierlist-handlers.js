@@ -9,7 +9,7 @@ import { isoTimeStamp } from '../models/utils/helpers.js';
 import catchAsync from '../models/utils/catch-async.js';
 import AppError from '../models/utils/app-error.js';
 
-export const saveTierlist = (lane, rank, patch, list) => {
+export const saveTierlist = ({ lane, rank, patch }, list) => {
   const data = {
     rank,
     lane,
@@ -22,9 +22,9 @@ export const saveTierlist = (lane, rank, patch, list) => {
   console.log(`✅ Tierlist saved: (${lane}, ${rank}, ${patch})`);
 };
 
-export const getTierlistData = async (lane, rank, patch) => {
-  console.log({ lane, rank, patch });
-  const data = await getListFromDb(Tierlist, { lane, rank, patch });
+export const getTierlistData = async queryObj => {
+  console.log(queryObj);
+  const data = await getListFromDb(Tierlist, queryObj);
 
   if (data) {
     console.log('Getting Tierlist from database...');
@@ -32,19 +32,20 @@ export const getTierlistData = async (lane, rank, patch) => {
   }
 
   console.log('Getting Tierlist from website...');
-  const tierlist = await Lolalytics.getTierlist(lane, rank, patch);
+  const tierlist = await Lolalytics.getTierlist(queryObj);
   if (!tierlist.length)
     throw new AppError('Could not find the tierlists data', 404);
-  saveTierlist(lane, rank, patch, tierlist);
+  saveTierlist(queryObj, tierlist);
   return { tierlist, updatedAt: isoTimeStamp() };
 };
 
 export const getTierlist = catchAsync(async (req, res, next) => {
-  const { tierlist, updatedAt } = await getTierlistData(
-    req.lane,
-    req.rank,
-    req.patch
-  );
+  const queryObj = {
+    lane: req.lane,
+    rank: req.rank,
+    patch: req.patch,
+  };
+  const { tierlist, updatedAt } = await getTierlistData(queryObj);
 
   const sort = req.query.sort || DEFAULT_SORT_FIELD;
   tierlist.sort((a, b) => b[sort] - a[sort]);
@@ -55,9 +56,7 @@ export const getTierlist = catchAsync(async (req, res, next) => {
     results: tierlist.length,
     updatedAt,
     data: {
-      lane: req.lane,
-      rank: req.rank,
-      patch: req.patch,
+      ...queryObj,
       tierlist,
     },
   });
@@ -65,12 +64,12 @@ export const getTierlist = catchAsync(async (req, res, next) => {
 
 export const getAllTierlist = async (rank, patch) => {
   const allData = await Promise.all(
-    riotLolRolesArray.map(lane => getTierlistData(lane, rank, patch))
+    riotLolRolesArray.map(lane => getTierlistData({ lane, rank, patch })),
   );
   const allTierlists = {};
-  riotLolRolesArray.forEach(
-    lane => (allTierlists[lane] = allData.shift().tierlist)
-  );
+  riotLolRolesArray.forEach(lane => {
+    allTierlists[lane] = allData.shift().tierlist;
+  });
   return allTierlists;
 };
 
@@ -78,7 +77,7 @@ export const getAllRoleRates = (championName, allTierlists) => {
   const allRoleRates = {};
   riotLolRolesArray.forEach(lane => {
     const [champion] = allTierlists[lane].filter(
-      el => el.name === championName
+      el => el.name === championName,
     );
     allRoleRates[lane] = champion?.roleRate || 0;
   });

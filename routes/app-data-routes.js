@@ -9,7 +9,7 @@ router
   .get(
     appDataHandlers.checkGameVersion,
     appDataHandlers.updateDatabase,
-    appDataHandlers.getChampions
+    appDataHandlers.getChampions,
   );
 
 router

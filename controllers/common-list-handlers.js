@@ -27,18 +27,15 @@ export const filterQuery = catchAsync(async (req, res, next) => {
   const checkedVsLane = await RiotRole.isValid(vslane);
   const checkedRank = await RiotRank.isValid(rank);
 
-  // TODO Default lane should be most used lane in that champion
-  req.lane = checkedLane ? checkedLane.id : 'top';
-  req.vslane = checkedVsLane ? checkedVsLane.id : req.lane;
-  req.rank = checkedRank ? checkedRank.id : 'all';
-  req.patch = patch === '7' ? '7' : await Version.getVersionString();
+  req.lane = checkedLane?.id || 'top';
+  req.vslane = checkedVsLane?.id || req.lane;
+  req.rank = checkedRank?.id || 'all';
+  req.patch = patch || (await Version.getVersionString());
   next();
 });
 
 export const getListFromDb = async (Model, queryObj) => {
-  const lists = await Model.deleteMany({
-    createdAt: { $lte: expirationDate() },
-  });
+  await Model.deleteMany({ createdAt: { $lte: expirationDate() } });
 
   const list = await Model.findOne(queryObj);
   // If no list found return null

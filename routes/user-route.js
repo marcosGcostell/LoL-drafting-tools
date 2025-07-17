@@ -10,7 +10,7 @@ router.post('/login', authController.login);
 router.post(
   '/check',
   userController.validateUserName,
-  userController.userExists
+  userController.userExists,
 );
 
 router
@@ -25,7 +25,7 @@ router
     authController.protect,
     userController.validateUserName,
     userController.validateUserData,
-    userController.updateUser
+    userController.updateUser,
   )
   .delete(authController.protect, userController.deleteUser);
 

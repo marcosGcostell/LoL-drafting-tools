@@ -23,6 +23,7 @@ import AppError from '../utils/app-error.js';
  */
 class Lolalytics {
   #baseURL = 'https://lolalytics.com/lol/';
+
   listIntegrity;
 
   constructor() {
@@ -49,7 +50,7 @@ class Lolalytics {
    * Returns the url for the tierlist webpage
    * @return {String} The url for (this rank, and lane).
    */
-  #getTierlistURL(lane = 'main', rank = 'all', patch = '') {
+  #getTierlistURL({ lane = 'top', rank = 'all', patch = '' }) {
     return `${this.#baseURL}tierlist/?${
       lane !== 'main' ? `lane=${lane}&` : ''
     }tier=${rank}${patch === '7' ? '&patch=7' : ''}&view=grid`;
@@ -60,7 +61,7 @@ class Lolalytics {
    * Returns the url for counters webpage. champion should be Lolalytics folder name.
    * @return {String} The url for (this champion, rank, lane, [vs this lane]) .
    */
-  #getCountersURL(champion, lane, rank, vsLane = lane, patch) {
+  #getCountersURL({ champion, lane, rank = 'all', vsLane = lane, patch = '' }) {
     let str = `${this.#baseURL}${champion}/counters/?lane=${lane}&tier=${rank}`;
     if (vsLane !== 'main' && vsLane !== lane) str += `&vslane=${vsLane}`;
     if (patch === '7') str += '&patch=7';
@@ -72,7 +73,7 @@ class Lolalytics {
    * Returns the url for counters webpage. champion should be Lolalytics folder name.
    * @return {String} The url for (this champion, rank, lane, [vs this lane]) .
    */
-  #getBuildURL(champion, lane, rank, patch) {
+  #getBuildURL({ champion, lane, rank = 'all', patch = '' }) {
     return `${this.#baseURL}${champion}/build/?lane=${lane}&tier=${rank}${
       patch === '7' ? '&patch=7' : ''
     }`;
@@ -129,7 +130,7 @@ class Lolalytics {
       // Click accept button
       const buttons = Array.from(document.querySelectorAll('.ncmp__btn'));
       const acceptBtn = buttons.find(btn =>
-        btn.textContent?.toLowerCase().includes('accept')
+        btn.textContent?.toLowerCase().includes('accept'),
       );
       if (acceptBtn) acceptBtn.click();
     });
@@ -171,37 +172,39 @@ class Lolalytics {
   async getChampionFolders(riotIds, riotNames) {
     // Scrape the lolalytics web page
     const virtualDomDocument = await this.#scrapeWebPage(
-      `${this.#baseURL}aatrox/counters/`
+      `${this.#baseURL}aatrox/counters/`,
     );
 
     // Select the table where the champion information is (HTMLCollection)
     // convert it to an Array and filter only champions (elements with children)
     const championsGrid = Array.from(
-      virtualDomDocument.getElementsByTagName('main')[0].children[5].children[1]
-        .firstElementChild.firstElementChild.children
+      virtualDomDocument.querySelector('main').children[5].children[1]
+        .firstElementChild.firstElementChild.children,
     ).filter(element => element.children.length);
 
     // Store an array of name and path pairs
     // from the HTMLElemts array
-    const entries = championsGrid.map(cell => {
-      return [
-        cell.firstElementChild.firstElementChild.firstElementChild.getAttribute(
-          'alt'
-        ),
-        cell.firstElementChild.getAttribute('href').split('/')[2],
-      ];
-    });
+    const entries = championsGrid.map(cell => [
+      cell.firstElementChild.firstElementChild.firstElementChild.getAttribute(
+        'alt',
+      ),
+      cell.firstElementChild.getAttribute('href').split('/')[2],
+    ]);
 
     // All names have to exist in the same way in Riot List
     this.listIntegrity = entries.reduce(
-      (integrity, elem) => riotNames.includes(elem[0]) && integrity,
-      true
+      (integrity, [championName, _]) =>
+        riotNames.includes(championName) && integrity,
+      true,
     );
 
     // Replace the Riot names for Riot Ids
-    // And return the array converted to a list of objects
+    // And return the array of objects { RiotId: lolalyticsId }
     return Object.fromEntries(
-      entries.map(entry => [riotIds[riotNames.indexOf(entry[0])], entry[1]])
+      entries.map(([championName, id]) => [
+        riotIds[riotNames.indexOf(championName)],
+        id,
+      ]),
     );
   }
 
@@ -213,10 +216,10 @@ class Lolalytics {
    * @param {String} [lane] for this role (default = 'main').
    * @return {Promise<Array>} of champion objects.
    */
-  async getTierlist(lane = 'top', rank = 'all', patch = '') {
+  async getTierlist(queryObj) {
     // Get the puppeteer browser and lolalytics web page
     const { browser, webPage } = await this.#getVirtualWebPage(
-      this.#getTierlistURL(lane, rank, patch)
+      this.#getTierlistURL(queryObj),
     );
 
     // Get the webpage info navigating through children
@@ -230,11 +233,15 @@ class Lolalytics {
       // Convert HTMLCollection with champion information to an array
       // Select only champion cells (skip elements without childrens)
       const championsGrid = section.children[1];
+      if (!championsGrid.children) {
+        throw new AppError(
+          'There is still not enough games. Try another patch or rank.',
+          204,
+        );
+      }
       const championCells = Array.from(championsGrid.children).filter(
-        el => el.children.length
+        el => el.children.length,
       );
-      // FIXME When it's no data (first days of patch) championsGrid has no children
-      // Should return some specific to be handled ('Not enough games')
 
       // evaluate callback returns an array of objects (one from each HTML Element)
       return championCells
@@ -246,7 +253,7 @@ class Lolalytics {
             name: championElement.firstElementChild.textContent.trim(),
             roleRate: parseFloat(
               championElement.children[1].firstElementChild.children[2]
-                .firstElementChild.textContent
+                .firstElementChild.textContent,
             ),
             winRatio: parseFloat(dataSection.children[1].textContent),
             pickRate: parseFloat(dataSection.children[2].textContent),
@@ -274,7 +281,7 @@ class Lolalytics {
   //   // Select the table where the champion information is (HTMLCollection)
   //   // convert it to an Array and filter only champions (elements with children)
   //   const championsGrid = Array.from(
-  //     virtualDomDocument.getElementsByTagName('main')[0].children[5].children[1]
+  //     virtualDomDocument.querySelector('main').children[5].children[1]
   //       .children
   //   ).filter(element => element.children.length);
 
@@ -307,17 +314,17 @@ class Lolalytics {
    * @param {String} [vsLane] versus this other role (default = 'lane').
    * @return {Promise<Array>} of champion objects.
    */
-  async getCounters(champion, lane, rank = 'all', vsLane = lane, patch = '') {
+  async getCounters(queryObj) {
     // Scrape the lolalytics web page
     const virtualDomDocument = await this.#scrapeWebPage(
-      this.#getCountersURL(champion, lane, rank, vsLane, patch)
+      this.#getCountersURL(queryObj),
     );
 
     // Select the table where the champion information is (HTMLCollection)
     // convert it to an Array and filter only the <span> elements
     const championsGrid = Array.from(
       virtualDomDocument.querySelector('main').children[5].firstElementChild
-        .children[1].children
+        .children[1].children,
     ).filter(element => element.tagName === 'SPAN');
 
     // return an array of objects of some selected data
@@ -329,10 +336,10 @@ class Lolalytics {
         name: dataSection.firstElementChild.textContent,
         winRatio: parseFloat(dataSection.children[2].children[1].textContent),
         delta1: parseFloat(
-          dataSection.children[3].firstElementChild.textContent.slice(3)
+          dataSection.children[3].firstElementChild.textContent.slice(3),
         ),
         delta2: parseFloat(
-          dataSection.children[3].children[1].textContent.slice(3)
+          dataSection.children[3].children[1].textContent.slice(3),
         ),
       };
     });
@@ -348,47 +355,48 @@ class Lolalytics {
    * @param {String} [vsLane] versus this other role (default = 'lane').
    * @return {Promise<Array>} of champion objects.
    */
-  async getStats(champion, lane, rank = 'all', vsLane = lane, patch = '') {
+  async getStats(queryObj) {
     // Scrape the lolalytics web page
     const virtualDomDocument = await this.#scrapeWebPage(
-      this.#getBuildURL(champion, lane, rank, patch)
+      this.#getBuildURL(queryObj),
     );
 
     // Select the table where the champion information is (HTMLCollection)
     // convert it to an Array and filter only the <span> elements
     const rolesItems = Array.from(
-      virtualDomDocument.getElementsByTagName('main')[0].firstElementChild
-        .firstElementChild.firstElementChild.children[1].children
+      virtualDomDocument.querySelector('main').firstElementChild
+        .firstElementChild.firstElementChild.children[1].children,
     );
 
     const roleRates = Object.fromEntries(
       rolesItems.map(el => [
         el.querySelector('img').getAttribute('alt').split(' ')[0],
         parseFloat(el.querySelector('div').textContent),
-      ])
+      ]),
     );
 
     const statsSection =
-      virtualDomDocument.getElementsByTagName('main')[0].children[4].children[1]
+      virtualDomDocument.querySelector('main').children[4].children[1]
         .children[1].children[2];
 
     // return an object of some selected data
     return {
       winRatio: parseFloat(
         statsSection.firstElementChild.firstElementChild.firstElementChild
-          .textContent
+          .textContent,
       ),
       pickRate: parseFloat(
         statsSection.firstElementChild.lastElementChild.firstElementChild
-          .textContent
+          .textContent,
       ),
       banRate: parseFloat(
-        statsSection.lastElementChild.children[2].firstElementChild.textContent
+        statsSection.lastElementChild.children[2].firstElementChild.textContent,
       ),
       games: parseInt(
         statsSection.lastElementChild.lastElementChild.firstElementChild.textContent
           .split(',')
-          .join('')
+          .join(''),
+        10,
       ),
       roleRates,
     };
