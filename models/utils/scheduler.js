@@ -55,14 +55,14 @@ const getRemainingRanks = async () => {
   );
 };
 
-const replaceTierlist = async ({ lane, rank, patch }) => {
-  const tierlist = await Lolalytics.getTierlist(lane, rank, patch);
+const replaceTierlist = async queryObj => {
+  const tierlist = await Lolalytics.getTierlist(queryObj);
   if (!tierlist.length)
     return console.error(
-      `🔴 ERROR!: Couldn't get tierlist (${lane}, ${rank}, ${patch})`,
+      `🔴 ERROR!: Couldn't get tierlist (${queryObj.lane}, ${queryObj.rank}, ${queryObj.patch})`,
     );
-  await Tierlist.deleteOne({ lane, rank, patch });
-  saveTierlist(lane, rank, patch, tierlist);
+  await Tierlist.deleteOne(queryObj);
+  saveTierlist(queryObj, tierlist);
 };
 
 export default async (DB, options) => {

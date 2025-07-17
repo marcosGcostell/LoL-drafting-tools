@@ -50,7 +50,7 @@ class Lolalytics {
    * Returns the url for the tierlist webpage
    * @return {String} The url for (this rank, and lane).
    */
-  #getTierlistURL(lane = 'main', rank = 'all', patch = '') {
+  #getTierlistURL({ lane = 'top', rank = 'all', patch = '' }) {
     return `${this.#baseURL}tierlist/?${
       lane !== 'main' ? `lane=${lane}&` : ''
     }tier=${rank}${patch === '7' ? '&patch=7' : ''}&view=grid`;
@@ -193,14 +193,18 @@ class Lolalytics {
 
     // All names have to exist in the same way in Riot List
     this.listIntegrity = entries.reduce(
-      (integrity, elem) => riotNames.includes(elem[0]) && integrity,
+      (integrity, [championName, _]) =>
+        riotNames.includes(championName) && integrity,
       true,
     );
 
     // Replace the Riot names for Riot Ids
-    // And return the array converted to a list of objects
+    // And return the array of objects { RiotId: lolalyticsId }
     return Object.fromEntries(
-      entries.map(entry => [riotIds[riotNames.indexOf(entry[0])], entry[1]]),
+      entries.map(([championName, id]) => [
+        riotIds[riotNames.indexOf(championName)],
+        id,
+      ]),
     );
   }
 
@@ -212,10 +216,10 @@ class Lolalytics {
    * @param {String} [lane] for this role (default = 'main').
    * @return {Promise<Array>} of champion objects.
    */
-  async getTierlist(lane = 'top', rank = 'all', patch = '') {
+  async getTierlist(queryObj) {
     // Get the puppeteer browser and lolalytics web page
     const { browser, webPage } = await this.#getVirtualWebPage(
-      this.#getTierlistURL(lane, rank, patch),
+      this.#getTierlistURL(queryObj),
     );
 
     // Get the webpage info navigating through children

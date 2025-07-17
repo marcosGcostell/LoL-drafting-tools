@@ -6,7 +6,7 @@ import UserDataView from '../../view/profile/userDataView.js';
 let userDataView;
 let userCache;
 
-// FIXME When an input is submit, it shouldn't open password popup
+// BUG When an input is submit, it shouldn't open password popup
 
 const hidePopUps = e => {
   const exclude = e.detail?.exclude || null;

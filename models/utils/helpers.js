@@ -29,6 +29,7 @@ export const expirationDate = (hours = TIME_BEFORE_UPDATE) =>
 export const findAsObject = async function () {
   const docs = await this.find();
   return docs.reduce((acc, doc) => {
+    // Use lolalytics id for property keys
     acc[doc.id] = doc;
     return acc;
   }, {});
