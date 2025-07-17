@@ -1,3 +1,4 @@
+import AppError from './appError.js';
 import ChampionList from './championListModel.js';
 import { fetchListFromAPI } from '../services/apiCalls.js';
 import { COUNTERS_ROUTE } from '../utils/config.js';
@@ -32,26 +33,25 @@ const calcScore = (winRatio, counter) => {
 
 // getStatsList function to fetch data from API
 export default async (champion, { lane, rank, vslane, patch, tierlist }) => {
-  try {
-    if (!tierlist) {
-      throw new Error('Need a tierlist to get the stats...');
-    }
-    const counterList = await getCounterList(champion, {
-      lane,
-      rank,
-      vslane,
-      patch,
+  if (!tierlist) {
+    throw new AppError('Need a tierlist to get the stats.', {
+      origin: 'model',
+      type: 'stats',
     });
-
-    return tierlist.map(opponent => {
-      const [match] = counterList.filter(el => el.id === opponent.id);
-      if (match) {
-        match.score = calcScore(champion.winRatio, match);
-        match.index = opponent.index;
-      }
-      return match || { score: 0, winRatio: 0, delta2: 0 };
-    });
-  } catch (err) {
-    throw err;
   }
+  const counterList = await getCounterList(champion, {
+    lane,
+    rank,
+    vslane,
+    patch,
+  });
+
+  return tierlist.map(opponent => {
+    const [match] = counterList.filter(el => el.id === opponent.id);
+    if (match) {
+      match.score = calcScore(champion.winRatio, match);
+      match.index = opponent.index;
+    }
+    return match || { score: 0, winRatio: 0, delta2: 0 };
+  });
 };
