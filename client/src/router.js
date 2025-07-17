@@ -36,8 +36,7 @@ const handleRoute = async e => {
     //   await signupController.init();
     //   await loadCommonControllers();
   } else {
-    document.querySelector('main').innerHTML =
-      '<h1>404 - Página no encontrada</h1>';
+    document.querySelector('main').innerHTML = '<h1>404 - Page not found</h1>';
   }
 };
 
@@ -45,10 +44,11 @@ window.addEventListener('DOMContentLoaded', async e => {
   // TODO Improve this alerts with the errors
   try {
     await appData.init();
-    if (!appData.integrity)
+    if (!appData.integrity) {
       alert(
         'Champion IDs from website does not match Riot IDs. The application may not work properly',
       );
+    }
     handleRoute(e);
   } catch (err) {
     if (!err.isOperational)

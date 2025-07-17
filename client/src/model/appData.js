@@ -23,6 +23,7 @@ class AppData {
     this.nameList = data.nameList;
     this.roles = data.roles;
     this.ranks = data.ranks;
+    this.integrity = data.integrity;
   }
 
   async checkVersion() {
@@ -47,7 +48,7 @@ class AppData {
       );
     }
 
-    this.integrity = integrity;
+    data.integrity = integrity;
     return data;
   }
 
