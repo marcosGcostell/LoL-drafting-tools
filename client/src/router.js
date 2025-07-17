@@ -1,3 +1,4 @@
+import appData from './model/appData.js';
 import user from './model/userModel.js';
 import initBackground from './controllers/backgroundController.js';
 import initHeader from './controllers/global/headerController.js';
@@ -40,5 +41,8 @@ const handleRoute = async e => {
   }
 };
 
-window.addEventListener('DOMContentLoaded', handleRoute);
+window.addEventListener('DOMContentLoaded', async e => {
+  await appData.init();
+  handleRoute(e);
+});
 window.addEventListener('popstate', handleRoute);

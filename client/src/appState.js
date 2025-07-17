@@ -65,6 +65,9 @@ class AppState extends EventTarget {
     this.maxListItems = user.config.maxListItems;
     this.pickRateThreshold = user.config.pickRateThreshold;
     await this.setOption('lane', this.lane);
+  }
+
+  async #getPoolFromUser() {
     const pool = user.data.championPool[this.lane];
     if (pool?.length) {
       // eslint-disable-next-line no-restricted-syntax
@@ -169,6 +172,8 @@ class AppState extends EventTarget {
         eventTarget = 'bothLanes';
       }
       this.resetPool();
+
+      if (this.user.isLoggedIn()) await this.#getPoolFromUser();
     }
 
     this.#save();
