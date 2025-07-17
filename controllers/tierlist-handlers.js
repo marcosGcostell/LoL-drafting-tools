@@ -40,11 +40,12 @@ export const getTierlistData = async queryObj => {
 };
 
 export const getTierlist = catchAsync(async (req, res, next) => {
-  const { tierlist, updatedAt } = await getTierlistData({
+  const queryObj = {
     lane: req.lane,
     rank: req.rank,
     patch: req.patch,
-  });
+  };
+  const { tierlist, updatedAt } = await getTierlistData(queryObj);
 
   const sort = req.query.sort || DEFAULT_SORT_FIELD;
   tierlist.sort((a, b) => b[sort] - a[sort]);
@@ -55,9 +56,7 @@ export const getTierlist = catchAsync(async (req, res, next) => {
     results: tierlist.length,
     updatedAt,
     data: {
-      lane: req.lane,
-      rank: req.rank,
-      patch: req.patch,
+      ...queryObj,
       tierlist,
     },
   });

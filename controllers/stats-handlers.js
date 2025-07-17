@@ -4,37 +4,36 @@ import { getListFromDb } from './common-list-handlers.js';
 import { isoTimeStamp } from '../models/utils/helpers.js';
 import catchAsync from '../models/utils/catch-async.js';
 
-const saveStatsData = async (champion, lane, rank, patch, stats) => {
+const saveStatsData = async (queryObj, stats) => {
   try {
     const data = {
-      champion,
-      lane,
-      rank,
-      patch,
+      ...queryObj,
       createdAt: isoTimeStamp(),
       stats,
     };
 
     await Stat.create(data);
-    console.log(`✅ Stats saved: (${champion}, ${lane}, ${rank}, ${patch})`);
+    console.log(
+      `✅ Stats saved: (${queryObj.champion}, ${queryObj.lane}, ${queryObj.rank}, ${queryObj.patch})`,
+    );
     return data;
   } catch (err) {
     throw err;
   }
 };
 
-const getStatsData = async (champion, lane, rank, patch) => {
+const getStatsData = async queryObj => {
   try {
-    console.log({ champion, lane, rank, patch });
-    const data = await getListFromDb(Stat, { champion, lane, rank, patch });
+    console.log(queryObj);
+    const data = await getListFromDb(Stat, queryObj);
 
     if (data) {
       console.log('Getting Stats from database...');
       return { stats: data.stats, updatedAt: data.createdAt };
     }
     console.log('Getting Stats from website...');
-    const stats = await Lolalytics.getStats(champion, lane, rank, patch);
-    saveStatsData(champion, lane, rank, patch, stats);
+    const stats = await Lolalytics.getStats(queryObj);
+    saveStatsData(queryObj, stats);
     return { stats, updatedAt: isoTimeStamp() };
   } catch (err) {
     throw err;
@@ -43,12 +42,14 @@ const getStatsData = async (champion, lane, rank, patch) => {
 
 // getChampionStats function to get stats from database or website
 export default catchAsync(async (req, res, next) => {
-  const { stats, updatedAt } = await getStatsData(
-    req.champion,
-    req.lane,
-    req.rank,
-    req.patch,
-  );
+  const queryObj = {
+    champion: req.champion,
+    lane: req.lane,
+    rank: req.rank,
+    patch: req.patch,
+  };
+  const { stats, updatedAt } = await getStatsData(queryObj);
+  delete queryObj.champion;
 
   // Send response
   res.status(200).json({
@@ -56,9 +57,7 @@ export default catchAsync(async (req, res, next) => {
     updatedAt,
     data: {
       id: req.champion,
-      lane: req.lane,
-      rank: req.rank,
-      patch: req.patch,
+      ...queryObj,
       stats,
     },
   });

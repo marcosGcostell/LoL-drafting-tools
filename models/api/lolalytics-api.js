@@ -61,7 +61,7 @@ class Lolalytics {
    * Returns the url for counters webpage. champion should be Lolalytics folder name.
    * @return {String} The url for (this champion, rank, lane, [vs this lane]) .
    */
-  #getCountersURL(champion, lane, rank, patch, vsLane = lane) {
+  #getCountersURL({ champion, lane, rank = 'all', vsLane = lane, patch = '' }) {
     let str = `${this.#baseURL}${champion}/counters/?lane=${lane}&tier=${rank}`;
     if (vsLane !== 'main' && vsLane !== lane) str += `&vslane=${vsLane}`;
     if (patch === '7') str += '&patch=7';
@@ -73,7 +73,7 @@ class Lolalytics {
    * Returns the url for counters webpage. champion should be Lolalytics folder name.
    * @return {String} The url for (this champion, rank, lane, [vs this lane]) .
    */
-  #getBuildURL(champion, lane, rank, patch) {
+  #getBuildURL({ champion, lane, rank = 'all', patch = '' }) {
     return `${this.#baseURL}${champion}/build/?lane=${lane}&tier=${rank}${
       patch === '7' ? '&patch=7' : ''
     }`;
@@ -178,7 +178,7 @@ class Lolalytics {
     // Select the table where the champion information is (HTMLCollection)
     // convert it to an Array and filter only champions (elements with children)
     const championsGrid = Array.from(
-      virtualDomDocument.getElementsByTagName('main')[0].children[5].children[1]
+      virtualDomDocument.querySelector('main').children[5].children[1]
         .firstElementChild.firstElementChild.children,
     ).filter(element => element.children.length);
 
@@ -277,7 +277,7 @@ class Lolalytics {
   //   // Select the table where the champion information is (HTMLCollection)
   //   // convert it to an Array and filter only champions (elements with children)
   //   const championsGrid = Array.from(
-  //     virtualDomDocument.getElementsByTagName('main')[0].children[5].children[1]
+  //     virtualDomDocument.querySelector('main').children[5].children[1]
   //       .children
   //   ).filter(element => element.children.length);
 
@@ -310,10 +310,10 @@ class Lolalytics {
    * @param {String} [vsLane] versus this other role (default = 'lane').
    * @return {Promise<Array>} of champion objects.
    */
-  async getCounters(champion, lane, rank = 'all', vsLane = lane, patch = '') {
+  async getCounters(queryObj) {
     // Scrape the lolalytics web page
     const virtualDomDocument = await this.#scrapeWebPage(
-      this.#getCountersURL(champion, lane, rank, patch, vsLane),
+      this.#getCountersURL(queryObj),
     );
 
     // Select the table where the champion information is (HTMLCollection)
@@ -351,16 +351,16 @@ class Lolalytics {
    * @param {String} [vsLane] versus this other role (default = 'lane').
    * @return {Promise<Array>} of champion objects.
    */
-  async getStats(champion, lane, rank = 'all', patch = '') {
+  async getStats(queryObj) {
     // Scrape the lolalytics web page
     const virtualDomDocument = await this.#scrapeWebPage(
-      this.#getBuildURL(champion, lane, rank, patch),
+      this.#getBuildURL(queryObj),
     );
 
     // Select the table where the champion information is (HTMLCollection)
     // convert it to an Array and filter only the <span> elements
     const rolesItems = Array.from(
-      virtualDomDocument.getElementsByTagName('main')[0].firstElementChild
+      virtualDomDocument.querySelector('main').firstElementChild
         .firstElementChild.firstElementChild.children[1].children,
     );
 
@@ -372,7 +372,7 @@ class Lolalytics {
     );
 
     const statsSection =
-      virtualDomDocument.getElementsByTagName('main')[0].children[4].children[1]
+      virtualDomDocument.querySelector('main').children[4].children[1]
         .children[1].children[2];
 
     // return an object of some selected data

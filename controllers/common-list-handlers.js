@@ -28,10 +28,10 @@ export const filterQuery = catchAsync(async (req, res, next) => {
   const checkedRank = await RiotRank.isValid(rank);
 
   // TODO Default lane should be most used lane in that champion
-  req.lane = checkedLane ? checkedLane.id : 'top';
-  req.vslane = checkedVsLane ? checkedVsLane.id : req.lane;
-  req.rank = checkedRank ? checkedRank.id : 'all';
-  req.patch = patch === '7' ? '7' : await Version.getVersionString();
+  req.lane = checkedLane?.id || 'top';
+  req.vslane = checkedVsLane?.id || req.lane;
+  req.rank = checkedRank?.id || 'all';
+  req.patch = patch || (await Version.getVersionString());
   next();
 });
 

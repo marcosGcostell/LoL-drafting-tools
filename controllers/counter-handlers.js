@@ -6,59 +6,44 @@ import { DEFAULT_SORT_FIELD } from '../models/utils/config.js';
 import { isoTimeStamp } from '../models/utils/helpers.js';
 import catchAsync from '../models/utils/catch-async.js';
 
-const saveCounterList = async (champion, lane, rank, vslane, patch, list) => {
+const saveCounterList = async (queryObj, list) => {
   const data = {
-    champion,
-    lane,
-    rank,
-    vslane,
-    patch,
+    ...queryObj,
     createdAt: isoTimeStamp(),
     list,
   };
 
   await Counter.create(data);
   console.log(
-    `✅ Counter list saved: (${champion}, ${lane}, ${rank}, ${vslane}, ${patch})`,
+    `✅ Counter list saved: (${queryObj.champion}, ${queryObj.lane}, ${queryObj.rank}, ${queryObj.vslane}, ${queryObj.patch})`,
   );
   return data;
 };
 
-const getCounterListData = async (champion, lane, rank, vslane, patch) => {
-  console.log({ champion, lane, rank, vslane, patch });
-  const data = await getListFromDb(Counter, {
-    champion,
-    lane,
-    rank,
-    vslane,
-    patch,
-  });
+const getCounterListData = async queryObj => {
+  console.log(queryObj);
+  const data = await getListFromDb(Counter, queryObj);
 
   if (data) {
     console.log('Getting Counters from database...');
     return { counterList: data.list, updatedAt: data.createdAt };
   }
   console.log('Getting Counters from website...');
-  const counterList = await Lolalytics.getCounters(
-    champion,
-    lane,
-    rank,
-    vslane,
-    patch,
-  );
-  saveCounterList(champion, lane, rank, vslane, patch, counterList);
+  const counterList = await Lolalytics.getCounters(queryObj);
+  saveCounterList(queryObj, counterList);
   return { counterList, updatedAt: isoTimeStamp() };
 };
 
 // getCounterList function to get a counter list from database or website
 export default catchAsync(async (req, res, next) => {
-  const { counterList, updatedAt } = await getCounterListData(
-    req.champion,
-    req.lane,
-    req.rank,
-    req.vslane,
-    req.patch,
-  );
+  const queryObj = {
+    champion: req.champion,
+    lane: req.lane,
+    rank: req.rank,
+    vslane: req.vslane,
+    patch: req.patch,
+  };
+  const { counterList, updatedAt } = await getCounterListData(queryObj);
   const allTierlists = await getAllTierlist(req.rank, req.patch);
 
   const completeList = counterList.map(el => {
@@ -80,6 +65,7 @@ export default catchAsync(async (req, res, next) => {
 
   const sort = req.query.sort || DEFAULT_SORT_FIELD;
   completeList.sort((a, b) => b[sort] - a[sort]);
+  delete queryObj.champion;
 
   // Send response
   res.status(200).json({
@@ -88,10 +74,7 @@ export default catchAsync(async (req, res, next) => {
     updatedAt,
     data: {
       id: req.champion,
-      lane: req.lane,
-      rank: req.rank,
-      vslane: req.vslane,
-      patch: req.patch,
+      ...queryObj,
       counterList: completeList,
     },
   });
