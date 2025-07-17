@@ -3,27 +3,17 @@ import { fetchListFromAPI } from '../services/apiCalls.js';
 import { COUNTERS_ROUTE } from '../utils/config.js';
 
 const getCounterList = async (champion, { lane, rank, vslane, patch }) => {
-  try {
-    if (!champion.id) throw new Error("Can't get data without a champion id");
+  if (!champion.id) throw new Error("Can't get data without a champion id");
 
-    // API works for lolalytics folders for champion names
-    const route = `${COUNTERS_ROUTE}/${champion.id}`;
-    const query = {
-      lane,
-      rank,
-      vslane,
-      patch,
-      sortedBy: 'pickRate',
-    };
+  // API works for lolalytics folders for champion names
+  const route = `${COUNTERS_ROUTE}/${champion.id}`;
+  const query = { lane, rank, vslane, patch, sortedBy: 'pickRate' };
 
-    const { counterList } = await fetchListFromAPI(route, query);
+  const { counterList } = await fetchListFromAPI(route, query);
 
-    const newList = new ChampionList(counterList);
-    newList.completeListData();
-    return newList.data;
-  } catch (err) {
-    throw err;
-  }
+  const newList = new ChampionList(counterList);
+  newList.completeListData();
+  return newList.data;
 };
 
 const calcScore = (winRatio, counter) => {

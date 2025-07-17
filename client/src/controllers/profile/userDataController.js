@@ -51,59 +51,73 @@ const inputsHandler = (target, value) => {
 };
 
 const savePassword = async () => {
-  const { password, newPassword, passwordConfirm } =
-    profileModel.getPasswordFields(userDataView.form);
+  try {
+    const { password, newPassword, passwordConfirm } =
+      profileModel.getPasswordFields(userDataView.form);
 
-  const result = await authService.validatePassword(
-    {
-      oldPassword: password,
+    const result = await authService.validatePassword(
+      {
+        oldPassword: password,
+        password: newPassword,
+        passwordConfirm,
+      },
+      { length: true, confirm: true, username: appState.user.username },
+    );
+
+    if (!result?.token) {
+      userDataView.showPasswordMsg(result);
+      return;
+    }
+
+    const user = await appState.user.updateUser({
       password: newPassword,
       passwordConfirm,
-    },
-    { length: true, confirm: true, username: appState.user.username },
-  );
+    });
 
-  if (!result?.token) {
-    userDataView.showPasswordMsg(result);
-    return;
+    if (user.message) {
+      userDataView.showPasswordMsg(user.message);
+      return;
+    }
+
+    appState.userUpdated();
+    userDataView.showPasswordMsg('Password changed successfully.');
+    userDataView.togglePanel();
+  } catch (err) {
+    console.error(err);
+    userDataView.showPasswordMsg(
+      'Something went wrong with the server. Password could have not be changed',
+    );
   }
-
-  if (
-    !(await appState.user.updateUser({
-      password: newPassword,
-      passwordConfirm,
-    }))
-  ) {
-    userDataView.showPasswordMsg(appState.user.response);
-  }
-
-  appState.userUpdated();
-  userDataView.showPasswordMsg('Password changed successfully.');
-  userDataView.togglePanel();
 };
 
 const checkUserData = async target => {
   const field = profileModel.getFormField(userDataView.form, target);
 
-  let message = null;
-  if (target === 'username') {
-    message = await authService.validateUsername(field, true);
-  } else if (target === 'email') {
-    message = await authService.validateEmail(field, true);
-  } else return;
+  try {
+    let message = null;
+    if (target === 'username') {
+      message = await authService.validateUsername(field, true);
+    } else if (target === 'email') {
+      message = await authService.validateEmail(field, true);
+    } else return;
 
-  const fieldIsChanged =
-    (target === 'username' &&
-      field.toLowerCase() !== appState.user.username.toLowerCase()) ||
-    (target === 'email' &&
-      field.toLowerCase() !== appState.user.email.toLowerCase());
-  if (message && fieldIsChanged) {
-    userDataView.showUserMsg(message);
-    return;
+    const fieldIsChanged =
+      (target === 'username' &&
+        field.toLowerCase() !== appState.user.username.toLowerCase()) ||
+      (target === 'email' &&
+        field.toLowerCase() !== appState.user.email.toLowerCase());
+    if (message && fieldIsChanged) {
+      userDataView.showUserMsg(message);
+      return;
+    }
+
+    userDataView.resetUserMsg();
+    userDataView.changeCheckBtn(target);
+  } catch (err) {
+    userDataView.showUserMsg(
+      'Something went wrong with the server. Could not access to check for existing users or emails',
+    );
   }
-
-  userDataView.resetUserMsg();
-  userDataView.changeCheckBtn(target);
 };
 
 const activateInputBtn = target => {

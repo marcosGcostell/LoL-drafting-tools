@@ -27,20 +27,27 @@ const loginHandler = async e => {
   const username = formData.get('username')?.trim();
   const password = formData.get('password');
 
-  const errorMessage = await validateAuthForm({ username, password });
-  if (errorMessage) {
-    loginView.errorMessage = errorMessage;
-    loginView.renderError();
-    return;
-  }
+  try {
+    const errorMessage = await validateAuthForm({ username, password });
+    if (errorMessage) {
+      loginView.errorMessage = errorMessage;
+      loginView.renderError();
+      return;
+    }
 
-  const result = await appState.user.login(username, password);
-  if (!result) {
-    loginView.errorMessage = appState.user.response;
-    loginView.renderError();
-  } else {
+    const result = await appState.user.login(username, password);
+    if (result.message) {
+      loginView.errorMessage = result.message;
+      loginView.renderError();
+      return;
+    }
+
     loginView.closeModal();
     appState.popUpOn = '';
+  } catch (err) {
+    loginView.errorMessage =
+      'Something went wrong with the server. Could not log in';
+    loginView.renderError();
   }
 };
 
