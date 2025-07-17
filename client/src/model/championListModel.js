@@ -19,6 +19,7 @@ export default class ChampionList {
         champion.id = appData.champions[champion.name].id;
       } else {
         champion.id = appData.getChampionByName(champion.name).id;
+        champion.version = appData.version;
       }
     });
   }

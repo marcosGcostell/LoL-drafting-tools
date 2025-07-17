@@ -87,6 +87,7 @@ export default class ChampionComponent extends Component {
     output = output.replace(/{%STYLE%}/g, this._style);
     output = output.replace(/{%ID%}/g, this.id);
     output = output.replace(/{%IMG_SRC%}/g, IMG_SRC);
+    output = output.replace(/{%VERSION%}/g, this._data.version);
     output = output.replace(/{%IMG%}/g, this._data.img);
     output = output.replace(/{%CHAMPION_ID%}/g, this._data.id);
     output = output.replace(/{%NAME%}/g, this._data.name);
