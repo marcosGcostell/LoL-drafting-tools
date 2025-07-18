@@ -20,20 +20,16 @@ export default class ChampionList {
       } else {
         champion.id = appData.getChampionByName(champion.name).id;
       }
+      champion.version = appData.version;
     });
   }
 
   addChampionImages() {
     this._data.forEach(champion => {
-      if (appData.champions[champion.id])
+      if (appData.champions[champion.id]) {
         champion.img = appData.champions[champion.id].img;
-    });
-  }
-
-  addChampionSprites() {
-    this._data.forEach(champion => {
-      if (appData.champions[champion.id])
         champion.sprite = appData.champions[champion.id].sprite;
+      }
     });
   }
 
@@ -47,6 +43,5 @@ export default class ChampionList {
   completeListData() {
     this.addChampionIds();
     this.addChampionImages();
-    this.addChampionSprites();
   }
 }

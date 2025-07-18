@@ -19,9 +19,9 @@ export const LS_USER_CACHE = 'draftKingUserCache';
 // Paths of resources (relative from index.html)
 export const ICONS = './assets/img/icons/icons.svg';
 export const IMG_SRC =
-  'https://ddragon.leagueoflegends.com/cdn/15.11.1/img/champion/';
+  'https://ddragon.leagueoflegends.com/cdn/{%VERSION%}/img/champion/';
 export const SPRITE_SRC =
-  'https://ddragon.leagueoflegends.com/cdn/15.13.1/img/sprite/';
+  'https://ddragon.leagueoflegends.com/cdn/{%VERSION%}/img/sprite/';
 export const LANE_ICONS = './assets/img/lanes/';
 export const RANK_ICONS = './assets/img/ranks/';
 

@@ -123,11 +123,23 @@ class AppState extends EventTarget {
   }
 
   async initFromCounters() {
-    if (!this.vslane) this.initFromStarter('top');
-    if (this.vslane !== this.tierlistLane) {
-      await dataModel.getNewTierlist(this);
+    try {
+      if (!this.vslane) this.initFromStarter('top');
+      if (this.vslane !== this.tierlistLane) {
+        await dataModel.getNewTierlist(this);
+      }
+      this.dispatchEvent(new Event('app:reload'));
+    } catch (err) {
+      this.dispatchEvent(
+        new CustomEvent('error:initCounters', {
+          detail: {
+            target: 'tierlist',
+            message:
+              'Somethig went wrong with the server. Try to reload the app',
+          },
+        }),
+      );
     }
-    this.dispatchEvent(new Event('app:reload'));
   }
 
   setAppMode(appMode) {
@@ -172,8 +184,6 @@ class AppState extends EventTarget {
         eventTarget = 'bothLanes';
       }
       this.resetPool();
-
-      if (this.user.isLoggedIn()) await this.#getPoolFromUser();
     }
 
     this.#save();
@@ -186,13 +196,33 @@ class AppState extends EventTarget {
       );
     }
 
-    await dataModel.updateData(eventTarget, this);
+    try {
+      await dataModel.updateData(eventTarget, this);
 
-    // Event to update views
-    if (!this.silentMode) {
+      // Event to update views
+      if (!this.silentMode) {
+        this.dispatchEvent(
+          new CustomEvent(`updated:${eventTarget}`, {
+            detail: { target: eventTarget, value },
+          }),
+        );
+      }
+
+      if (this.user.isLoggedIn() && target === 'lane') {
+        await this.#getPoolFromUser();
+      }
+    } catch (err) {
+      const errorMessage = err.isOperational ? `${err.message} ` : '';
+      const message =
+        err.isOperational && err.origin === 'api'
+          ? errorMessage
+          : `Somethig went wrong with the server. ${errorMessage}Try to reload the app`;
       this.dispatchEvent(
-        new CustomEvent(`updated:${eventTarget}`, {
-          detail: { target: eventTarget, value },
+        new CustomEvent('error:option', {
+          detail: {
+            target: eventTarget,
+            message,
+          },
         }),
       );
     }
@@ -221,16 +251,28 @@ class AppState extends EventTarget {
       );
     }
 
-    await dataModel.getNewData(champion, this);
+    try {
+      await dataModel.getNewData(champion, this);
 
-    const index = this.pool.length - 1;
-    if (!this.silentMode) {
+      const index = this.pool.length - 1;
+      if (!this.silentMode) {
+        this.dispatchEvent(
+          new CustomEvent('pool:added', {
+            detail: {
+              index,
+              champion: this.pool[index],
+              stats: this.fixedStatsLists[index],
+            },
+          }),
+        );
+      }
+    } catch (err) {
+      const message = err.isOperational ? `${err.message} ` : '';
       this.dispatchEvent(
-        new CustomEvent('pool:added', {
+        new CustomEvent('error:pool', {
           detail: {
-            index,
-            champion: this.pool[index],
-            stats: this.fixedStatsLists[index],
+            target: 'pool',
+            message: `Somethig went wrong with the server. ${message}Try to reload the app`,
           },
         }),
       );

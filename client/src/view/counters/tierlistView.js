@@ -18,7 +18,6 @@ export default class ListView extends View {
   async initView() {
     this._parentElement = document.querySelector('.tierlist');
 
-    // TODO Maybe the templates should be cached in sessionStorage
     if (!this._itemTemplate) await this._templatePromise;
   }
 
@@ -36,6 +35,7 @@ export default class ListView extends View {
     output = output.replace(/{%WR%}/g, champion.winRatio.toFixed(2));
     output = output.replace(/{%PR%}/g, champion.pickRate.toFixed(2));
     output = output.replace(/{%SPRITE_SRC%}/g, SPRITE_SRC);
+    output = output.replace(/{%VERSION%}/g, champion.version);
     output = output.replace(/{%FILE%}/g, champion.sprite.file);
     output = output.replace(/{%X%}/g, champion.sprite.x);
     output = output.replace(/{%Y%}/g, champion.sprite.y);

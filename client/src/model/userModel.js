@@ -24,7 +24,6 @@ class User extends EventTarget {
     this.email = '';
     this.config = {};
     this.data = {};
-    this.response = '';
   }
 
   valuesFromResponse(user) {
@@ -54,14 +53,10 @@ class User extends EventTarget {
     sessionStorage.setItem(LS_USER, JSON.stringify(data));
   }
 
-  async getData() {
-    const { user, message } = await getUserDataFromAPI(this.token);
+  async _getData() {
+    const { user } = await getUserDataFromAPI(this.token);
 
-    if (!user) {
-      this.response =
-        message || 'Could not get the user data from the database.';
-      return null;
-    }
+    if (!user) return null;
 
     this.valuesFromResponse(user);
     return this;
@@ -70,20 +65,13 @@ class User extends EventTarget {
   async updateUser(body) {
     const { user, message } = await updateUserOnAPI(this.token, body);
 
-    if (!user) {
-      this.response = message || 'Could not update the user';
-      return null;
-    }
+    if (!user) return { message: message || 'Could not update the user' };
 
     if (body?.password) {
-      if (
-        !(await this.login(this.username, body.password, {
-          silentMode: true,
-        }))
-      ) {
-        this.response = `Could't login with new password. Error: ${this.response}`;
-        return null;
-      }
+      const result = await this.login(this.username, body.password, {
+        silentMode: true,
+      });
+      if (!result) return { message: 'Could not login with new password' };
     } else {
       this.valuesFromResponse(user);
       this.#save();
@@ -102,17 +90,12 @@ class User extends EventTarget {
   async login(loginName, password, { silentMode = false } = {}) {
     const { token, message } = await loginOnAPI(loginName, password);
 
-    if (!token) {
-      this.response = message || 'Could not logged in.';
-      return null;
-    }
+    if (!token) return { message: message || 'Could not logged in.' };
     this.token = token;
 
-    const user = await this.getData();
-    if (!user) {
-      this.response = 'Could not get the user data after logged in';
-      return null;
-    }
+    const user = await this._getData();
+    if (!user)
+      return { message: 'Could not get the user data after logged in' };
 
     this.#save();
     if (!silentMode) this.dispatchEvent(new Event('login'));

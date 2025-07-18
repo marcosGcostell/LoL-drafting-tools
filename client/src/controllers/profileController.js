@@ -30,19 +30,20 @@ const saveProfile = async () => {
 
   try {
     const user = await appState.user.updateUser(userChanges);
-    if (user) {
-      userHeaderView.headerMessage.textContent =
-        '✅ User successfully updated.';
-      await wait(1);
-      userHeaderView.headerMessage.textContent = '';
-      discardChanges();
+    if (user.message) {
+      userHeaderView.headerMessage.textContent = user.message;
+      // await wait(1);
+      // userHeaderView.headerMessage.textContent = '';
+      return;
     }
 
-    userHeaderView.headerMessage.textContent = appState.user.response;
+    userHeaderView.headerMessage.textContent = '✅ User successfully updated.';
     await wait(1);
     userHeaderView.headerMessage.textContent = '';
+    discardChanges();
   } catch (err) {
-    throw err;
+    userHeaderView.headerMessage.textContent =
+      'Something went wrong with the server. Could not save the changes';
   }
 };
 

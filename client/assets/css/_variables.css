@@ -1,19 +1,19 @@
 /* Global variables */
 :root {
-  --color-primary: #5b0775;
-  --color-grad-1: #17011e;
-  --color-grad-2: #360545;
+  --color-primary: #5c0606;
+  --color-grad-1: #161314;
+  --color-grad-2: #312829;
 
-  --color-grey-light-1: #f8f3f9;
-  --color-grey-light-2: #eeedee;
-  --color-grey-light-3: #cbc3d3;
-  --color-grey-light-4: #ac9db0;
-  --color-grey-light-5: #8e8191;
-  --color-grey-dark-1: #190e19; /* Normal background */
-  --color-grey-dark-2: #2c1e2c;
-  --color-grey-dark-3: #402e43;
-  --color-grey-dark-4: #5b4860;
-  --color-grey-dark-5: #7a6b7c;
+  --color-grey-light-1: #f9f3f4;
+  --color-grey-light-2: #eeeded;
+  --color-grey-light-3: #d3cfd0;
+  --color-grey-light-4: #afabab;
+  --color-grey-light-5: #928d8d;
+  --color-grey-dark-1: #1c1616; /* Normal background */
+  --color-grey-dark-2: #2e2727;
+  --color-grey-dark-3: #443a3b;
+  --color-grey-dark-4: #5f5454;
+  --color-grey-dark-5: #7d7576;
 
   --gradient: linear-gradient(
     to top left,

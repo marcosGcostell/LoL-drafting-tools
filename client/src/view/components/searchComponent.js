@@ -104,6 +104,7 @@ export default class SearchComponent extends Component {
   _generateItemMarkup(champion) {
     let output = this._template.replace(/{%ID%}/g, champion.id);
     output = output.replace(/{%SPRITE_SRC%}/g, SPRITE_SRC);
+    output = output.replace(/{%VERSION%}/g, champion.version);
     output = output.replace(/{%FILE%}/g, champion.sprite.file);
     output = output.replace(/{%X%}/g, champion.sprite.x);
     output = output.replace(/{%Y%}/g, champion.sprite.y);

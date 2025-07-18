@@ -6,7 +6,8 @@ export default class UserDataView extends View {
   constructor() {
     super();
 
-    this.form = document.querySelector('.user__profile');
+    this.form = document.querySelector('#user__form');
+    this.passwordForm = document.querySelector('#password__form');
     this.passwordPopup = document.querySelector('.password__popup');
     this.passwordInput = document.querySelector('#password');
     this.newPasswordInput = document.querySelector('#newPassword');

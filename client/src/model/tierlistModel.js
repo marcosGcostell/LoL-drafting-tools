@@ -4,24 +4,15 @@ import { TIERLIST_ROUTE } from '../utils/config.js';
 
 // getTierlist function to fetch data from API
 export default async ({ vslane, rank, patch }) => {
-  try {
-    console.log(`Getting tier list: ${vslane} ${rank} ${patch.toView()}`);
+  console.log(`Getting tier list: ${vslane} ${rank} ${patch.toView()}`);
 
-    const route = TIERLIST_ROUTE;
-    const query = {
-      lane: vslane,
-      rank,
-      patch,
-      sortedBy: 'pickRate',
-    };
+  const route = TIERLIST_ROUTE;
+  const query = { lane: vslane, rank, patch, sortedBy: 'pickRate' };
 
-    const { tierlist } = await fetchListFromAPI(route, query);
+  const { tierlist } = await fetchListFromAPI(route, query);
 
-    const newList = new ChampionList(tierlist);
-    newList.completeListData();
-    newList.addIndexes();
-    return newList.data;
-  } catch (err) {
-    throw err;
-  }
+  const newList = new ChampionList(tierlist);
+  newList.completeListData();
+  newList.addIndexes();
+  return newList.data;
 };
