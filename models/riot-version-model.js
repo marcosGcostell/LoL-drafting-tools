@@ -11,6 +11,10 @@ const versionSchema = new mongoose.Schema({
     type: String,
     default: new Date().toISOString(),
   },
+  integrity: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 versionSchema.statics.replaceFromString = async function (version) {
@@ -18,6 +22,7 @@ versionSchema.statics.replaceFromString = async function (version) {
   await this.create({
     id: version,
     createdAt: new Date().toISOString(),
+    integrity: true,
   });
   console.log(`Version saved. id: ${version} ✅`);
   return version;

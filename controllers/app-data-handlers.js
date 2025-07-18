@@ -61,6 +61,7 @@ export const updateDatabase = catchAsync(async (req, res, next) => {
     // Ignore folders fetched and get them from Riot data
     folders = Object.fromEntries(riotIdList.map(id => [id, id.toLowerCase()]));
     req.integrity = false;
+    Version.updateOne({ id: req.version }, { integrity: false });
     console.log('Lolalytics folder list has errors! 🧨');
   }
   riotIdList.forEach(id => {

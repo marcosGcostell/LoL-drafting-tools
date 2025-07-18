@@ -11,12 +11,17 @@ class RiotDataCache {
   }
 
   get version() {
-    return { id: this._version, createdAt: this._createdAt };
+    return {
+      id: this._version,
+      createdAt: this._createdAt,
+      integrity: this.integrity,
+    };
   }
 
   set version(version) {
     this._version = version?.id;
     this._createdAt = version?.createdAt;
+    this._integrity = version?.integrity;
   }
 
   get integrity() {
