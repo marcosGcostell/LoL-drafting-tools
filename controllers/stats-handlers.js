@@ -1,14 +1,14 @@
 import Lolalytics from '../models/api/lolalytics-api.js';
 import Stat from '../models/stat-model.js';
 import { getListFromDb } from './common-list-handlers.js';
-import { isoTimeStamp } from '../models/utils/helpers.js';
+import { dateNowToISO } from '../models/utils/helpers.js';
 import catchAsync from '../models/utils/catch-async.js';
 
 const saveStatsData = async (queryObj, stats) => {
   try {
     const data = {
       ...queryObj,
-      createdAt: isoTimeStamp(),
+      createdAt: dateNowToISO(),
       stats,
     };
 
@@ -34,7 +34,7 @@ const getStatsData = async queryObj => {
     console.log('Getting Stats from website...');
     const stats = await Lolalytics.getStats(queryObj);
     saveStatsData(queryObj, stats);
-    return { stats, createdAt: isoTimeStamp() };
+    return { stats, createdAt: dateNowToISO() };
   } catch (err) {
     throw err;
   }

@@ -6,7 +6,7 @@ import {
   riotLolRolesArray,
   DEFAULT_SORT_FIELD,
 } from '../models/utils/config.js';
-import { isoTimeStamp, expirationDate } from '../models/utils/helpers.js';
+import { dateNowToISO, expirationDate } from '../models/utils/helpers.js';
 import catchAsync from '../models/utils/catch-async.js';
 import AppError from '../models/utils/app-error.js';
 
@@ -15,16 +15,17 @@ export const saveTierlist = ({ lane, rank, patch }, list) => {
     rank,
     lane,
     patch,
-    createdAt: isoTimeStamp(),
+    createdAt: dateNowToISO(),
     list,
   };
 
   Tierlist.create(data);
+  tierlistCache.save(data);
   console.log(`✅ Tierlist saved: ${lane} - ${rank} - ${patch}`);
   return data;
 };
 
-export const getTierlistData = async queryObj => {
+const getTierlistData = async queryObj => {
   // First try to get the list from memory cache
   const cache = tierlistCache.load(queryObj);
   if (cache && cache.createdAt.toISOString() > expirationDate()) {
@@ -54,7 +55,6 @@ export const getTierlistData = async queryObj => {
     throw new AppError('Could not find the tierlists data', 404);
 
   const newData = saveTierlist(queryObj, tierlist);
-  tierlistCache.save(newData);
   return { tierlist, createdAt: newData.createdAt };
 };
 

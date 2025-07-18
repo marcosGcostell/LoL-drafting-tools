@@ -3,32 +3,33 @@ import Counter from '../models/counter-model.js';
 import { getAllRoleRates, getAllTierlist } from './tierlist-handlers.js';
 import { getListFromDb } from './common-list-handlers.js';
 import { DEFAULT_SORT_FIELD } from '../models/utils/config.js';
-import { isoTimeStamp } from '../models/utils/helpers.js';
+import { dateNowToISO } from '../models/utils/helpers.js';
 import catchAsync from '../models/utils/catch-async.js';
 
 const saveCounterList = async (queryObj, list) => {
   const data = {
     ...queryObj,
-    createdAt: isoTimeStamp(),
+    createdAt: dateNowToISO(),
     list,
   };
 
   await Counter.create(data);
   console.log(
-    `✅ Counter list saved: (${queryObj.champion}, ${queryObj.lane}, ${queryObj.rank}, ${queryObj.vslane}, ${queryObj.patch})`,
+    `✅ Counter list saved: ${data.champion} - ${data.lane} - ${data.rank} - ${data.vslane} - ${data.patch})`,
   );
   return data;
 };
 
 const getCounterListData = async queryObj => {
-  console.log(queryObj);
   const data = await getListFromDb(Counter, queryObj);
+  const queryLog = `${queryObj.champion} - ${queryObj.lane} - ${queryObj.rank} - ${queryObj.vslane} - ${queryObj.patch})`;
 
   if (data) {
-    console.log('Getting Counters from database...');
+    console.log(`Getting from database: Counters: ${queryLog}`);
     return { counterList: data.list, createdAt: data.createdAt };
   }
-  console.log('Getting Counters from website...');
+
+  console.log(`Getting from website: Counters: ${queryLog}`);
   const counterList = await Lolalytics.getCounters(queryObj);
   const allTierlists = await getAllTierlist(queryObj.rank, queryObj.patch);
 
@@ -50,7 +51,7 @@ const getCounterListData = async queryObj => {
   });
 
   saveCounterList(queryObj, completeList);
-  return { counterList: completeList, createdAt: isoTimeStamp() };
+  return { counterList: completeList, createdAt: dateNowToISO() };
 };
 
 // getCounterList function to get a counter list from database or website

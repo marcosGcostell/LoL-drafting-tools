@@ -5,7 +5,7 @@ import Version from '../riot-version-model.js';
 import Lolalytics from '../api/lolalytics-api.js';
 import Tierlist from '../tierlist-model.js';
 import { saveTierlist } from '../../controllers/tierlist-handlers.js';
-import { getRandomInt, wait, isoTimeStamp, expirationDate } from './helpers.js';
+import { getRandomInt, wait, dateNowToISO, expirationDate } from './helpers.js';
 
 const REQ_MIN_LAPSE = 2;
 const REQ_MAX_LAPSE = 8;
@@ -13,7 +13,7 @@ const GROUP_MIN_LAPSE = 45 * 60;
 const GROUP_MAX_LAPSE = 65 * 60;
 
 const log = (icon, message) =>
-  console.log(`${icon} - ${isoTimeStamp()}: ${message}`);
+  console.log(`${icon} - ${dateNowToISO()}: ${message}`);
 
 const createGroups = async remainingRanks => {
   const roles = await RiotRole.find();

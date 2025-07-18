@@ -15,7 +15,6 @@ export const checkId = catchAsyncParam(async (req, res, next, val) => {
   }
   // Use lolalytics id name
   req.champion = champion.id;
-  console.log(req.champion);
   next();
 });
 

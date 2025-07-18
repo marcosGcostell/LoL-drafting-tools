@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import User from '../models/user-model.js';
 import catchAsync from '../models/utils/catch-async.js';
 import AppError from '../models/utils/app-error.js';
-import { isoTimeStamp } from '../models/utils/helpers.js';
+import { dateNowToISO } from '../models/utils/helpers.js';
 
 const _signToken = id =>
   jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -29,8 +29,8 @@ export const signup = catchAsync(async (req, res, next) => {
     avatar: data.avatar,
     password: data.password,
     passwordConfirm: data.passwordConfirm,
-    passwordChangedAt: isoTimeStamp(),
-    createdAt: isoTimeStamp(),
+    passwordChangedAt: dateNowToISO(),
+    createdAt: dateNowToISO(),
   });
 
   const token = _signToken(newUser._id);
