@@ -53,7 +53,7 @@ const inputsHandler = (target, value) => {
 const savePassword = async () => {
   try {
     const { password, newPassword, passwordConfirm } =
-      profileModel.getPasswordFields(userDataView.form);
+      profileModel.getPasswordFields(userDataView.passwordForm);
 
     const result = await authService.validatePassword(
       {

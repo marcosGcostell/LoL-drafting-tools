@@ -218,7 +218,7 @@ class AppState extends EventTarget {
           ? errorMessage
           : `Somethig went wrong with the server. ${errorMessage}Try to reload the app`;
       this.dispatchEvent(
-        new CustomEvent(`error:${eventTarget}`, {
+        new CustomEvent('error:option', {
           detail: {
             target: eventTarget,
             message,

@@ -186,6 +186,12 @@
   align-items: center;
 }
 
+.profile__search .search__popup {
+  top: 1.8rem;
+  min-height: 4.5rem;
+  z-index: 1000;
+}
+
 .profile__champion {
   display: flex;
   flex-direction: column;
