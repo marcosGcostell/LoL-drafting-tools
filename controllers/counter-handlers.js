@@ -26,12 +26,31 @@ const getCounterListData = async queryObj => {
 
   if (data) {
     console.log('Getting Counters from database...');
-    return { counterList: data.list, updatedAt: data.createdAt };
+    return { counterList: data.list, createdAt: data.createdAt };
   }
   console.log('Getting Counters from website...');
   const counterList = await Lolalytics.getCounters(queryObj);
-  saveCounterList(queryObj, counterList);
-  return { counterList, updatedAt: isoTimeStamp() };
+  const allTierlists = await getAllTierlist(queryObj.rank, queryObj.patch);
+
+  const completeList = counterList.map(el => {
+    const [champion] = allTierlists[queryObj.vslane].filter(
+      item => el.name === item.name,
+    );
+    return {
+      name: el.name,
+      winRatio: el.winRatio,
+      opponentWR: champion?.winRatio || 0,
+      opponentLane: queryObj.vslane,
+      delta1: el.delta1,
+      delta2: el.delta2,
+      roleRates: getAllRoleRates(el.name, allTierlists),
+      pickRate: champion?.pickRate || 0,
+      banRate: champion?.banRate || 0,
+    };
+  });
+
+  saveCounterList(queryObj, completeList);
+  return { counterList: completeList, createdAt: isoTimeStamp() };
 };
 
 // getCounterList function to get a counter list from database or website
@@ -43,39 +62,21 @@ export default catchAsync(async (req, res, next) => {
     vslane: req.vslane,
     patch: req.patch,
   };
-  const { counterList, updatedAt } = await getCounterListData(queryObj);
-  const allTierlists = await getAllTierlist(req.rank, req.patch);
-
-  const completeList = counterList.map(el => {
-    const [champion] = allTierlists[req.vslane].filter(
-      item => el.name === item.name,
-    );
-    return {
-      name: el.name,
-      winRatio: el.winRatio,
-      opponentWR: champion?.winRatio || 0,
-      opponentLane: req.vslane,
-      delta1: el.delta1,
-      delta2: el.delta2,
-      roleRates: getAllRoleRates(el.name, allTierlists),
-      pickRate: champion?.pickRate || 0,
-      banRate: champion?.banRate || 0,
-    };
-  });
+  const { counterList, createdAt } = await getCounterListData(queryObj);
 
   const sort = req.query.sort || DEFAULT_SORT_FIELD;
-  completeList.sort((a, b) => b[sort] - a[sort]);
+  counterList.sort((a, b) => b[sort] - a[sort]);
   delete queryObj.champion;
 
   // Send response
   res.status(200).json({
     status: 'success',
-    results: completeList.length,
-    updatedAt,
+    results: counterList.length,
+    createdAt,
     data: {
       id: req.champion,
       ...queryObj,
-      counterList: completeList,
+      counterList,
     },
   });
 });

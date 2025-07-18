@@ -13,7 +13,7 @@ import userRouter from './routes/user-route.js';
 import globalErrorHandler from './controllers/error-handlers.js';
 
 // For DEVELOPMENT purposes:
-// 0) Reset the static riot data from hard coded file
+// Reset the static riot data from hard coded file
 // import resetStaticData from './models/riot-static-reset-data.js';
 // resetStaticData();
 

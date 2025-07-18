@@ -29,12 +29,12 @@ const getStatsData = async queryObj => {
 
     if (data) {
       console.log('Getting Stats from database...');
-      return { stats: data.stats, updatedAt: data.createdAt };
+      return { stats: data.stats, createdAt: data.createdAt };
     }
     console.log('Getting Stats from website...');
     const stats = await Lolalytics.getStats(queryObj);
     saveStatsData(queryObj, stats);
-    return { stats, updatedAt: isoTimeStamp() };
+    return { stats, createdAt: isoTimeStamp() };
   } catch (err) {
     throw err;
   }
@@ -48,13 +48,13 @@ export default catchAsync(async (req, res, next) => {
     rank: req.rank,
     patch: req.patch,
   };
-  const { stats, updatedAt } = await getStatsData(queryObj);
+  const { stats, createdAt } = await getStatsData(queryObj);
   delete queryObj.champion;
 
   // Send response
   res.status(200).json({
     status: 'success',
-    updatedAt,
+    createdAt,
     data: {
       id: req.champion,
       ...queryObj,

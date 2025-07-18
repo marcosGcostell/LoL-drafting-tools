@@ -29,14 +29,25 @@ const counterListSchema = new mongoose.Schema({
     {
       name: String,
       winRatio: Number,
+      opponentWR: Number,
+      opponentLane: String,
       delta1: Number,
       delta2: Number,
+      roleRates: {
+        top: Number,
+        jungle: Number,
+        middle: Number,
+        bottom: Number,
+        support: Number,
+      },
+      pickRate: Number,
+      banRate: Number,
     },
   ],
 });
 
 counterListSchema.pre(/^find/, function (next) {
-  this.select('-__v -_id -list._id');
+  this.select('-__v -_id -list._id -list.roleRates._id');
   next();
 });
 
