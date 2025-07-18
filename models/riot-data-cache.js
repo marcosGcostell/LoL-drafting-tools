@@ -15,8 +15,8 @@ class RiotDataCache {
   }
 
   set version(version) {
-    this._version = version.id;
-    this._createdAt = version.createdAt;
+    this._version = version?.id;
+    this._createdAt = version?.createdAt;
   }
 
   get integrity() {

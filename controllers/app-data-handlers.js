@@ -11,7 +11,7 @@ export const checkGameVersion = catchAsync(async (req, res, next) => {
   // First check version in cache
   const cacheVersion = riotDataCache.version;
   if (
-    cacheVersion.id &&
+    cacheVersion?.id &&
     new Date(cacheVersion.createdAt).toISOString() > expirationDate()
   ) {
     req.version = cacheVersion.id;
@@ -22,10 +22,11 @@ export const checkGameVersion = catchAsync(async (req, res, next) => {
   }
 
   // If no valid cache, check in database
-  const [dbVersion] = await Version.find({
-    createdAt: { $gte: expirationDate() },
-  });
-  if (dbVersion) {
+  const [dbVersion] = await Version.find();
+  if (
+    dbVersion?.id &&
+    new Date(dbVersion.createdAt).toISOString() > expirationDate()
+  ) {
     req.version = dbVersion.id;
     req.createdAt = dbVersion.createdAt;
     req.update = false;
@@ -35,9 +36,8 @@ export const checkGameVersion = catchAsync(async (req, res, next) => {
   }
 
   // No valid versions, get it from riot site
-  req.version = await Version.replaceFromString(
-    await Riot.getLastGameVersion(),
-  );
+  const versionId = await Riot.getLastGameVersion();
+  req.version = await Version.replaceFromString(versionId);
   req.createdAt = new Date().toISOString();
   riotDataCache.version = { id: req.version, createdAt: req.createdAt };
   req.update = req.version !== dbVersion?.id;
@@ -68,10 +68,11 @@ export const updateDatabase = catchAsync(async (req, res, next) => {
   });
 
   // Save data to cache and database
+  await Champion.replaceFromObject(champions);
+  await Champion.findAsObject();
   riotDataCache.champions = champions;
   riotDataCache.integrity = req.integrity;
   Object.assign(riotDataCache, riotDataCache.getLists(champions));
-  await Champion.replaceFromObject(champions);
 
   next();
 });
