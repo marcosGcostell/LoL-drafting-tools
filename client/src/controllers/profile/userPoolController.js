@@ -1,13 +1,14 @@
 import appData from '../../model/appData.js';
 import appState from '../../appState.js';
 import UserPoolView from '../../view/profile/userPoolView.js';
+import { riotLolRolesArray } from '../../../../models/utils/config.js';
 
 let userPoolView;
 let userCache;
 
 const hidePopUps = e => {
   const exclude = e.detail?.exclude || null;
-  const popUpsIds = ['rank', 'top', 'jungle', 'middle', 'bottom', 'support'];
+  const popUpsIds = ['rank', ...riotLolRolesArray];
   popUpsIds.forEach(id => {
     const comp = userPoolView.components[id];
     if (comp.isVisible && comp.id !== exclude) comp.toggle();
@@ -93,8 +94,7 @@ export default async data => {
   userPoolView.components.secondary.bindHandlers(setSelector);
   userPoolView.components.rank.bindHandlers(setSelector, togglePopUp);
   userPoolView.components.patch.bindHandlers(setPatch);
-  const searchPanels = ['top', 'jungle', 'middle', 'bottom', 'support'];
-  searchPanels.forEach(id =>
+  riotLolRolesArray.forEach(id =>
     userPoolView.components[id].bindHandlers(addPickedChampion, togglePopUp),
   );
 

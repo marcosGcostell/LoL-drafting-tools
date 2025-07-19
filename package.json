@@ -9,8 +9,7 @@
     "start:prod": "set NODE_ENV=production&&nodemon server.js",
     "client": "vite --config vite.config.js",
     "fullstack": "concurrently \"npm run start\" \"npm run client\"",
-    "worker": "node ./worker.js *> ./worker.log",
-    "worker:noreset": "node ./worker.js --noreset >> ./worker.log 2>>&1"
+    "worker": "node ./worker.js"
   },
   "author": "Kuantik Software",
   "license": "ISC",

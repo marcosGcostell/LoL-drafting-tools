@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
 
-import { isoTimeStamp } from './utils/helpers.js';
+import { dateNowToISO } from './utils/helpers.js';
 import { ENCRYPT_STRENGTH, PASSWORD_MIN_LENGTH } from './utils/config.js';
 import {
   MAX_LIST_ITEMS,
@@ -87,7 +87,7 @@ userSchema.pre('save', async function (next) {
 
   this.password = await bcrypt.hash(this.password, ENCRYPT_STRENGTH);
   this.passwordConfirm = undefined;
-  this.passwordChangedAt = isoTimeStamp(1000);
+  this.passwordChangedAt = dateNowToISO(1000);
   next();
 });
 

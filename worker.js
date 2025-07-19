@@ -1,14 +1,18 @@
-import dotenv from 'dotenv';
-import updateAllTierlists from './models/utils/scheduler.js';
+import { spawn } from 'child_process';
+import fs from 'fs';
+import path from 'path';
 
-dotenv.config({ path: './config.env' });
+const args = process.argv.slice(2);
 
-const DB = process.env.DATABASE.replace('<PASSWORD>', process.env.DB_PASSWORD);
+// Log append to the existing file if --noreset
+const noReset = args.includes('--noreset');
+const logMode = noReset ? 'a' : 'w';
 
-(async () => {
-  const options = process.argv.slice(2).reduce((acc, el) => {
-    acc[el.slice(2)] = true;
-    return acc;
-  }, {});
-  updateAllTierlists(DB, options);
-})();
+const logFile = path.resolve('./worker.log');
+const logStream = fs.createWriteStream(logFile, { flags: logMode });
+
+// Launch scheduler
+const child = spawn('node', ['./models/utils/scheduler.js', ...args]);
+
+child.stdout.pipe(logStream);
+child.stderr.pipe(logStream);

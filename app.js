@@ -10,10 +10,11 @@ import tierlistRouter from './routes/tierlist-routes.js';
 import counterRouter from './routes/counter-routes.js';
 import statsRouter from './routes/stats-route.js';
 import userRouter from './routes/user-route.js';
+import internalRouter from './routes/internal-route.js';
 import globalErrorHandler from './controllers/error-handlers.js';
 
 // For DEVELOPMENT purposes:
-// 0) Reset the static riot data from hard coded file
+// Reset the static riot data from hard coded file
 // import resetStaticData from './models/riot-static-reset-data.js';
 // resetStaticData();
 
@@ -47,6 +48,7 @@ app.use('/api/v1/tierlist', tierlistRouter);
 app.use('/api/v1/counters', counterRouter);
 app.use('/api/v1/stats', statsRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/internal', internalRouter);
 
 // ERROR MIDDLEWARE
 app.use(globalErrorHandler);

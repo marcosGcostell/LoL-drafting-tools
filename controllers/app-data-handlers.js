@@ -3,28 +3,44 @@ import Lolalytics from '../models/api/lolalytics-api.js';
 
 import Version from '../models/riot-version-model.js';
 import Champion from '../models/riot-champion-model.js';
-import { RiotRole, RiotRank } from '../models/riot-static-model.js';
+import riotDataCache from '../models/riot-data-cache.js';
 import { expirationDate } from '../models/utils/helpers.js';
 import catchAsync from '../models/utils/catch-async.js';
 
 export const checkGameVersion = catchAsync(async (req, res, next) => {
-  const [validVersion] = await Version.find({
-    createdAt: { $gte: expirationDate() },
-  });
-  if (validVersion) {
-    req.version = validVersion.id;
-    req.createdAt = validVersion.createdAt;
+  // First check version in cache
+  const cacheVersion = riotDataCache.version;
+  if (
+    cacheVersion?.id &&
+    new Date(cacheVersion.createdAt).toISOString() > expirationDate()
+  ) {
+    req.version = cacheVersion.id;
+    req.createdAt = cacheVersion.createdAt;
     req.update = false;
-    console.log(`Version readed from database: ${validVersion.id} ✅`);
+    console.log(`Version readed from cache: ${cacheVersion.id} ✅`);
     return next();
   }
 
-  console.log('Version backup expired!');
-  req.version = await Version.replaceFromString(
-    await Riot.getLastGameVersion(),
-  );
+  // If no valid cache, check in database
+  const [dbVersion] = await Version.find();
+  if (
+    dbVersion?.id &&
+    new Date(dbVersion.createdAt).toISOString() > expirationDate()
+  ) {
+    req.version = dbVersion.id;
+    req.createdAt = dbVersion.createdAt;
+    req.update = false;
+    riotDataCache.version = dbVersion;
+    console.log(`Version readed from database: ${dbVersion.id} ✅`);
+    return next();
+  }
+
+  // No valid versions, get it from riot site
+  const versionId = await Riot.getLastGameVersion();
+  req.version = await Version.replaceFromString(versionId);
   req.createdAt = new Date().toISOString();
-  req.update = req.version !== validVersion?.id;
+  riotDataCache.version = { id: req.version, createdAt: req.createdAt };
+  req.update = req.version !== dbVersion?.id;
   next();
 });
 
@@ -45,46 +61,34 @@ export const updateDatabase = catchAsync(async (req, res, next) => {
     // Ignore folders fetched and get them from Riot data
     folders = Object.fromEntries(riotIdList.map(id => [id, id.toLowerCase()]));
     req.integrity = false;
+    Version.updateOne({ id: req.version }, { integrity: false });
     console.log('Lolalytics folder list has errors! 🧨');
   }
   riotIdList.forEach(id => {
     champions[id].id = folders[id];
   });
 
-  // Save data to the database
-  console.log('Saving data to database...');
+  // Save data to cache and database
   await Champion.replaceFromObject(champions);
+  await Champion.findAsObject();
+  riotDataCache.champions = champions;
+  riotDataCache.integrity = req.integrity;
+  Object.assign(riotDataCache, riotDataCache.getLists(champions));
 
   next();
 });
 
 export const getChampions = catchAsync(async (req, res, next) => {
-  // Get the data from database
-  console.log('Getting champions from database...');
-  const champions = await Champion.findAsObject();
-
-  const idList = Object.keys(champions);
-  const nameList = idList.map(el => champions[el].name);
-
-  console.log(`${idList.length} Champions read from database ✅`);
-
-  const roles = await RiotRole.findAsObject();
-  const ranks = await RiotRank.findAsObject();
+  // Cache is always updated here. Get data from cache
+  const { data, integrity } = riotDataCache.getData();
+  console.log(`${data.idList.length} Champions read ✅`);
 
   // Send response
   res.status(200).json({
     status: 'success',
-    results: idList.length,
-    integrity: req.integrity,
-    data: {
-      version: req.version,
-      createdAt: req.createdAt,
-      champions,
-      idList,
-      nameList,
-      roles,
-      ranks,
-    },
+    results: data.idList.length,
+    integrity,
+    data,
   });
 });
 
