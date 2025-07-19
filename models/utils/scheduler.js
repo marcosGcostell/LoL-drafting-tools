@@ -146,7 +146,7 @@ const updateCache = async tasks => {
       }
 
       // eslint-disable-next-line no-await-in-loop
-      if (!options.nochache) await updateCache(tasks);
+      if (!options.nocache) await updateCache(tasks);
 
       // Last group doesn't wait for the next one
       if (groups.indexOf(tasks) < groups.length - 1) {
