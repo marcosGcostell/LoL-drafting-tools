@@ -102,3 +102,18 @@ export const protect = catchAsync(async (req, res, next) => {
   req.user = currentUser;
   next();
 });
+
+export const protectInternal = catchAsync(async (req, res, next) => {
+  if (
+    !req.headers.authorization ||
+    !req.headers.authorization.startsWith('Bearer')
+  ) {
+    return next(new AppError('Forbidden', 403));
+  }
+
+  const token = req.headers.authorization.split(' ')[1];
+  if (token !== process.env.WORKER_SECRET) {
+    return next(new AppError('Forbidden', 403));
+  }
+  next();
+});

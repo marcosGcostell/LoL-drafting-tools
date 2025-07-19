@@ -1,4 +1,5 @@
 // Constants for API connection to Lolalyttics Site
+export const LOCAL_API = 'http://127.0.0.1:3000/api/v1/';
 export const MIN_DELAY = 0.5;
 export const MAX_DELAY = 1.2;
 export const PROXY_ON = false;

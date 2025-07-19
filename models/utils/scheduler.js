@@ -6,11 +6,13 @@ import Lolalytics from '../api/lolalytics-api.js';
 import Tierlist from '../tierlist-model.js';
 import { saveTierlist } from '../../controllers/tierlist-handlers.js';
 import { getRandomInt, wait, dateNowToISO, expirationDate } from './helpers.js';
+import { LOCAL_API } from './config.js';
 
 const REQ_MIN_LAPSE = 2;
 const REQ_MAX_LAPSE = 8;
 const GROUP_MIN_LAPSE = 45 * 60;
 const GROUP_MAX_LAPSE = 65 * 60;
+const WORKER_HOURS_CYCLE = 12;
 
 const log = (icon, message) =>
   console.log(`${icon} - ${dateNowToISO()}: ${message}`);
@@ -47,7 +49,7 @@ const createGroups = async remainingRanks => {
 const getRemainingRanks = async () => {
   const ranks = await RiotRank.find();
   const allValidLists = await Tierlist.find({
-    createdAt: { $gte: expirationDate(12) },
+    createdAt: { $gte: expirationDate(WORKER_HOURS_CYCLE) },
   });
 
   return ranks.filter(
@@ -59,10 +61,26 @@ const replaceTierlist = async queryObj => {
   const tierlist = await Lolalytics.getTierlist(queryObj);
   if (!tierlist.length)
     return console.error(
-      `🔴 ERROR!: Couldn't get tierlist (${queryObj.lane}, ${queryObj.rank}, ${queryObj.patch})`,
+      `🔴 ERROR!: Couldn't get tierlist: ${queryObj.lane} - ${queryObj.rank} - ${queryObj.patch}`,
     );
   await Tierlist.deleteOne(queryObj);
   saveTierlist(queryObj, tierlist);
+};
+
+const requestUpdateCache = async ranks => {
+  const response = await fetch(`${LOCAL_API}internal/refresh-cache`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.WORKER_SECRET}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ ranks }),
+  });
+  const { message, results } = await response.json();
+  if (message) {
+    console.error(`❌ Error updating cache: ${message}`);
+  }
+  return results;
 };
 
 export default async (DB, options) => {
@@ -88,6 +106,28 @@ export default async (DB, options) => {
         // eslint-disable-next-line no-await-in-loop
         await wait(getRandomInt(REQ_MIN_LAPSE, REQ_MAX_LAPSE));
       }
+
+      // Request API to update cache with the new tierlist
+      const ranks = [];
+      tasks.forEach(task => {
+        if (!ranks.includes(task.rank)) ranks.push(task.rank);
+      });
+      try {
+        const results = requestUpdateCache(ranks);
+        if (results) {
+          log(
+            '💻',
+            `API cache updated: Ranks: ${ranks.join(' - ')}. Total: ${results} tierlists`,
+          );
+        } else {
+          console.error(
+            '❌ API cache: Could not update any tierlist of this group',
+          );
+        }
+      } catch (err) {
+        console.error(`❌ Error updating cache: ${err.message}`);
+      }
+
       // Last group doesn't wait for the next one
       if (groups.indexOf(tasks) < groups.length - 1) {
         // eslint-disable-next-line no-await-in-loop
