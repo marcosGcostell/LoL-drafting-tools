@@ -10,6 +10,7 @@ mongoose
     console.log('DB connection successful!');
     tierlistCache.loadAllFromDB();
     riotDataCache.loadAllFromDB();
+    tierlistCache.owner = 'API';
   })
   .then(() => console.log('Main data loaded in cache.'));
 

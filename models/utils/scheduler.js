@@ -1,4 +1,7 @@
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 import { RiotRole, RiotRank } from '../riot-static-model.js';
 import Version from '../riot-version-model.js';
@@ -13,6 +16,13 @@ const REQ_MAX_LAPSE = 8;
 const GROUP_MIN_LAPSE = 45 * 60;
 const GROUP_MAX_LAPSE = 65 * 60;
 const WORKER_HOURS_CYCLE = 12;
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.resolve(__dirname, '../../config.env') });
+
+const DB = process.env.DATABASE.replace('<PASSWORD>', process.env.DB_PASSWORD);
 
 const log = (icon, message) =>
   console.log(`${icon} - ${dateNowToISO()}: ${message}`);
@@ -83,8 +93,36 @@ const requestUpdateCache = async ranks => {
   return results;
 };
 
-export default async (DB, options) => {
+const updateCache = async tasks => {
+  // Request API to update cache with the new tierlist
+  const ranks = [];
+  tasks.forEach(task => {
+    if (!ranks.includes(task.rank)) ranks.push(task.rank);
+  });
   try {
+    const results = await requestUpdateCache(ranks);
+    if (results) {
+      log(
+        '💻',
+        `API cache updated: Ranks: ${ranks.join(' - ')}. Total: ${results} tierlists`,
+      );
+    } else {
+      console.error(
+        '❌ API cache: Could not update any tierlist of this group',
+      );
+    }
+  } catch (err) {
+    console.error(`❌ Error updating cache: ${err.message}`);
+  }
+};
+
+(async () => {
+  try {
+    const options = process.argv.slice(2).reduce((acc, el) => {
+      acc[el.slice(2)] = true;
+      return acc;
+    }, {});
+
     await mongoose.connect(DB);
     log('▶️', ' Worker conected to DB: ');
 
@@ -107,26 +145,8 @@ export default async (DB, options) => {
         await wait(getRandomInt(REQ_MIN_LAPSE, REQ_MAX_LAPSE));
       }
 
-      // Request API to update cache with the new tierlist
-      const ranks = [];
-      tasks.forEach(task => {
-        if (!ranks.includes(task.rank)) ranks.push(task.rank);
-      });
-      try {
-        const results = requestUpdateCache(ranks);
-        if (results) {
-          log(
-            '💻',
-            `API cache updated: Ranks: ${ranks.join(' - ')}. Total: ${results} tierlists`,
-          );
-        } else {
-          console.error(
-            '❌ API cache: Could not update any tierlist of this group',
-          );
-        }
-      } catch (err) {
-        console.error(`❌ Error updating cache: ${err.message}`);
-      }
+      // eslint-disable-next-line no-await-in-loop
+      if (!options.nochache) await updateCache(tasks);
 
       // Last group doesn't wait for the next one
       if (groups.indexOf(tasks) < groups.length - 1) {
@@ -139,4 +159,4 @@ export default async (DB, options) => {
   } catch (err) {
     console.error('🔴 Critical Error!: ', err);
   }
-};
+})();

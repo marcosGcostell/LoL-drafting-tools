@@ -5,6 +5,7 @@ class TierlistCache {
   constructor() {
     // key: lane_rank_patch, value: tierlist document
     this.cache = new Map();
+    this.owner = '';
   }
 
   _getKey({ lane, rank, patch }) {

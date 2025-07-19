@@ -20,8 +20,10 @@ export const saveTierlist = ({ lane, rank, patch }, list) => {
   };
 
   Tierlist.create(data);
-  tierlistCache.save(data);
   console.log(`✅ Tierlist saved: ${lane} - ${rank} - ${patch}`);
+  if (tierlistCache.owner === 'API') {
+    tierlistCache.save(data);
+  }
   return data;
 };
 
