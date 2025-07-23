@@ -1,5 +1,5 @@
 import appState from '../appState.js';
-import UserCache from '../model/UserCacheModel.js';
+import UserCache from '../model/userCacheModel.js';
 import { getChanges } from '../model/profileModel.js';
 import { initUserData, isFormActive } from './profile/userDataController.js';
 import initUserPool from './profile/userPoolController.js';

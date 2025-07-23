@@ -5,6 +5,7 @@ import path from 'path';
 const args = process.argv.slice(2);
 
 // Log append to the existing file if --noreset
+const consoleMode = !args.includes('--nolog');
 const noReset = args.includes('--noreset');
 const logMode = noReset ? 'a' : 'w';
 
@@ -16,3 +17,9 @@ const child = spawn('node', ['./models/utils/scheduler.js', ...args]);
 
 child.stdout.pipe(logStream);
 child.stderr.pipe(logStream);
+
+// Log also to the console in log mode
+if (consoleMode) {
+  child.stdout.pipe(process.stdout);
+  child.stderr.pipe(process.stderr);
+}

@@ -20,6 +20,19 @@ const _verifyToken = token =>
     });
   });
 
+const _loginUser = (res, user, status) => {
+  const token = _signToken(user._id);
+  delete user.password;
+
+  res.status(status).json({
+    status: 'success',
+    token,
+    data: {
+      user,
+    },
+  });
+};
+
 export const signup = catchAsync(async (req, res, next) => {
   const data = req.body;
   const newUser = await User.create({
@@ -33,15 +46,7 @@ export const signup = catchAsync(async (req, res, next) => {
     createdAt: dateNowToISO(),
   });
 
-  const token = _signToken(newUser._id);
-
-  res.status(201).json({
-    status: 'success',
-    token,
-    data: {
-      user: newUser,
-    },
-  });
+  _loginUser(res, newUser, 201);
 });
 
 export const login = catchAsync(async (req, res, next) => {
@@ -61,12 +66,7 @@ export const login = catchAsync(async (req, res, next) => {
     return next(new AppError('Incorrect email or password!', 401));
   }
 
-  const token = _signToken(user._id);
-  console.log(token);
-  res.status(200).json({
-    status: 'success',
-    token,
-  });
+  _loginUser(res, user, 200);
 });
 
 export const protect = catchAsync(async (req, res, next) => {
@@ -116,4 +116,28 @@ export const protectInternal = catchAsync(async (req, res, next) => {
     return next(new AppError('Forbidden', 403));
   }
   next();
+});
+
+export const updatePassword = catchAsync(async (req, res, next) => {
+  const { oldPassword, password, passwordConfirm } = req.body;
+  if (!oldPassword || !password || !passwordConfirm) {
+    return next(
+      new AppError(
+        'Current password, new password and new password confirmed are required to change the password.',
+        400,
+      ),
+    );
+  }
+
+  const user = await User.findById(req.user.id).select('+password');
+
+  if (!(await user.checkPassword(oldPassword, user.password))) {
+    return next(new AppError('Current password is incorrect.', 401));
+  }
+
+  user.password = password;
+  user.passwordConfirm = passwordConfirm;
+  await user.save();
+
+  _loginUser(res, user, 200);
 });

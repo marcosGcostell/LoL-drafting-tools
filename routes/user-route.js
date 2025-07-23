@@ -29,4 +29,10 @@ router
   )
   .delete(authController.protect, userController.deleteUser);
 
+router.patch(
+  '/me/password',
+  authController.protect,
+  authController.updatePassword,
+);
+
 export default router;

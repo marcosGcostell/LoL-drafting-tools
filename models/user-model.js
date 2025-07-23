@@ -92,7 +92,7 @@ userSchema.pre('save', async function (next) {
 });
 
 userSchema.pre(/^find/, function (next) {
-  this.select('-__v');
+  this.select('-__v -password -passwordChangedAt');
   next();
 });
 
