@@ -4,6 +4,7 @@ import {
   CHECK_USER_ROUTE,
   LOGIN_ROUTE,
   USER_ROUTE,
+  USER_PASSWORD_ROUTE,
 } from '../utils/config.js';
 
 const _checkQuery = ({ lane, rank }) => {
@@ -82,6 +83,24 @@ export const updateUserOnAPI = async (token, body) => {
   return { user: data.user };
 };
 
+export const updatePasswordOnAPI = async (userToken, body) => {
+  if (!userToken)
+    return { message: 'You need to be logged in to update the user' };
+  if (!body) return { message: 'You need to send data to update' };
+
+  const response = await fetch(`${LOCAL_API}${USER_PASSWORD_ROUTE}`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: `Bearer ${userToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+
+  const { token, data, message } = await response.json();
+  return { token, user: data.user, message };
+};
+
 export const loginOnAPI = async (loginName, password) => {
   if (!loginName || !password) {
     return { message: 'Please, provide an username or email and a password.' };
@@ -97,6 +116,6 @@ export const loginOnAPI = async (loginName, password) => {
     }),
   });
 
-  const { token, message } = await response.json();
-  return { token, message };
+  const { token, data, message } = await response.json();
+  return { token, user: data.user, message };
 };

@@ -2,6 +2,7 @@ import {
   loginOnAPI,
   getUserDataFromAPI,
   updateUserOnAPI,
+  updatePasswordOnAPI,
 } from '../services/apiCalls.js';
 import { LS_USER } from '../utils/config.js';
 
@@ -67,16 +68,25 @@ class User extends EventTarget {
 
     if (!user) return { message: message || 'Could not update the user' };
 
-    if (body?.password) {
-      const result = await this.login(this.username, body.password, {
-        silentMode: true,
-      });
-      if (!result) return { message: 'Could not login with new password' };
-    } else {
-      this.valuesFromResponse(user);
-      this.#save();
-    }
-    return user;
+    this.valuesFromResponse(user);
+    this.#save();
+
+    return this;
+  }
+
+  async updatePassword(body) {
+    const { token, user, message } = await updatePasswordOnAPI(
+      this.token,
+      body,
+    );
+
+    if (!user || !token)
+      return { message: message || 'Could not update the password' };
+
+    this.valuesFromResponse(user);
+    this.#save();
+
+    return this;
   }
 
   getUpdated() {
@@ -88,15 +98,14 @@ class User extends EventTarget {
   }
 
   async login(loginName, password, { silentMode = false } = {}) {
-    const { token, message } = await loginOnAPI(loginName, password);
+    const { token, user, message } = await loginOnAPI(loginName, password);
 
     if (!token) return { message: message || 'Could not logged in.' };
     this.token = token;
-
-    const user = await this._getData();
     if (!user)
       return { message: 'Could not get the user data after logged in' };
 
+    this.valuesFromResponse(user);
     this.#save();
     if (!silentMode) this.dispatchEvent(new Event('login'));
     return this;

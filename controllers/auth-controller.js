@@ -22,7 +22,8 @@ const _verifyToken = token =>
 
 const _loginUser = (res, user, status) => {
   const token = _signToken(user._id);
-  delete user.password;
+  user.password = undefined;
+  user._id = undefined;
 
   res.status(status).json({
     status: 'success',

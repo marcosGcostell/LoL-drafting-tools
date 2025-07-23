@@ -52,15 +52,11 @@ const inputsHandler = (target, value) => {
 
 const savePassword = async () => {
   try {
-    const { password, newPassword, passwordConfirm } =
+    const { oldPassword, password, passwordConfirm } =
       profileModel.getPasswordFields(userDataView.passwordForm);
 
     const result = await authService.validatePassword(
-      {
-        oldPassword: password,
-        password: newPassword,
-        passwordConfirm,
-      },
+      { oldPassword, password, passwordConfirm },
       { length: true, confirm: true, username: appState.user.username },
     );
 
@@ -69,10 +65,7 @@ const savePassword = async () => {
       return;
     }
 
-    const user = await appState.user.updateUser({
-      password: newPassword,
-      passwordConfirm,
-    });
+    const user = await appState.user.updateUser({ password, passwordConfirm });
 
     if (user.message) {
       userDataView.showPasswordMsg(user.message);
@@ -125,11 +118,7 @@ const activateInputBtn = target => {
 };
 
 export const isFormActive = () => {
-  if (
-    appState.popUpOn ||
-    userDataView.isActive.username ||
-    userDataView.isActive.email
-  ) {
+  if (userDataView.isActive.username || userDataView.isActive.email) {
     userDataView.showUserMsg(
       'Please, check your username or email before saving the data',
     );

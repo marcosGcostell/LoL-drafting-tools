@@ -6,6 +6,7 @@ export const TIERLIST_ROUTE = 'tierlist';
 export const COUNTERS_ROUTE = 'counters';
 export const STATS_ROUTE = 'stats';
 export const USER_ROUTE = 'users/me';
+export const USER_PASSWORD_ROUTE = 'users/me/password';
 export const LOGIN_ROUTE = 'users/login';
 export const SIGNUP_ROUTE = 'users/signup';
 export const CHECK_USER_ROUTE = 'users/check';

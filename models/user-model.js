@@ -23,6 +23,7 @@ const userSchema = new mongoose.Schema({
     unique: true,
     lowercase: true,
     required: true,
+    select: false,
   },
   email: {
     type: String,
@@ -54,8 +55,8 @@ const userSchema = new mongoose.Schema({
       message: 'Passwords are not the same',
     },
   },
-  passwordChangedAt: Date,
-  createdAt: Date,
+  passwordChangedAt: { type: Date, select: false },
+  createdAt: { type: Date, select: false },
   config: {
     pickRateThreshold: { type: Number, default: PICK_RATE_THRESHOLD },
     maxListItems: { type: Number, default: MAX_LIST_ITEMS },
@@ -92,7 +93,7 @@ userSchema.pre('save', async function (next) {
 });
 
 userSchema.pre(/^find/, function (next) {
-  this.select('-__v -password -passwordChangedAt');
+  this.select('-__v');
   next();
 });
 
