@@ -30,7 +30,7 @@ const listItemsHandler = (_, value) => {
     userCache.setConfig({ maxListItems: parsedValue });
   }
   // Need to set again the value to display correct format
-  userDataView.setMaxItems(appState.maxListItems);
+  userDataView.setMaxItems(userCache.config.maxListItems);
 };
 
 const pickRateHandler = (_, value) => {
@@ -39,7 +39,7 @@ const pickRateHandler = (_, value) => {
     userCache.setConfig({ pickRateThreshold: parsedValue });
   }
   // Need to set again the value to display correct format
-  userDataView.setPickRateThreshold(appState.pickRateThreshold);
+  userDataView.setPickRateThreshold(userCache.config.pickRateThreshold);
 };
 
 const inputsHandler = (target, value) => {

@@ -305,6 +305,43 @@ class AppState extends EventTarget {
     }
   }
 
+  async userChangedInProfile(userChanges) {
+    this.silentMode = true;
+
+    if (userChanges.config) {
+      Object.entries(userChanges.config).forEach(([key, value]) => {
+        this.setSetting(key, value);
+      });
+    }
+
+    if (!userChanges.data) return;
+
+    let option = '';
+    if (userChanges.data?.rank) {
+      option = 'rank';
+      this.rank = userChanges.data.rank;
+    }
+
+    if (Object.hasOwn(userChanges.data, 'patch')) {
+      option = 'rank';
+      this.patch.mode = userChanges.data.patch;
+    }
+
+    if (
+      userChanges.data.championPool &&
+      userChanges.data.championPool[this.lane]
+    ) {
+      option = 'lane';
+      this.tierlistLane = '';
+      this.resetPool();
+    }
+
+    if (option) {
+      await this.setOption(option, this[option]);
+    }
+    this.silentMode = false;
+  }
+
   resetAll() {
     this.#defaultValues();
     sessionStorage.removeItem(LS_STATE);

@@ -38,6 +38,7 @@ const saveProfile = async () => {
     }
 
     userHeaderView.headerMessage.textContent = '✅ User successfully updated.';
+    await appState.userChangedInProfile(userChanges);
     await wait(1);
     userHeaderView.headerMessage.textContent = '';
     discardChanges();

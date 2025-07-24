@@ -9,9 +9,9 @@ export default class UserDataView extends View {
     this.form = document.querySelector('#user__form');
     this.passwordForm = document.querySelector('#password__form');
     this.passwordPopup = document.querySelector('.password__popup');
+    this.oldPasswordInput = document.querySelector('#oldPassword');
     this.passwordInput = document.querySelector('#password');
-    this.newPasswordInput = document.querySelector('#newPassword');
-    this.confirmPasswordInput = document.querySelector('#passwordConfirm');
+    this.passwordConfirmInput = document.querySelector('#passwordConfirm');
     this.passwordPopup.addEventListener('click', e => e.stopPropagation());
 
     this.userMsg =
@@ -55,15 +55,15 @@ export default class UserDataView extends View {
   }
 
   togglePanel() {
+    this.oldPasswordInput.value = '';
     this.passwordInput.value = '';
-    this.newPasswordInput.value = '';
-    this.confirmPasswordInput.value = '';
+    this.passwordConfirmInput.value = '';
 
     this.passwordPopup.classList.toggle('hidden');
 
     this.isPanelShowed = !this.isPanelShowed;
     if (this.isPanelShowed) {
-      this.passwordInput.focus();
+      this.oldPasswordInput.focus();
     }
   }
 

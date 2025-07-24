@@ -42,6 +42,31 @@ const _isValidRank = async rank => {
   return validRank;
 };
 
+const _filterFields = (obj, allowedFields) => {
+  const filteredObj = {};
+  Object.keys(obj).forEach(key => {
+    if (allowedFields.includes(key)) {
+      filteredObj[key] = obj[key];
+    }
+  });
+  return filteredObj;
+};
+
+const _flattenFields = (obj, prefix = '') =>
+  Object.keys(obj).reduce((acc, key) => {
+    const path = prefix.length ? `${prefix}.` : '';
+    if (
+      typeof obj[key] === 'object' &&
+      obj[key] !== null &&
+      !Array.isArray(obj[key])
+    ) {
+      Object.assign(acc, _flattenFields(obj[key], `${path}${key}`));
+    } else {
+      acc[`${path}${key}`] = obj[key];
+    }
+    return acc;
+  }, {});
+
 export const validateUserName = catchAsync(async (req, res, next) => {
   const { username } = req.body;
   // Continue to validate other fields if no data
@@ -154,50 +179,20 @@ export const getUser = catchAsync(async (req, res, next) => {
 });
 
 export const updateUser = catchAsync(async (req, res, next) => {
-  const { user } = req;
+  const allowedFields = ['name', 'username', 'email', 'data', 'config'];
+  const filteredBody = _filterFields(req.body, allowedFields);
+  const flattenBody = _flattenFields(filteredBody);
 
-  ['name', 'username', 'email'].forEach(field => {
-    if (req.body[field] !== undefined) {
-      user[field] = req.body[field];
-    }
-  });
-
-  if (req.body.config) {
-    Object.entries(req.body.config).forEach(([key, value]) => {
-      if (value !== undefined) {
-        user.config[key] = value;
-      }
-    });
-  }
-
-  if (req.body.data && typeof req.body.data === 'object') {
-    Object.entries(req.body.data).forEach(([key, value]) => {
-      if (typeof value === 'object') {
-        Object.entries(value).forEach(([nestedKey, nestedValue]) => {
-          if (nestedValue !== undefined) {
-            user.data[key][nestedKey] = nestedValue;
-          }
-        });
-      } else if (value !== undefined) {
-        user.data[key] = value;
-      }
-    });
-  }
-
-  if (req.body.password) {
-    if (!req.body.passwordConfirm) {
-      return next(new AppError('Please confirm your new password', 400));
-    }
-
-    if (req.body.password !== req.body.passwordConfirm) {
-      return next(new AppError('Passwords do not match', 400));
-    }
-
-    user.password = req.body.password;
-    user.passwordConfirm = req.body.passwordConfirm;
-  }
-
-  await user.save();
+  // Nested fields shoud be flattened and use $set operator
+  // in order to not loose all the missing data
+  const user = await User.findByIdAndUpdate(
+    req.user.id,
+    { $set: flattenBody },
+    {
+      new: true,
+      runValidators: true,
+    },
+  );
 
   res.status(200).json({
     status: 'success',

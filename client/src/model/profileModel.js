@@ -25,15 +25,33 @@ export const getChanges = (cache, user) => {
     if (user[el] !== cache[el]) changes[el] = cache[el];
   });
   config.forEach(el => {
-    if (user.config[el] !== cache.config[el])
+    if (user.config[el] !== cache.config[el]) {
+      if (!changes.config) changes.config = {};
       changes.config[el] = cache.config[el];
+    }
   });
   data.forEach(el => {
-    if (user.data[el] !== cache.data[el]) changes.data[el] = cache.data[el];
+    if (user.data[el] !== cache.data[el]) {
+      if (!changes.data) changes.data = {};
+      changes.data[el] = cache.data[el];
+    }
   });
   championPool.forEach(el => {
-    if (user.data.championPool[el] !== cache.data.championPool[el])
+    let hasChange =
+      user.data.championPool[el].length !== cache.data.championPool[el].length;
+    if (!hasChange) {
+      hasChange = user.data.championPool[el].reduce(
+        (acc, champion, index) =>
+          champion !== cache.data.championPool[el][index] || acc,
+        false,
+      );
+    }
+
+    if (hasChange) {
+      if (!changes.data) changes.data = {};
+      if (!changes.data.championPool) changes.data.championPool = {};
       changes.data.championPool[el] = cache.data.championPool[el];
+    }
   });
 
   return changes;
