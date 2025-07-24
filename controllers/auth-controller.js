@@ -1,9 +1,13 @@
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
 import jwt from 'jsonwebtoken';
 
 import User from '../models/user-model.js';
+import sendEmail from '../models/utils/email.js';
 import catchAsync from '../models/utils/catch-async.js';
 import AppError from '../models/utils/app-error.js';
 import { dateNowToISO } from '../models/utils/helpers.js';
+import { APP_LOGO } from '../client/src/utils/config.js';
 
 const _signToken = id =>
   jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -63,7 +67,7 @@ export const login = catchAsync(async (req, res, next) => {
 
   if (!(email || username) || !password) {
     return next(
-      new AppError('Please provide email or user name and Password!', 400),
+      new AppError('Please, provide email or username and password!', 400),
     );
   }
 
@@ -76,6 +80,72 @@ export const login = catchAsync(async (req, res, next) => {
   }
 
   _loginUser(res, user, 200);
+});
+
+export const updatePassword = catchAsync(async (req, res, next) => {
+  const { oldPassword, password, passwordConfirm } = req.body;
+  if (!oldPassword || !password || !passwordConfirm) {
+    return next(
+      new AppError(
+        'Current password, new password and new password confirmed are required to change the password.',
+        400,
+      ),
+    );
+  }
+
+  const user = await User.findById(req.user.id).select('+password');
+
+  if (!(await user.checkPassword(oldPassword, user.password))) {
+    return next(new AppError('Current password is incorrect.', 401));
+  }
+
+  user.password = password;
+  user.passwordConfirm = passwordConfirm;
+  await user.save();
+
+  _loginUser(res, user, 200);
+});
+
+export const forgotPassword = catchAsync(async (req, res, next) => {
+  const { email, username } = req.body;
+
+  if (!email || !username) {
+    return next(new AppError('Please, provide email or username.', 400));
+  }
+
+  const user = await User.findOne({
+    $or: [{ email }, { usernameToLower: username?.toLowerCase() }],
+  });
+
+  if (!user) {
+    return next(
+      new AppError(
+        'Could not find an account with this email or username.',
+        400,
+      ),
+    );
+  }
+
+  const resetToken = user.createPasswordResetToken();
+  await user.save({ validateBeforeSave: false });
+
+  const subject = 'Kuantik draftKing - reset your password';
+  const text = `Request code for reset your password:\n\n${resetToken}\n\nThis code is valid for 5 minutes. If you don't request it, change your password in the application`;
+  let html = readFileSync(
+    resolve('templates', 'reset-password-email.html'),
+    'utf8',
+  );
+  html = html.replace('{%LOGO%}', APP_LOGO);
+  html = html.replace('{%TOKEN%}', resetToken);
+
+  sendEmail({ email: user.email, subject, text, html });
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      emailSent: true,
+    },
+  });
 });
 
 export const protect = catchAsync(async (req, res, next) => {
@@ -119,28 +189,4 @@ export const protectInternal = catchAsync(async (req, res, next) => {
     return next(new AppError('Forbidden', 403));
   }
   next();
-});
-
-export const updatePassword = catchAsync(async (req, res, next) => {
-  const { oldPassword, password, passwordConfirm } = req.body;
-  if (!oldPassword || !password || !passwordConfirm) {
-    return next(
-      new AppError(
-        'Current password, new password and new password confirmed are required to change the password.',
-        400,
-      ),
-    );
-  }
-
-  const user = await User.findById(req.user.id).select('+password');
-
-  if (!(await user.checkPassword(oldPassword, user.password))) {
-    return next(new AppError('Current password is incorrect.', 401));
-  }
-
-  user.password = password;
-  user.passwordConfirm = passwordConfirm;
-  await user.save();
-
-  _loginUser(res, user, 200);
 });

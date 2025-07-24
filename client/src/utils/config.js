@@ -18,6 +18,8 @@ export const LS_USER = 'draftKingUser';
 export const LS_USER_CACHE = 'draftKingUserCache';
 
 // Paths of resources (relative from index.html)
+export const APP_LOGO =
+  'https://res.cloudinary.com/dpj4gmkge/image/upload/v1753397988/logo_o8jvbf.png';
 export const ICONS = './assets/img/icons/icons.svg';
 export const IMG_SRC =
   'https://ddragon.leagueoflegends.com/cdn/{%VERSION%}/img/champion/';

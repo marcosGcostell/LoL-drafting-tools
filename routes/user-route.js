@@ -12,6 +12,7 @@ router.post(
   userController.validateUserName,
   userController.userExists,
 );
+router.post('/forgot-password', authController.forgotPassword);
 
 router
   .route('/')
