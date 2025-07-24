@@ -55,13 +55,13 @@ const savePassword = async () => {
     const { oldPassword, password, passwordConfirm } =
       profileModel.getPasswordFields(userDataView.passwordForm);
 
-    const result = await authService.validatePassword(
-      { oldPassword, password, passwordConfirm },
-      { length: true, confirm: true, username: appState.user.username },
+    const message = await authService.validatePassword(
+      { password, passwordConfirm },
+      { length: true, confirm: true },
     );
 
-    if (!result?.token) {
-      userDataView.showPasswordMsg(result);
+    if (message) {
+      userDataView.showPasswordMsg(message);
       return;
     }
 
@@ -81,7 +81,7 @@ const savePassword = async () => {
   } catch (err) {
     console.error(err);
     userDataView.showPasswordMsg(
-      'Something went wrong with the server. Password could have not be changed',
+      'Something went wrong with the server. Password may have not be changed',
     );
   }
 };

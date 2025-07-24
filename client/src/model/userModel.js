@@ -7,11 +7,11 @@ import {
 import { LS_USER } from '../utils/config.js';
 
 class User extends EventTarget {
-  constructor(username = '', token = null) {
+  constructor(username = '') {
     super();
     this.#defaultValues();
     this.username = username;
-    this.token = token;
+    this.isLoggedIn = username;
 
     this.#load();
     this.#save();
@@ -19,7 +19,7 @@ class User extends EventTarget {
 
   #defaultValues() {
     this.__type = 'user';
-    this.token = null;
+    this.isLoggedIn = '';
     this.username = '';
     this.name = '';
     this.email = '';
@@ -40,7 +40,7 @@ class User extends EventTarget {
     if (!localData) return;
     try {
       const parsed = JSON.parse(localData);
-      if (parsed.token && parsed.username) {
+      if (parsed.isLoggedIn && parsed.username) {
         Object.assign(this, parsed);
         this.dispatchEvent(new Event('login'));
       }
@@ -55,7 +55,7 @@ class User extends EventTarget {
   }
 
   async _getData() {
-    const { user } = await getUserDataFromAPI(this.token);
+    const { user } = await getUserDataFromAPI();
 
     if (!user) return null;
 
@@ -64,7 +64,7 @@ class User extends EventTarget {
   }
 
   async updateUser(body) {
-    const { user, message } = await updateUserOnAPI(this.token, body);
+    const { user, message } = await updateUserOnAPI(body);
 
     if (!user) return { message: message || 'Could not update the user' };
 
@@ -75,14 +75,11 @@ class User extends EventTarget {
   }
 
   async updatePassword(body) {
-    const { token, user, message } = await updatePasswordOnAPI(
-      this.token,
-      body,
-    );
+    const { user, message } = await updatePasswordOnAPI(body);
 
-    if (!user || !token)
-      return { message: message || 'Could not update the password' };
+    if (!user) return { message: message || 'Could not update the password' };
 
+    this.isLoggedIn = user.username;
     this.valuesFromResponse(user);
     this.#save();
 
@@ -93,18 +90,12 @@ class User extends EventTarget {
     return this;
   }
 
-  isLoggedIn() {
-    return Boolean(this.token);
-  }
-
   async login(loginName, password, { silentMode = false } = {}) {
-    const { token, user, message } = await loginOnAPI(loginName, password);
+    const { user, message } = await loginOnAPI(loginName, password);
 
-    if (!token) return { message: message || 'Could not logged in.' };
-    this.token = token;
-    if (!user)
-      return { message: 'Could not get the user data after logged in' };
+    if (!user) return { message: message || 'Could not logged in.' };
 
+    this.isLoggedIn = user.username;
     this.valuesFromResponse(user);
     this.#save();
     if (!silentMode) this.dispatchEvent(new Event('login'));

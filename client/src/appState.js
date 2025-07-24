@@ -204,7 +204,7 @@ class AppState extends EventTarget {
         );
       }
 
-      if (this.user.isLoggedIn() && target === 'lane') {
+      if (this.user.isLoggedIn && target === 'lane') {
         await this.#getPoolFromUser();
       }
     } catch (err) {
@@ -341,7 +341,7 @@ class AppState extends EventTarget {
   resetAll() {
     this.#defaultValues();
     sessionStorage.removeItem(LS_STATE);
-    if (this.user.isLoggedIn()) {
+    if (this.user.isLoggedIn) {
       this.user.logout({ fireEvent: false });
     }
     this.dispatchEvent(new CustomEvent('user:logout'));

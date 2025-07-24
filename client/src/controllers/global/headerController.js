@@ -7,7 +7,7 @@ let headerView;
 const resetApp = () => {
   if (appState.popUpOn) return;
 
-  if (appState.user.isLoggedIn()) {
+  if (appState.user.isLoggedIn) {
     appState.user.logout();
   } else {
     appState.resetAll();
@@ -16,7 +16,7 @@ const resetApp = () => {
 };
 
 const handleUserBtn = e => {
-  if (!appState.user.isLoggedIn()) {
+  if (!appState.user.isLoggedIn) {
     appState.hideAllPopUps('login');
     appState.triggerPopUp('login');
     e.stopPropagation();
@@ -32,7 +32,7 @@ const handleUserBtn = e => {
 };
 
 const userNameHandler = _ => {
-  if (appState.user.isLoggedIn()) {
+  if (appState.user.isLoggedIn) {
     headerView.showUserName(appState.user.username);
   } else {
     headerView.showUserName('Not logged in');

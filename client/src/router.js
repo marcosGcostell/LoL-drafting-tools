@@ -17,7 +17,7 @@ const loadCommonControllers = async () => {
 const handleRoute = async e => {
   const path = window.location.pathname;
   const isDOMReloaded = !(e instanceof PopStateEvent);
-  const isLoggedIn = user.isLoggedIn();
+  const { isLoggedIn } = user;
 
   if (path === '/' || path === '/starter') {
     const starter = await initStarter();

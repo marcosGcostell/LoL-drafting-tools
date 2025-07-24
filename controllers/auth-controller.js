@@ -22,12 +22,20 @@ const _verifyToken = token =>
 
 const _loginUser = (res, user, status) => {
   const token = _signToken(user._id);
+  res.cookie('jwt', token, {
+    expires: new Date(
+      Date.now() + process.env.COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
+    ),
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'Lax',
+    httpOnly: true,
+  });
+
   user.password = undefined;
   user._id = undefined;
 
   res.status(status).json({
     status: 'success',
-    token,
     data: {
       user,
     },
@@ -71,13 +79,7 @@ export const login = catchAsync(async (req, res, next) => {
 });
 
 export const protect = catchAsync(async (req, res, next) => {
-  let token;
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith('Bearer')
-  ) {
-    token = req.headers.authorization.split(' ')[1];
-  }
+  const token = req.cookies.jwt;
 
   if (!token) {
     return next(

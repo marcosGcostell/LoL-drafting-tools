@@ -60,7 +60,7 @@ export const getChanges = (cache, user) => {
 export const hasBeenChanges = (cache, user) => {
   // structuredClone doesn't work with objects extending EventTarget
   const userCopy = JSON.parse(JSON.stringify(user));
-  delete userCopy.token;
+  delete userCopy.isLoggedIn;
   delete userCopy.__type;
 
   return JSON.stringify(cache) !== JSON.stringify(userCopy);

@@ -3,6 +3,7 @@ import cors from 'cors';
 // import { dirname } from 'path';
 // import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 
 import appDataRouter from './routes/app-data-routes.js';
@@ -28,7 +29,12 @@ const app = express();
 // MIDDLEWARES
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
-  app.use(cors());
+  app.use(
+    cors({
+      origin: 'http://localhost:8000',
+      credentials: true,
+    }),
+  );
 } else {
   // app.use(cors({
   //   origin: 'https://apiurl.com';
@@ -36,6 +42,8 @@ if (process.env.NODE_ENV === 'development') {
 }
 app.use(express.json());
 // app.use(express.static(`${__dirname}/public`));
+
+app.use(cookieParser());
 
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();

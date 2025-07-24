@@ -45,16 +45,15 @@ export const checkUserFromAPI = async body => {
   return 'Field are not valid';
 };
 
-export const getUserDataFromAPI = async token => {
-  if (!token) return { message: 'You need to be logged in to update the user' };
-
+export const getUserDataFromAPI = async () => {
   const response = await fetch(`${LOCAL_API}${USER_ROUTE}`, {
-    // method: 'GET',
-    headers: { Authorization: `Bearer ${token}` },
+    method: 'GET',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
   });
+  const { data, message } = await response.json();
 
-  const { data } = await response.json();
-
+  if (message) return { message };
   if (!data?.user) {
     return { message: 'Could not get the user data from the database.' };
   }
@@ -62,43 +61,41 @@ export const getUserDataFromAPI = async token => {
   return { user: data.user };
 };
 
-export const updateUserOnAPI = async (token, body) => {
-  if (!token) return { message: 'You need to be logged in to update the user' };
+export const updateUserOnAPI = async body => {
   if (!body) return { message: 'You need to send data to update' };
 
   const response = await fetch(`${LOCAL_API}${USER_ROUTE}`, {
     method: 'PATCH',
+    credentials: 'include',
     headers: {
-      Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(body),
   });
 
-  const { data } = await response.json();
+  const { data, message } = await response.json();
 
+  if (message) return { message };
   if (!data?.user) {
     return { message: 'Could not update the user data.' };
   }
   return { user: data.user };
 };
 
-export const updatePasswordOnAPI = async (userToken, body) => {
-  if (!userToken)
-    return { message: 'You need to be logged in to update the user' };
+export const updatePasswordOnAPI = async body => {
   if (!body) return { message: 'You need to send data to update' };
 
   const response = await fetch(`${LOCAL_API}${USER_PASSWORD_ROUTE}`, {
     method: 'PATCH',
+    credentials: 'include',
     headers: {
-      Authorization: `Bearer ${userToken}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(body),
   });
 
-  const { token, data, message } = await response.json();
-  return { token, user: data.user, message };
+  const { data, message } = await response.json();
+  return { user: data.user, message };
 };
 
 export const loginOnAPI = async (loginName, password) => {
@@ -108,6 +105,7 @@ export const loginOnAPI = async (loginName, password) => {
 
   const response = await fetch(`${LOCAL_API}${LOGIN_ROUTE}`, {
     method: 'POST',
+    credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       username: loginName,
@@ -116,6 +114,6 @@ export const loginOnAPI = async (loginName, password) => {
     }),
   });
 
-  const { token, data, message } = await response.json();
-  return { token, user: data.user, message };
+  const { data, message } = await response.json();
+  return { user: data.user, message };
 };
