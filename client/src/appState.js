@@ -152,10 +152,6 @@ class AppState extends EventTarget {
     this.#save();
   }
 
-  userUpdated() {
-    this.dispatchEvent(new CustomEvent('user:login'));
-  }
-
   triggerPopUp(target) {
     this.dispatchEvent(new CustomEvent(`popup:${target}`));
   }

@@ -65,14 +65,17 @@ const savePassword = async () => {
       return;
     }
 
-    const user = await appState.user.updateUser({ password, passwordConfirm });
+    const user = await appState.user.updatePassword({
+      oldPassword,
+      password,
+      passwordConfirm,
+    });
 
     if (user.message) {
       userDataView.showPasswordMsg(user.message);
       return;
     }
 
-    appState.userUpdated();
     userDataView.showPasswordMsg('Password changed successfully.');
     userDataView.togglePanel();
   } catch (err) {
