@@ -1,5 +1,6 @@
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
+import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 
 import User from '../models/user-model.js';
@@ -146,6 +147,47 @@ export const forgotPassword = catchAsync(async (req, res, next) => {
       emailSent: true,
     },
   });
+});
+
+export const resetPassword = catchAsync(async (req, res, next) => {
+  const { token } = req.params;
+  if (!token) {
+    return next(
+      new AppError('Please, provide the request code to reset the password.'),
+      400,
+    );
+  }
+
+  const { password, passwordConfirm } = req.body;
+  if (!password || !passwordConfirm) {
+    return next(
+      new AppError(
+        'Please, provide you password and the password confirmed.',
+        400,
+      ),
+    );
+  }
+
+  const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    return next(
+      new AppError('The request code is not correct or it has expired', 401),
+    );
+  }
+
+  user.password = password;
+  user.passwordConfirm = passwordConfirm;
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+  await user.save();
+
+  _loginUser(res, user, 200);
 });
 
 export const protect = catchAsync(async (req, res, next) => {
