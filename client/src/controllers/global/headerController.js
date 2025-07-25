@@ -15,41 +15,40 @@ const resetApp = () => {
   navigate('/');
 };
 
-const handleUserBtn = e => {
-  if (!appState.user.isLoggedIn) {
-    appState.hideAllPopUps('login');
-    appState.triggerPopUp('login');
-    e.stopPropagation();
-    return;
-  }
-  if (appState.currentPage === 'profile') {
+const btnHandler = e => {
+  const target = e.target.closest('div').dataset.value;
+  if (target === 'profile' && appState.currentPage === 'profile') {
     appState.setCurrentPage(appState.appMode);
     navigate(`/${appState.appMode}`);
   } else {
-    appState.setCurrentPage('profile');
-    navigate('/profile');
+    appState.setCurrentPage(target);
+    navigate(`/${target}`);
   }
 };
 
-const userNameHandler = _ => {
-  if (appState.user.isLoggedIn) {
-    headerView.showUserName(appState.user.username);
-  } else {
-    headerView.showUserName('Not logged in');
+const languageHandler = _ => {};
+
+const toggleMode = _ => {
+  if (appState.user.isLoggedIn !== headerView.loginMode) {
+    const user = appState.user.isLoggedIn ? appState.user.username : undefined;
+    headerView.toggleMode(user);
   }
 };
 
 // Init funcion for the view
 export default async () => {
   headerView = new HeaderView();
+  if (appState.user.isLoggedIn) toggleMode(appState.user.username);
 
-  // Set the login button handler
-  headerView.addHandlerUserBtn(handleUserBtn);
-  ['user:login', 'user:logout', 'app:reload'].forEach(event =>
-    appState.addEventListener(event, userNameHandler),
+  // Set the button handlers
+  ['login', 'signup', 'profile'].forEach(btn =>
+    headerView.addHandlerBtn(btn, btnHandler),
   );
+  headerView.addHandlerBtn('language', languageHandler);
 
-  userNameHandler(null);
+  ['user:login', 'user:logout', 'app:reload'].forEach(event =>
+    appState.addEventListener(event, toggleMode),
+  );
 
   // FIXME It should show a hint that it's a reset button
   document.querySelector('.header__logo').addEventListener('click', resetApp);

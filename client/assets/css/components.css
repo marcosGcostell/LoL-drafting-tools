@@ -1,5 +1,17 @@
 /* Components styles */
 
+.btn {
+  display: flex;
+  align-items: center;
+  height: 2.15rem;
+  font-size: 1.1rem;
+  padding: 0 1rem;
+  border: var(--color-grey-light-3) solid 1px;
+  border-radius: 1.2rem;
+  background-color: var(--color-grey-light-3);
+  color: var(--color-grey-dark-3);
+}
+
 .spinner {
   display: flex;
   justify-content: center;

@@ -30,15 +30,33 @@
           />
         </div>
         <div class="header header__central">
-          <button class="btn lang__btn">EN</button>
+          <div id="language__btn" class="btn btn__clickable">
+            <span>EN</span>
+          </div>
         </div>
-        <div class="header__username">
-          <span>Not logged in</span>
+        <!-- Login buttons -->
+        <div id="login__btns" class="header header__users">
+          <div id="login__btn" class="btn btn__clickable" data-value="login">
+            <span>Log In</span>
+          </div>
+          <div id="signup__btn" class="btn btn__clickable" data-value="signup">
+            <span>Sing Up</span>
+          </div>
         </div>
-        <div class="header header__users item__clickable">
-          <svg class="user__icon">
-            <use href="assets/img/icons/icons.svg#icon-user"></use>
-          </svg>
+        <!-- User section -->
+        <div id="user__navbar" class="header header__users hidden">
+          <div class="header__username">
+            <span>Not logged in</span>
+          </div>
+          <div
+            id="profile__btn"
+            class="header user__icon item__clickable"
+            data-value="profile"
+          >
+            <svg class="user__icon">
+              <use href="assets/img/icons/icons.svg#icon-user"></use>
+            </svg>
+          </div>
         </div>
       </header>
       <!-- MAIN -->

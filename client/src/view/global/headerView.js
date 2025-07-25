@@ -1,14 +1,19 @@
-import View from './view.js';
+export default class HeaderView {
+  constructor() {
+    this.loginMode = false;
+  }
 
-export default class HeaderView extends View {
-  addHandlerUserBtn(handler) {
-    document.querySelector('.header__users').addEventListener('click', e => {
+  addHandlerBtn(target, handler) {
+    document.querySelector(`#${target}__btn`).addEventListener('click', e => {
       e.preventDefault();
       handler(e);
     });
   }
 
-  showUserName(username) {
-    document.querySelector('.header__username span').textContent = username;
+  toggleMode(username = undefined) {
+    const userText = username || 'Not logged in';
+    document.querySelector('.header__username span').textContent = userText;
+    document.querySelector('#login__btns').classList('hidden').toggle();
+    document.querySelector('#user__navbar').classList('hidden').toggle();
   }
 }

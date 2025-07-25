@@ -51,13 +51,13 @@ const loginHandler = async e => {
   }
 };
 
-const btnSignupHandler = () => {};
+const signupHandler = () => {};
 
 export const init = () => {
   loginView = new LoginView();
   loginView.initView();
   loginView.addHandlerModalBtns('close', toggleModal);
-  loginView.addHandlerModalBtns('signup', btnSignupHandler);
+  loginView.addHandlerModalBtns('signup', signupHandler);
   loginView.addHandlerForm(loginHandler);
   loginView.addHandlerModalBackground();
 
