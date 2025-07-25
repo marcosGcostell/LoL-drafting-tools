@@ -68,7 +68,7 @@ export const login = catchAsync(async (req, res, next) => {
 
   if (!(email || username) || !password) {
     return next(
-      new AppError('Please, provide email or username and password!', 400),
+      new AppError(400, 'Please, provide email or username and password!'),
     );
   }
 
@@ -77,7 +77,7 @@ export const login = catchAsync(async (req, res, next) => {
   }).select('+password');
   console.log(user);
   if (!user || !(await user.checkPassword(password, user.password))) {
-    return next(new AppError('Incorrect email or password!', 401));
+    return next(new AppError(401, 'Incorrect email or password!'));
   }
 
   _loginUser(res, user, 200);
@@ -88,8 +88,8 @@ export const updatePassword = catchAsync(async (req, res, next) => {
   if (!oldPassword || !password || !passwordConfirm) {
     return next(
       new AppError(
-        'Current password, new password and new password confirmed are required to change the password.',
         400,
+        'Current password, new password and new password confirmed are required to change the password.',
       ),
     );
   }
@@ -97,7 +97,7 @@ export const updatePassword = catchAsync(async (req, res, next) => {
   const user = await User.findById(req.user.id).select('+password');
 
   if (!(await user.checkPassword(oldPassword, user.password))) {
-    return next(new AppError('Current password is incorrect.', 401));
+    return next(new AppError(401, 'Current password is incorrect.'));
   }
 
   user.password = password;
@@ -111,7 +111,7 @@ export const forgotPassword = catchAsync(async (req, res, next) => {
   const { email, username } = req.body;
 
   if (!email || !username) {
-    return next(new AppError('Please, provide email or username.', 400));
+    return next(new AppError(400, 'Please, provide email or username.'));
   }
 
   const user = await User.findOne({
@@ -121,8 +121,8 @@ export const forgotPassword = catchAsync(async (req, res, next) => {
   if (!user) {
     return next(
       new AppError(
-        'Could not find an account with this email or username.',
         400,
+        'Could not find an account with this email or username.',
       ),
     );
   }
@@ -153,8 +153,10 @@ export const resetPassword = catchAsync(async (req, res, next) => {
   const { token } = req.params;
   if (!token) {
     return next(
-      new AppError('Please, provide the request code to reset the password.'),
-      400,
+      new AppError(
+        400,
+        'Please, provide the request code to reset the password.',
+      ),
     );
   }
 
@@ -162,8 +164,8 @@ export const resetPassword = catchAsync(async (req, res, next) => {
   if (!password || !passwordConfirm) {
     return next(
       new AppError(
-        'Please, provide you password and the password confirmed.',
         400,
+        'Please, provide you password and the password confirmed.',
       ),
     );
   }
@@ -177,7 +179,7 @@ export const resetPassword = catchAsync(async (req, res, next) => {
 
   if (!user) {
     return next(
-      new AppError('The request code is not correct or it has expired', 401),
+      new AppError(401, 'The request code is not correct or it has expired'),
     );
   }
 
@@ -195,7 +197,7 @@ export const protect = catchAsync(async (req, res, next) => {
 
   if (!token) {
     return next(
-      new AppError('You are not logged in! Please log in to get access.', 401),
+      new AppError(401, 'You are not logged in! Please log in to get access.'),
     );
   }
 
@@ -203,13 +205,13 @@ export const protect = catchAsync(async (req, res, next) => {
   const currentUser = await User.findById(decoded.id);
   if (!currentUser) {
     return next(
-      new AppError('The user belonging to this token no longer exists.', 401),
+      new AppError(401, 'The user belonging to this token no longer exists.'),
     );
   }
 
   if (currentUser.hasChangedPassword(decoded.iat)) {
     return next(
-      new AppError('User recently changed password!. Please log in again', 401),
+      new AppError(401, 'User recently changed password!. Please log in again'),
     );
   }
 
@@ -223,12 +225,12 @@ export const protectInternal = catchAsync(async (req, res, next) => {
     !req.headers.authorization ||
     !req.headers.authorization.startsWith('Bearer')
   ) {
-    return next(new AppError('Forbidden', 403));
+    return next(new AppError(403, 'Forbidden'));
   }
 
   const token = req.headers.authorization.split(' ')[1];
   if (token !== process.env.WORKER_SECRET) {
-    return next(new AppError('Forbidden', 403));
+    return next(new AppError(403, 'Forbidden'));
   }
   next();
 });
@@ -237,7 +239,7 @@ export const restrictTo =
   (...roles) =>
   (req, res, next) => {
     if (!roles.includes(req.user.role)) {
-      return next(new AppError('You are not authorized to this resource', 401));
+      return next(new AppError(401, 'You are not authorized to this resource'));
     }
     next();
   };

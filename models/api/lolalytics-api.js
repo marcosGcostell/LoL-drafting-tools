@@ -235,8 +235,8 @@ class Lolalytics {
       const championsGrid = section.children[1];
       if (!championsGrid.children) {
         throw new AppError(
-          'There is still not enough games. Try another patch or rank.',
           204,
+          'There is still not enough games. Try another patch or rank.',
         );
       }
       const championCells = Array.from(championsGrid.children).filter(
@@ -265,7 +265,7 @@ class Lolalytics {
 
     await browser.close();
     if (tierlist === null)
-      throw new AppError('Could not find the tierlists data', 404);
+      throw new AppError(404, 'Could not find the tierlists data');
     return tierlist;
   }
 

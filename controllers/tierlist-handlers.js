@@ -54,7 +54,7 @@ const getTierlistData = async queryObj => {
   const tierlist = await Lolalytics.getTierlist(queryObj);
 
   if (!tierlist.length)
-    throw new AppError('Could not find the tierlists data', 404);
+    throw new AppError(404, 'Could not find the tierlists data');
 
   const newData = saveTierlist(queryObj, tierlist);
   return { tierlist, createdAt: newData.createdAt };

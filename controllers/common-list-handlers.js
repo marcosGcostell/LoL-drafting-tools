@@ -11,7 +11,7 @@ import AppError from '../models/utils/app-error.js';
 export const checkId = catchAsyncParam(async (req, res, next, val) => {
   const champion = await Champion.isValid(val);
   if (!champion) {
-    next(new AppError('Champion name not found', 404));
+    next(new AppError(404, 'Champion name not found'));
   }
   // Use lolalytics id name
   req.champion = champion.id;

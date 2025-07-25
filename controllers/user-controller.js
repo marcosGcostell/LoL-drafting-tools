@@ -29,7 +29,7 @@ const _isValidUserName = username => {
 const _isValidRole = async role => {
   const validRole = await RiotRole.isValid(role);
   if (!validRole) {
-    throw new AppError(`Invalid role: '${role}'`, 400);
+    throw new AppError(400, `Invalid role: '${role}'`);
   }
   return validRole;
 };
@@ -37,7 +37,7 @@ const _isValidRole = async role => {
 const _isValidRank = async rank => {
   const validRank = await RiotRank.isValid(rank);
   if (!validRank) {
-    throw new AppError(`Invalid rank: '${rank}'`, 400);
+    throw new AppError(400, `Invalid rank: '${rank}'`);
   }
   return validRank;
 };
@@ -75,7 +75,7 @@ export const validateUserName = catchAsync(async (req, res, next) => {
   const result = _isValidUserName(username);
 
   if (!result.valid) {
-    return next(new AppError(result.message, 400));
+    return next(new AppError(400, result.message));
   }
 
   next();
@@ -97,8 +97,8 @@ export const validateUserData = catchAsync(async (req, res, next) => {
       if (!Array.isArray(champions)) {
         return next(
           new AppError(
-            `Champion pool for role '${role}' must be an array`,
             400,
+            `Champion pool for role '${role}' must be an array`,
           ),
         );
       }
@@ -116,7 +116,7 @@ export const validateUserData = catchAsync(async (req, res, next) => {
     if (errorIndex !== -1) {
       const { role, champId } = flatPool[errorIndex];
       return next(
-        new AppError(`Invalid champion ID '${champId}' in role '${role}'`, 400),
+        new AppError(400, `Invalid champion ID '${champId}' in role '${role}'`),
       );
     }
   }
@@ -128,10 +128,10 @@ export const userExists = catchAsync(async (req, res, next) => {
   const { username, email } = req.body;
 
   if (!username && !email) {
-    return next(new AppError('Field can not be empty', 400));
+    return next(new AppError(400, 'Field can not be empty'));
   }
   if (email && !User.isValidEmail(email)) {
-    return next(new AppError('Please provide a valid email', 400));
+    return next(new AppError(400, 'Please provide a valid email'));
   }
 
   const user = await User.findOne({
@@ -141,7 +141,7 @@ export const userExists = catchAsync(async (req, res, next) => {
   const checkedField = username ? 'username' : 'email';
   if (user) {
     return next(
-      new AppError(`User with this ${checkedField} already exists`, 400),
+      new AppError(400, `User with this ${checkedField} already exists`),
     );
   }
 

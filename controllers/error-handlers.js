@@ -2,25 +2,25 @@ import AppError from '../models/utils/app-error.js';
 
 const handleCastErrorDB = err => {
   const message = `Invalid ${err.path}: ${err.value}.`;
-  return new AppError(message, 400);
+  return new AppError(400, message);
 };
 
 const handleDuplicateFieldDB = err => {
   const message = `Duplicate field value: ${err.keyValue.name}. Please use another value!`;
-  return new AppError(message, 400);
+  return new AppError(400, message);
 };
 
 const handleValidationErrorDB = err => {
   const errors = Object.values(err.errors).map(el => el.message);
   const message = `Invalid input data. ${errors.join('. ')}`;
-  return new AppError(message, 400);
+  return new AppError(400, message);
 };
 
 const handleJWTError = () =>
-  new AppError('Invalid token. Please log in again!', 401);
+  new AppError(401, 'Invalid token. Please log in again!');
 
 const handleJWTExpiredError = () =>
-  new AppError('Your token has expired. Please log in again!', 401);
+  new AppError(401, 'Your token has expired. Please log in again!');
 
 const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({

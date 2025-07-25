@@ -16,8 +16,8 @@ export default catchAsync(async (req, res, next) => {
   if (!tierlists.length) {
     return next(
       new AppError(
-        `No tierlists were found for ranks: ${ranks.join(' - ')}`,
         400,
+        `No tierlists were found for ranks: ${ranks.join(' - ')}`,
       ),
     );
   }
