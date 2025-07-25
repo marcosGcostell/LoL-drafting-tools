@@ -63,6 +63,11 @@ const userSchema = new mongoose.Schema({
   passwordChangedAt: { type: Date, select: false },
   passwordResetToken: String,
   passwordResetExpires: Date,
+  role: {
+    type: String,
+    enum: ['user', 'supporter', 'admin'],
+    default: 'user',
+  },
   createdAt: { type: Date, select: false },
   config: {
     pickRateThreshold: { type: Number, default: PICK_RATE_THRESHOLD },
