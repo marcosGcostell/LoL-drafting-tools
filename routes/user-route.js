@@ -12,11 +12,21 @@ router.post(
   userController.validateUserName,
   userController.userExists,
 );
+router.post('/forgot-password', authController.forgotPassword);
+router.post('/reset-password/:token', authController.resetPassword);
 
 router
   .route('/')
-  .get(authController.protect, userController.getAllUsers)
-  .post(userController.createUser);
+  .get(
+    authController.protect,
+    authController.restrictTo('admin'),
+    userController.getAllUsers,
+  )
+  .post(
+    authController.protect,
+    authController.restrictTo('admin'),
+    userController.createUser,
+  );
 
 router
   .route('/me')
@@ -28,5 +38,11 @@ router
     userController.updateUser,
   )
   .delete(authController.protect, userController.deleteUser);
+
+router.patch(
+  '/me/password',
+  authController.protect,
+  authController.updatePassword,
+);
 
 export default router;

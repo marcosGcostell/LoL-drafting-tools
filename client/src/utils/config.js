@@ -1,11 +1,12 @@
 // Constants for local API connection
-export const LOCAL_API = 'http://127.0.0.1:3000/api/v1/';
+export const LOCAL_API = 'http://localhost:3000/api/v1/';
 export const APP_DATA_ROUTE = 'app-data';
 export const VERSION_ROUTE = 'app-data/version';
 export const TIERLIST_ROUTE = 'tierlist';
 export const COUNTERS_ROUTE = 'counters';
 export const STATS_ROUTE = 'stats';
 export const USER_ROUTE = 'users/me';
+export const USER_PASSWORD_ROUTE = 'users/me/password';
 export const LOGIN_ROUTE = 'users/login';
 export const SIGNUP_ROUTE = 'users/signup';
 export const CHECK_USER_ROUTE = 'users/check';
@@ -17,6 +18,8 @@ export const LS_USER = 'draftKingUser';
 export const LS_USER_CACHE = 'draftKingUserCache';
 
 // Paths of resources (relative from index.html)
+export const APP_LOGO =
+  'https://res.cloudinary.com/dpj4gmkge/image/upload/v1753397988/logo_o8jvbf.png';
 export const ICONS = './assets/img/icons/icons.svg';
 export const IMG_SRC =
   'https://ddragon.leagueoflegends.com/cdn/{%VERSION%}/img/champion/';

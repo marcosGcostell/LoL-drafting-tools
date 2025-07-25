@@ -4,7 +4,7 @@ export default class UserCache {
   constructor(user) {
     // structuredClone doesn't work with objects extending EventTarget
     Object.assign(this, JSON.parse(JSON.stringify(user)));
-    delete this.token;
+    delete this.isLoggedIn;
     delete this.__type;
 
     this.#load();

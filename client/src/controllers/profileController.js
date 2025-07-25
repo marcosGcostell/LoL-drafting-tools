@@ -1,5 +1,5 @@
 import appState from '../appState.js';
-import UserCache from '../model/UserCacheModel.js';
+import UserCache from '../model/userCacheModel.js';
 import { getChanges } from '../model/profileModel.js';
 import { initUserData, isFormActive } from './profile/userDataController.js';
 import initUserPool from './profile/userPoolController.js';
@@ -38,6 +38,7 @@ const saveProfile = async () => {
     }
 
     userHeaderView.headerMessage.textContent = '✅ User successfully updated.';
+    await appState.userChangedInProfile(userChanges);
     await wait(1);
     userHeaderView.headerMessage.textContent = '';
     discardChanges();

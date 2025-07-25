@@ -152,10 +152,6 @@ class AppState extends EventTarget {
     this.#save();
   }
 
-  userUpdated() {
-    this.dispatchEvent(new CustomEvent('user:login'));
-  }
-
   triggerPopUp(target) {
     this.dispatchEvent(new CustomEvent(`popup:${target}`));
   }
@@ -208,7 +204,7 @@ class AppState extends EventTarget {
         );
       }
 
-      if (this.user.isLoggedIn() && target === 'lane') {
+      if (this.user.isLoggedIn && target === 'lane') {
         await this.#getPoolFromUser();
       }
     } catch (err) {
@@ -305,10 +301,47 @@ class AppState extends EventTarget {
     }
   }
 
+  async userChangedInProfile(userChanges) {
+    this.silentMode = true;
+
+    if (userChanges.config) {
+      Object.entries(userChanges.config).forEach(([key, value]) => {
+        this.setSetting(key, value);
+      });
+    }
+
+    if (!userChanges.data) return;
+
+    let option = '';
+    if (userChanges.data?.rank) {
+      option = 'rank';
+      this.rank = userChanges.data.rank;
+    }
+
+    if (Object.hasOwn(userChanges.data, 'patch')) {
+      option = 'rank';
+      this.patch.mode = userChanges.data.patch;
+    }
+
+    if (
+      userChanges.data.championPool &&
+      userChanges.data.championPool[this.lane]
+    ) {
+      option = 'lane';
+      this.tierlistLane = '';
+      this.resetPool();
+    }
+
+    if (option) {
+      await this.setOption(option, this[option]);
+    }
+    this.silentMode = false;
+  }
+
   resetAll() {
     this.#defaultValues();
     sessionStorage.removeItem(LS_STATE);
-    if (this.user.isLoggedIn()) {
+    if (this.user.isLoggedIn) {
       this.user.logout({ fireEvent: false });
     }
     this.dispatchEvent(new CustomEvent('user:logout'));

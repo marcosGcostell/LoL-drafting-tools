@@ -1,5 +1,5 @@
 // Constants for API connection to Lolalyttics Site
-export const LOCAL_API = 'http://127.0.0.1:3000/api/v1/';
+export const LOCAL_API = 'http://localhost:3000/api/v1/';
 export const MIN_DELAY = 0.5;
 export const MAX_DELAY = 1.2;
 export const PROXY_ON = false;
@@ -26,10 +26,11 @@ export const USER_AGENTS = [
 ];
 
 // Config parameters
-export const TIME_BEFORE_UPDATE = 24;
+export const TIME_BEFORE_UPDATE = 24; // Hours
 export const DEFAULT_SORT_FIELD = 'pickRate';
 export const ENCRYPT_STRENGTH = 12;
 export const PASSWORD_MIN_LENGTH = 8;
+export const PASSWORD_RESET_EXPIRES = 5; // Minutes
 
 // User config
 export const RESERVED_USER_NAMES = [

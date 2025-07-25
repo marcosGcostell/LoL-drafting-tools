@@ -30,7 +30,7 @@ const listItemsHandler = (_, value) => {
     userCache.setConfig({ maxListItems: parsedValue });
   }
   // Need to set again the value to display correct format
-  userDataView.setMaxItems(appState.maxListItems);
+  userDataView.setMaxItems(userCache.config.maxListItems);
 };
 
 const pickRateHandler = (_, value) => {
@@ -39,7 +39,7 @@ const pickRateHandler = (_, value) => {
     userCache.setConfig({ pickRateThreshold: parsedValue });
   }
   // Need to set again the value to display correct format
-  userDataView.setPickRateThreshold(appState.pickRateThreshold);
+  userDataView.setPickRateThreshold(userCache.config.pickRateThreshold);
 };
 
 const inputsHandler = (target, value) => {
@@ -52,25 +52,22 @@ const inputsHandler = (target, value) => {
 
 const savePassword = async () => {
   try {
-    const { password, newPassword, passwordConfirm } =
+    const { oldPassword, password, passwordConfirm } =
       profileModel.getPasswordFields(userDataView.passwordForm);
 
-    const result = await authService.validatePassword(
-      {
-        oldPassword: password,
-        password: newPassword,
-        passwordConfirm,
-      },
-      { length: true, confirm: true, username: appState.user.username },
+    const message = await authService.validatePassword(
+      { password, passwordConfirm },
+      { length: true, confirm: true },
     );
 
-    if (!result?.token) {
-      userDataView.showPasswordMsg(result);
+    if (message) {
+      userDataView.showPasswordMsg(message);
       return;
     }
 
-    const user = await appState.user.updateUser({
-      password: newPassword,
+    const user = await appState.user.updatePassword({
+      oldPassword,
+      password,
       passwordConfirm,
     });
 
@@ -79,13 +76,12 @@ const savePassword = async () => {
       return;
     }
 
-    appState.userUpdated();
     userDataView.showPasswordMsg('Password changed successfully.');
     userDataView.togglePanel();
   } catch (err) {
     console.error(err);
     userDataView.showPasswordMsg(
-      'Something went wrong with the server. Password could have not be changed',
+      'Something went wrong with the server. Password may have not be changed',
     );
   }
 };
@@ -125,11 +121,7 @@ const activateInputBtn = target => {
 };
 
 export const isFormActive = () => {
-  if (
-    appState.popUpOn ||
-    userDataView.isActive.username ||
-    userDataView.isActive.email
-  ) {
+  if (userDataView.isActive.username || userDataView.isActive.email) {
     userDataView.showUserMsg(
       'Please, check your username or email before saving the data',
     );

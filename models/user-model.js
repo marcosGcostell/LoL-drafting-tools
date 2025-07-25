@@ -1,9 +1,14 @@
+import crypto from 'crypto';
 import mongoose from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
 
 import { dateNowToISO } from './utils/helpers.js';
-import { ENCRYPT_STRENGTH, PASSWORD_MIN_LENGTH } from './utils/config.js';
+import {
+  ENCRYPT_STRENGTH,
+  PASSWORD_MIN_LENGTH,
+  PASSWORD_RESET_EXPIRES,
+} from './utils/config.js';
 import {
   MAX_LIST_ITEMS,
   PICK_RATE_THRESHOLD,
@@ -23,6 +28,7 @@ const userSchema = new mongoose.Schema({
     unique: true,
     lowercase: true,
     required: true,
+    select: false,
   },
   email: {
     type: String,
@@ -54,8 +60,15 @@ const userSchema = new mongoose.Schema({
       message: 'Passwords are not the same',
     },
   },
-  passwordChangedAt: Date,
-  createdAt: Date,
+  passwordChangedAt: { type: Date, select: false },
+  passwordResetToken: String,
+  passwordResetExpires: Date,
+  role: {
+    type: String,
+    enum: ['user', 'supporter', 'admin'],
+    default: 'user',
+  },
+  createdAt: { type: Date, select: false },
   config: {
     pickRateThreshold: { type: Number, default: PICK_RATE_THRESHOLD },
     maxListItems: { type: Number, default: MAX_LIST_ITEMS },
@@ -113,6 +126,16 @@ userSchema.methods.hasChangedPassword = function (JWTTimestamp) {
   }
 
   return false;
+};
+
+userSchema.methods.createPasswordResetToken = function () {
+  const resetToken = crypto.randomBytes(24).toString('hex');
+  this.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+  this.passwordResetExpires = Date.now() + PASSWORD_RESET_EXPIRES * 60 * 1000;
+  return resetToken;
 };
 
 userSchema.statics.isValidEmail = function (email) {

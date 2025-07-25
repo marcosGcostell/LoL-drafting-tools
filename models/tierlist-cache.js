@@ -31,9 +31,6 @@ class TierlistCache {
       tierlist: doc.list,
       createdAt: doc.createdAt,
     });
-    console.log(
-      `Cache updated: tierlist: ${doc.lane} - ${doc.rank} - ${doc.patch}`,
-    );
   }
 
   saveMany(docs) {
