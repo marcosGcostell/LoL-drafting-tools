@@ -1,6 +1,5 @@
 import appData from './model/appData.js';
 import user from './model/userModel.js';
-import initBackground from './controllers/backgroundController.js';
 import initHeader from './controllers/global/headerController.js';
 import initStarter from './controllers/starterController.js';
 import initCounters from './controllers/countersController.js';
@@ -12,7 +11,6 @@ import { LS_STATE } from './utils/config.js';
 
 const loadCommonControllers = async () => {
   await initHeader();
-  await initBackground();
 };
 
 const handleRoute = async e => {

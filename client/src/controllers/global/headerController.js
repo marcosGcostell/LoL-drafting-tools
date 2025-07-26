@@ -52,4 +52,12 @@ export default async () => {
 
   // FIXME It should show a hint that it's a reset button
   document.querySelector('.header__logo').addEventListener('click', resetApp);
+
+  // Hide popups if clicking outside them or press ESC
+  document.addEventListener('click', () => {
+    appState.hideAllPopUps();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') appState.hideAllPopUps();
+  });
 };

@@ -54,8 +54,6 @@ export default async () => {
   loginView.addHandleBtn('signup', signupHandler);
   loginView.addHandlerForm(loginHandler);
 
-  // appState.addEventListener('popup:login', toggleModal);
-  // appState.addEventListener('popup:hideAll', hideModal);
   appState.addEventListener('user:login', e => {
     e.stopImmediatePropagation();
     appState.setCurrentPage(`${appState.appMode}`);
