@@ -40,6 +40,7 @@ class AppState extends EventTarget {
     this.appMode = 'counters';
     this.currentPage = 'starter';
     this.silentMode = false;
+    this.needToFinishLogin = false;
     this.lane = null;
     this.rank = 'all';
     this.vslane = null;
@@ -57,14 +58,13 @@ class AppState extends EventTarget {
     this.popUpOn = '';
   }
 
-  async #setUserDefaults() {
+  #getFromUserDefaults() {
     this.lane = user.data.primaryRole || this.lane;
     this.vslane = this.lane;
     this.rank = user.data.rank;
     this.patch.mode = user.data.patch;
     this.maxListItems = user.config.maxListItems;
     this.pickRateThreshold = user.config.pickRateThreshold;
-    await this.setOption('lane', this.lane);
   }
 
   async #getPoolFromUser() {
@@ -78,14 +78,20 @@ class AppState extends EventTarget {
     }
   }
 
-  async #loginUser() {
-    if (this.currentPage !== 'counters') {
-      this.silentMode = true;
-    }
-    await this.#setUserDefaults();
-    this.silentMode = false;
+  #loginUser() {
+    this.#getFromUserDefaults();
+    this.needToFinishLogin = true;
     this.#save();
     this.dispatchEvent(new Event('user:login'));
+  }
+
+  async #completeLogin() {
+    if (this.currentPage === this.appMode) {
+      this.silentMode = false;
+      await this.setOption('lane', this.lane);
+      this.needToFinishLogin = false;
+      this.#save();
+    }
   }
 
   #save() {
@@ -124,6 +130,9 @@ class AppState extends EventTarget {
 
   async initFromCounters() {
     try {
+      if (this.user.isLoggedIn && this.needToFinishLogin) {
+        await this.#completeLogin();
+      }
       if (!this.vslane) this.initFromStarter('top');
       if (this.vslane !== this.tierlistLane) {
         await dataModel.getNewTierlist(this);
@@ -180,6 +189,9 @@ class AppState extends EventTarget {
         eventTarget = 'bothLanes';
       }
       this.resetPool();
+    }
+    if (this.needToFinishLogin) {
+      eventTarget = 'bothLanes';
     }
 
     this.#save();
