@@ -1,21 +1,12 @@
-.modal {
-  position: absolute;
-  top: 0rem;
-  left: 20rem;
-  width: calc(100% - 20rem);
-  height: 100%;
-  background-color: var(--color-grey-dark-2);
-  display: flex;
-  z-index: 2000;
-}
-
-.modal__content {
+.login-content {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: start;
-  padding: 1.5rem 2rem;
-  width: 25rem;
+  padding: 1rem 2rem;
+  width: 20rem;
+  border-right: var(--color-grey-dark-4) solid 2px;
+  background-color: var(--color-grey-dark-3);
 }
 
 .login__title {
@@ -97,4 +88,14 @@
   border-radius: 1rem;
   background-color: var(--color-grey-light-3);
   color: var(--color-grey-dark-3);
+}
+
+.login__side__view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  align-items: flex-start;
+  padding: 1rem;
+  background-color: var(--color-grey-dark-2);
 }

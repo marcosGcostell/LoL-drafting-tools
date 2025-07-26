@@ -1,6 +1,6 @@
 export default class HeaderView {
   constructor() {
-    this.loginMode = false;
+    this.loginMode = '';
   }
 
   addHandlerBtn(target, handler) {
@@ -10,10 +10,11 @@ export default class HeaderView {
     });
   }
 
-  toggleMode(username = undefined) {
+  toggleMode(username = '') {
     const userText = username || 'Not logged in';
     document.querySelector('.header__username span').textContent = userText;
-    document.querySelector('#login__btns').classList('hidden').toggle();
-    document.querySelector('#user__navbar').classList('hidden').toggle();
+    document.querySelector('#login__btns').classList.toggle('hidden');
+    document.querySelector('#user__navbar').classList.toggle('hidden');
+    this.loginMode = username;
   }
 }

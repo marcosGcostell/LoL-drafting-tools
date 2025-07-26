@@ -4,6 +4,7 @@ import initBackground from './controllers/backgroundController.js';
 import initHeader from './controllers/global/headerController.js';
 import initStarter from './controllers/starterController.js';
 import initCounters from './controllers/countersController.js';
+import initLogin from './controllers/loginController.js';
 import initProfile from './controllers/profileController.js';
 // import initSignup from './controllers/signupController.js';
 import { navigate } from './utils/helpers.js';
@@ -19,14 +20,22 @@ const handleRoute = async e => {
   const isDOMReloaded = !(e instanceof PopStateEvent);
   const { isLoggedIn } = user;
 
+  // Starter route
   if (path === '/' || path === '/starter') {
     const starter = await initStarter();
     if (starter && isDOMReloaded) await loadCommonControllers();
+    // Counters route
   } else if (path === '/counters') {
     const localData = JSON.parse(sessionStorage.getItem(LS_STATE));
     if (!localData?.lane) return navigate('/');
     await initCounters();
     if (isDOMReloaded) await loadCommonControllers();
+    // Login route
+  } else if (path === '/login') {
+    if (isLoggedIn) return navigate('/');
+    await initLogin();
+    if (isDOMReloaded) await loadCommonControllers();
+    // Profile route
   } else if (path === '/profile') {
     if (!isLoggedIn) return navigate('/');
     await initProfile();

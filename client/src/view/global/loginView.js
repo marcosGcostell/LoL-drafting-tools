@@ -1,22 +1,36 @@
 import View from './view.js';
+import { LOGIN_PAGE_TEMPLATE } from '../../utils/config.js';
 
 export default class LoginView extends View {
+  _parentElement;
+
   constructor() {
     super();
-    this.isModalShowed = false;
+    this._parentElement = document.querySelector('main');
     this._errorMessage = '';
+    this._template = null;
+    this._templatePromise = fetch(LOGIN_PAGE_TEMPLATE)
+      .then(response => response.text())
+      .then(data => {
+        this._template = data;
+        return data;
+      });
   }
 
   set errorMessage(message) {
     this._errorMessage = message;
   }
 
-  initView() {
-    this._modalElement = document.querySelector('#login-modal');
+  async initView() {
+    if (!this._template) await this._templatePromise;
+
+    await this.render(true);
+
     this._parentElement = document.querySelector('.login__msg');
     this.userInput = document.querySelector('#user__logname');
     this.passwordInput = document.querySelector('#user__password');
-    this._modalElement.classList.add('hidden');
+    this.userInput.value = '';
+    this.passwordInput.value = '';
 
     // Reset error message when focus on inputs
     [this.userInput, this.passwordInput].forEach(el =>
@@ -24,16 +38,15 @@ export default class LoginView extends View {
         this._clear();
       }),
     );
+
+    this.userInput.focus();
   }
 
-  addHandlerUserBtn(handler) {
-    document.querySelector('.header__users').addEventListener('click', e => {
-      e.preventDefault();
-      handler(e);
-    });
+  _generateMarkup(_) {
+    return this._template;
   }
 
-  addHandlerModalBtns(target, handler) {
+  addHandleBtn(target, handler) {
     document.querySelector(`.btn__${target}`).addEventListener('click', e => {
       e.preventDefault();
       handler();
@@ -41,36 +54,9 @@ export default class LoginView extends View {
   }
 
   addHandlerForm(handler) {
-    this._modalElement.querySelector('form').addEventListener('submit', e => {
+    document.querySelector('#login__form').addEventListener('submit', e => {
       e.preventDefault();
       handler(e);
     });
-  }
-
-  addHandlerModalBackground() {
-    this._modalElement.addEventListener('click', e => {
-      e.stopImmediatePropagation();
-    });
-  }
-
-  toggleModal() {
-    this._clear();
-    this.userInput.value = '';
-    this.passwordInput.value = '';
-    this._modalElement.classList.toggle('hidden');
-
-    this.isModalShowed = !this.isModalShowed;
-    if (this.isModalShowed) {
-      this.userInput.focus();
-    }
-  }
-
-  closeModal() {
-    this._clear();
-    this.userInput.value = '';
-    this.passwordInput.value = '';
-    this._modalElement.classList.add('hidden');
-
-    this.isModalShowed = false;
   }
 }

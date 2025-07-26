@@ -1,6 +1,5 @@
 import appState from '../appState.js';
 import starterView from '../view/starter/starterView.js';
-import * as loginController from './global/loginController.js';
 import { navigate } from '../utils/helpers.js';
 
 const setLaneHandler = component => {
@@ -11,8 +10,13 @@ const setLaneHandler = component => {
 
 // Init funcion for loading the page
 export default async () => {
+  // Return false if it's going to navigate to other page
   if (appState.currentPage === 'profile' && appState.user.isLoggedIn) {
     navigate('/profile');
+    return false;
+  }
+  if (appState.currentPage === 'login' && !appState.user.isLoggedIn) {
+    navigate('/login');
     return false;
   }
   if (appState.currentPage === 'signup' && !appState.user.isLoggedIn) {
@@ -22,7 +26,6 @@ export default async () => {
   if (appState.lane) {
     appState.setCurrentPage(`${appState.appMode}`);
     navigate(`/${appState.appMode}`);
-    // Need to skip the rest of router calls if it goes to other page
     return false;
   }
 
@@ -31,8 +34,7 @@ export default async () => {
     await starterView.initView();
     appState.setCurrentPage('starter');
 
-    // Init login modal handlers and set the selector handler
-    loginController.init();
+    // Set the selector handler
     starterView.components.starter.bindHandlers(setLaneHandler);
 
     appState.addEventListener('user:login', e => {

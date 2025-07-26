@@ -1,172 +1,44 @@
-<!-- PROFILE HEADER -->
-<section class="profile-header">
-  <div class="profile__save">
-    <button id="save__btn" type="button" class="btn__profile btn__clickable">
-      Save
-    </button>
-    <button id="discard__btn" type="button" class="btn__profile btn__clickable">
-      Discard changes
-    </button>
-  </div>
-  <div class="profile__header__msg">
-    <span id="header_msg"></span>
-  </div>
-  <div class="profile__logout">
-    <button id="logout__btn" type="button" class="btn__profile btn__clickable">
-      Log out
-    </button>
-  </div>
-</section>
 <!-- DATA SECTION -->
 <section class="data-section">
-  <!-- PROFILE DATA -->
-  <div class="profile-data">
-    <form id="user__form" class="user__profile">
-      <label for="name">Name:</label>
-      <input id="name" name="name" type="text" />
-
-      <label for="username">Username:</label>
-      <div id="username__container" class="inline__input">
-        <input id="username" name="username" type="text" />
-        <div id="username__btn" class="inline__btn">
-          <svg>
-            <use href="assets/img/icons/icons.svg#icon-check"></use>
-          </svg>
-        </div>
+  <!-- LOGIN DATA SECTION -->
+  <div class="login-content">
+    <div class="login__title">
+      <h2>Log in</h2>
+      <div class="btn__close btn__clickable">
+        <img src="assets/img/icons/close.png" />
       </div>
-      <div class="separator"></div>
-      <label for="email">email:</label>
-      <div id="email__container" class="inline__input">
-        <input id="email" name="email" type="email" />
-        <div id="email__btn" class="inline__btn">
-          <svg>
-            <use href="assets/img/icons/icons.svg#icon-check"></use>
-          </svg>
-        </div>
-      </div>
-      <div class="profile__msg">
-        <span id="user__msg"
-          >Check your username or email before saving the data</span
+    </div>
+    <form id="login__form" class="user__login">
+      <fieldset>
+        <label for="user__logname">User name or email:</label>
+        <input
+          id="user__logname"
+          name="username"
+          type="text"
+          placeholder="User name or email"
+        />
+        <label for="user__password">Password:</label>
+        <input
+          id="user__password"
+          name="password"
+          type="password"
+          placeholder="Password"
+        />
+      </fieldset>
+      <div class="log__buttons">
+        <ul class="login__msg">
+          <!-- Place for messages -->
+        </ul>
+        <button type="submit" class="btn__login btn__clickable">Log In</button>
+        <span>¿Don't have an acount...?</span>
+        <a href="signup.html"
+          ><button type="button" class="btn__signup btn__clickable">
+            Sign up
+          </button></a
         >
       </div>
-      <hr />
-      <label for="settigs">Settigs:</label>
-      <div id="settigs" class="profile__settings">
-        <div class="inline__input">
-          <label for="max-items">Default maximum lists items:</label>
-          <input id="max-items" name="max-items" type="number" />
-        </div>
-        <div class="inline__input">
-          <label for="min-pr">Default % Pick Rate Threshold > </label>
-          <input id="min-pr" name="min-pr" type="number" />
-        </div>
-      </div>
-      <hr />
-    </form>
-    <form id="password__form" class="user__profile">
-      <!-- Password selector -->
-      <div class="password-section">
-        <div class="inline__input">
-          <label for="password__btn" style="width: 100%"
-            >Press to change password</label
-          >
-          <button
-            id="password__btn"
-            type="button"
-            style="width: 4.8rem"
-            class="selector__clickable"
-          >
-            Password
-          </button>
-        </div>
-      </div>
-      <!-- Password popup -->
-      <div class="password__popup hidden">
-        <div class="inline__input">
-          <label>Current password:</label>
-          <input id="oldPassword" name="oldPassword" type="password" />
-        </div>
-        <div class="inline__input">
-          <label for="password">New password:</label>
-          <input id="password" name="password" type="password" />
-        </div>
-        <div class="inline__input">
-          <label for="passwordConfirm">Confirm password:</label>
-          <input id="passwordConfirm" name="passwordConfirm" type="password" />
-          <button
-            id="password__save__btn"
-            type="button"
-            class="selector__clickable"
-          >
-            Save
-          </button>
-        </div>
-        <div class="profile__msg">
-          <span class="password__msg"
-            >Password change will apply immediately by clicking 'Save' in this
-            password panel.</span
-          >
-        </div>
-      </div>
-      <div>
-        <span id="password__msg" class="password__msg"></span>
-      </div>
     </form>
   </div>
-  <!-- PROFILE POOL SECTION -->
-  <div class="profile-pool">
-    <!-- POOL SELECTORS -->
-    <div class="profile__lane">
-      <span class="profile__cat__title">Primary role: </span>
-      <div
-        id="primary__selector"
-        class="profile__lane__selector"
-        data-value="top"
-      >
-        <!-- Place to insert profile lane selector -->
-      </div>
-    </div>
-    <div class="profile__lane">
-      <span class="profile__cat__title">Secondary role: </span>
-      <div
-        id="secondary__selector"
-        class="profile__lane__selector"
-        data-value="top"
-      >
-        <!-- Place to insert profile lane selector -->
-      </div>
-    </div>
-    <div class="profile__rank">
-      <span class="profile__cat__title">Defaut rank: </span>
-      <div
-        id="rank__btn"
-        class="profile__rank__btn selector__clickable"
-        data-value="all"
-      >
-        <img src="assets/img/ranks/all.webp" class="rank__btn" alt="Ranks" />
-        <span>All</span>
-      </div>
-      <div id="rank__selector" class="profile__rank__selector hidden">
-        <!-- Place to insert rank selector -->
-      </div>
-    </div>
-    <div class="profile__patch">
-      <span class="profile__cat__title">Default Patch: </span>
-      <div
-        id="patch__btn"
-        class="profile__patch__btn selector__clickable"
-        data-value=""
-      >
-        <span>Current game version</span>
-      </div>
-    </div>
-    <hr />
-    <!-- CHAMPION POOL -->
-    <div id="lane__container" class="champion__pool">
-      <div class="profile__pool__title">
-        <span>Select yor champion pool: </span>
-      </div>
-      <!-- Place to insert lane sections -->
-    </div>
-  </div>
+  <!-- LOGIN SIDE VIEW -->
+  <div class="login__side__view"></div>
 </section>

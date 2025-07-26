@@ -33,6 +33,7 @@ export const RANK_ICONS = './assets/img/ranks/';
 export const STARTER_PAGE_TEMPLATE = './templates/global/page-starter.html';
 export const COUNTER_PAGE_TEMPLATE = './templates/global/page-counters.html';
 export const PROFILE_PAGE_TEMPLATE = './templates/global/page-profile.html';
+export const LOGIN_PAGE_TEMPLATE = './templates/global/page-login.html';
 export const SIGNUP_PAGE_TEMPLATE = './templates/global/page-signup.html';
 // For components
 export const SELECTOR_ITEM_TEMPLATE =
